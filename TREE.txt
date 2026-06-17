@@ -1,0 +1,27 @@
+AGENTS.md
+README.md
+README.zh.md
+TREE.txt
+skills/
+  MANIFEST.json
+  using-pragmatic-skills/SKILL.md
+  triage/SKILL.md
+  fast-patch/SKILL.md
+  exploration/SKILL.md
+  standard-change/SKILL.md
+  strict-change/SKILL.md
+  command-discovery/SKILL.md
+  safety-gates/SKILL.md
+  writing-plans/SKILL.md
+  tdd/SKILL.md
+  evidence-driven-execution/SKILL.md
+  verification/SKILL.md
+  review/SKILL.md
+  delegation/SKILL.md
+  worktree/SKILL.md
+  handoff/SKILL.md
+reference/
+  MODE-MATRIX.md
+  SKILL-METADATA-SCHEMA.md
+  USER-CONTRACT.md
+  PROJECT-PROFILE.template.md
