@@ -1,8 +1,9 @@
 ---
 schema: psp.skill/v1
 name: triage
+description: Choose the smallest safe primary mode and re-route when evidence changes.
 kind: router
-version: 1.2.0
+version: 1.5.0
 summary: Choose the smallest safe primary mode and re-route when evidence changes.
 triggers:
 - Immediately after using-pragmatic-skills.
@@ -17,37 +18,28 @@ outputs:
 - Mode
 - Reason
 - Next skill
-routing:
-  user_exposed: false
-  user_invocation_required: false
-  activation: automatic-router
-  invoked_by:
-  - skills/using-pragmatic-skills/SKILL.md
-  contract: Loaded automatically by the entry skill; the agent selects the mode.
 activation:
   automatic: true
   entrypoint: false
   user_direct: false
+  invoked_by:
+  - skills/exploration/SKILL.md#loads.conditional.implementation_needed
+  - skills/fast-patch/SKILL.md#loads.conditional.scope_or_risk_increase
+  - skills/using-pragmatic-skills/SKILL.md#loads.immediate
+  - workflow#re-triage-triggers
+  routing_note: Users provide tasks; agents route from AGENTS.md through triage and phase triggers. Users do not manually invoke individual skills.
 ---
-
 # Triage
-## Routing contract
 
-This skill is an internal routing target. Users do not need to ask for this skill directly; the entry workflow, triage, mode, or phase trigger loads it when appropriate.
+## Invocation contract
 
+Triage is an internal router, not a user-facing command.
 
+The user does not choose the mode. The agent selects the smallest safe mode, loads only that mode skill, and re-runs triage when evidence changes.
 
 Use this skill to choose the smallest safe workflow for the task.
 
 Triage is provisional. Re-run it whenever new evidence changes risk, scope, ambiguity, or blast radius.
-
-## Routing contract
-
-Triage is an internal router. The user does not choose the mode or invoke skills manually.
-
-Select the mode yourself from the task, repository evidence, and risk profile. Do not ask the user "which workflow/skill should I use" unless the user is explicitly editing this skill system.
-
-If the user requested a lighter mode but a high-risk trigger appears, choose the safer mode and explain briefly when relevant.
 
 ## Output of triage
 

@@ -1,8 +1,9 @@
 ---
 schema: psp.skill/v1
 name: evidence-driven-execution
+description: Back every claim with actual evidence or label it as an assumption.
 kind: support
-version: 1.2.0
+version: 1.5.0
 summary: Back every claim with actual evidence or label it as an assumption.
 triggers:
 - Non-trivial edits.
@@ -14,28 +15,22 @@ outputs:
 - evidence log
 - precise claim wording
 - unverified gaps
-routing:
-  user_exposed: false
-  user_invocation_required: false
-  activation: phase-triggered-support
-  invoked_by:
-  - skills/standard-change/SKILL.md
-  - skills/strict-change/SKILL.md
-  contract: Loaded automatically before non-trivial edits or auditable claims.
 activation:
   automatic: true
   entrypoint: false
   user_direct: false
+  invoked_by:
+  - skills/standard-change/SKILL.md#loads.phased.execution
+  - skills/strict-change/SKILL.md#loads.phased.evidence
+  routing_note: Users provide tasks; agents route from AGENTS.md through triage and phase triggers. Users do not manually invoke individual skills.
 ---
-
 # Evidence-Driven Execution
-## Routing contract
 
-This skill is an internal routing target. Users do not need to ask for this skill directly; the entry workflow, triage, mode, or phase trigger loads it when appropriate.
+## Internal activation
 
+This is a support skill. It is loaded by a mode, router, or another support skill when the relevant phase or condition is reached.
 
-
-This support skill is loaded automatically before non-trivial edits, delegated work, or auditable claims. Users do not need to request it.
+Users do not need to ask for this skill directly.
 
 Use this skill whenever work may be audited, reviewed, delegated, or called complete.
 

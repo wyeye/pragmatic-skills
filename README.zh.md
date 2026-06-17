@@ -1,57 +1,107 @@
-# Pragmatic Skills Pack v1.2
+# Pragmatic Skills Pack — 渐进暴露版
 
-一个面向 coding agent 的实用派、阶段路由、证据优先 skill pack。
+一个实用、按阶段路由、证据优先的 coding agent skills 包。
 
-用户只需要正常描述任务，不需要知道、选择或手动调用具体 skill。agent 从很薄的入口开始，经过 triage 选择一个主模式，再在执行到对应阶段时加载 support skill。
+用户正常提出任务；agent 从入口 skill 开始，先 triage，选择一个主模式，再在对应阶段触发辅助 skill。用户不需要主动调用任何具体 skill。
 
-## 项目身份
+## 用户契约
+
+用户不需要知道内部 skill 名字，也不需要说“调用 TDD / verification / strict-change”。
+
+正常链路是：
 
 ```text
-正式名：Pragmatic Skills Pack
-简称：PSP
-仓库名：pragmatic-skills
-包 ID：pragmatic-skills-pack
-Manifest ID：psp
-版本：1.2.0
-入口 skill：skills/using-pragmatic-skills/SKILL.md
+用户任务
+  -> AGENTS.md
+  -> skills/using-pragmatic-skills/SKILL.md
+  -> skills/triage/SKILL.md
+  -> 一个主模式 skill
+  -> 当前阶段触发时再加载辅助 skill
 ```
+
+除非用户正在设计、调试或评估这套 workflow，否则 agent 不应该问用户该用哪个 skill 或 mode。
+
+## 一个命令安装 / 升级
+
+从目标项目里执行：
+
+```bash
+sh /path/to/pragmatic-skills-pack/install.sh
+```
+
+或者显式指定目标项目：
+
+```bash
+sh /path/to/pragmatic-skills-pack/install.sh --target /path/to/repo
+```
+
+同一个命令可以重复执行：没有安装时会安装，已有 PSP 时会按安全策略升级。
+
+校验解压后的包：
+
+```bash
+sh /path/to/pragmatic-skills-pack/install.sh --check
+```
+
+校验已安装项目：
+
+```bash
+sh /path/to/pragmatic-skills-pack/install.sh --verify --target /path/to/repo
+```
+
+安装后，目标项目里也会有：
+
+```bash
+python3 .psp/bin/psp.py verify --target .
+```
+
+`install.sh` 是公开入口；底层实现是无依赖的 `tools/psp.py`。
+
+## 使用 agent 安装
+
+也可以直接让 agent 安装。把解压后的包给 agent，然后说：
+
+```text
+请把 Pragmatic Skills Pack 安装到当前仓库。优先使用包里的 install.sh，安装后运行校验。保留 AGENTS.md 里 PSP 托管块之外的已有内容；如果有冲突，报告 .psp/conflicts/ 路径，不要静默覆盖。
+```
+
+agent 安装细则见 `AGENT-INSTALL.md` 和 `reference/AGENT-INSTALL.md`。
+
+## 升级策略
+
+升级安全优先：
+
+- `AGENTS.md` 只更新 `<!-- PSP:BEGIN -->` 到 `<!-- PSP:END -->` 的托管块，不覆盖项目自己的说明。
+- PSP 管理的 `skills/` 和 `reference/` 文件会记录 hash 到 `.psp/install.json`。
+- 升级时只覆盖“上次安装后没被改过”的 PSP 文件。
+- 用户改过的文件不会被覆盖，会生成 `.psp/conflicts/<timestamp>/REPORT.md` 和 `.new` 候选文件。
+- 被替换的旧文件会备份到 `.psp/backups/<timestamp>/`。
+- 不会覆盖项目自己的 README。
+- 只有显式传 `--force` 才会覆盖冲突文件，而且覆盖前仍会备份。
+
+详细说明见 `reference/INSTALL-UPGRADE.md`。
 
 ## 核心思路
 
 ```text
 AGENTS.md
-  -> skills/using-pragmatic-skills/SKILL.md
-       -> skills/triage/SKILL.md
-            -> 只选择一个主模式：fast-patch | exploration | standard-change | strict-change
-                 -> 当前阶段触发时再加载 support skill
+  -> using-pragmatic-skills
+       -> triage
+            -> 只打开一个主模式 skill
+                 -> 当前阶段触发时再打开辅助 skill
 ```
 
-这样小改动不会加载完整工程规范，大改动又不会跳过计划、测试、验证、审查和证据。
-
-## 用户使用方式
-
-用户不用说：
-
-```text
-请调用 tdd skill
-请调用 review skill
-请调用 command-discovery skill
-请切到 strict-change
-```
-
-用户只要提出任务。agent 应该从入口 skill 开始，经过 triage 选择模式，再在执行到对应阶段时自动加载内部 support skill。
-
-只有当用户在设计、调试、评估或修改这套 workflow 本身时，才需要讨论具体 skill 名称。
+这样小改动不会加载完整工程规范，大改动又不会跳过测试、计划、审查和证据。
 
 ## 通用命令解析
 
-通用包里不再写固定占位：
+通用包不再要求在 `AGENTS.md` 里固定填写：
 
 ```text
 Install / Test / Lint / Typecheck / Build / Run locally
 ```
 
-原因是 PSP 应该能安装到任意项目。不同项目的命令应该从当前仓库里发现，而不是写死在模板里。
+不同项目的命令应该从当前仓库里发现，而不是写死在模板里。
 
 需要命令时会加载：
 
@@ -59,69 +109,59 @@ Install / Test / Lint / Typecheck / Build / Run locally
 skills/command-discovery/SKILL.md
 ```
 
-它会按优先级查找：用户明确指令、项目文档、`package.json` scripts、`Makefile`、`justfile`、`pyproject.toml`、`tox.ini`、`Cargo.toml`、`go.mod`、`pom.xml`、`build.gradle`、CI 配置等。找不到就必须说找不到，不能编造命令。
+它会按优先级查找：用户明确指令、项目文档、`.psp/project-profile.md`、`package.json` scripts、`Makefile`、`justfile`、`pyproject.toml`、`tox.ini`、`Cargo.toml`、`go.mod`、`pom.xml`、`build.gradle`、CI 配置等。找不到就必须说找不到，不能编造命令。
 
-安装命令和会修改依赖状态的命令不会因为存在就自动运行。
+如果具体项目想固定命令，可以复制 `reference/PROJECT-PROFILE.template.md` 到 `.psp/project-profile.md`，或者安装时加 `--profile`。
 
 ## 机器可读 metadata
 
-每个 `SKILL.md` 顶部都有 YAML frontmatter，并包含 `routing` / `activation` 字段。例如：
+每个 `SKILL.md` 顶部都有 YAML frontmatter，例如：
 
 ```yaml
 schema: psp.skill/v1
 name: standard-change
 kind: mode
-version: 1.2.0
+version: 1.5.0
 summary: ...
 triggers: [...]
 loads: ...
+activation: ...
 outputs: [...]
-routing:
-  user_exposed: false
-  user_invocation_required: false
-  activation: router-selected-mode
-  invoked_by:
-    - skills/triage/SKILL.md
-  contract: Selected internally; users do not invoke this skill directly.
-activation:
-  automatic: true
-  entrypoint: false
-  user_direct: false
 ```
 
-工具或 agent 可以先读 `skills/MANIFEST.json` / frontmatter 做路由，再按需打开具体 skill 正文。
-
-## 安装
-
-把 `AGENTS.md` 和 `skills/` 放到项目根目录：
-
-```bash
-cp -R pragmatic-skills-pack/AGENTS.md pragmatic-skills-pack/skills .
-```
-
-可选：如果想保留说明文档，也复制 `reference/`：
-
-```bash
-cp -R pragmatic-skills-pack/reference .
-```
-
-然后告诉 coding agent：
+同时有：
 
 ```text
-Follow AGENTS.md. Use progressive skill loading. Do not preload all skills.
-Route internally from the entry skill; do not ask the user which skill to invoke.
+skills/MANIFEST.json
 ```
 
-## 项目级定制
+工具或 agent 可以先读 manifest / frontmatter 做路由，再按需打开具体 skill 正文。
 
-大多数项目只需要定制 `.psp/project-profile.md` 或 `AGENTS.md` 里的本地 section。
+## v1.5 改动
 
-适合放进去的内容包括：精确 test/lint/typecheck/build 命令、generated files、禁止自动编辑的区域、项目特有 Strict Change 触发条件、依赖策略、部署/审批策略。
+- 把 `install.sh` 提升为公开主入口；用户不再需要直接调用 Python CLI。
+- 同一个 shell 命令可安装，也可安全升级已有 PSP。
+- 新增 `AGENT-INSTALL.md` / `reference/AGENT-INSTALL.md`，明确 agent 安装路径。
+- 文档改为两种使用方式：一个命令安装，或让 agent 使用安装器安装。
+- `tools/psp.py` 保留为底层无依赖实现和安装后校验器。
 
-## v1.2 改动
+当前版本：`1.5.0`。
 
-- 项目正式改名为 Pragmatic Skills Pack。
-- 入口 skill 改为 `skills/using-pragmatic-skills/SKILL.md`。
-- 统一更新 manifest、README、TREE、user contract、schema example 和内部路径。
-- 移除入口文件里残留的通用命令占位。
-- 统一补强每个 skill 的机器可读 `activation` metadata。
+## 多工具安装
+
+PSP 现在是 shell-first，并支持 host adapter。
+
+```bash
+# 在目标仓库根目录执行
+sh /path/to/pragmatic-skills-pack/install.sh
+
+# 安装全部支持的 adapter
+sh /path/to/pragmatic-skills-pack/install.sh --hosts all
+
+# 只安装指定工具 adapter
+sh /path/to/pragmatic-skills-pack/install.sh --hosts claude,codex,opencode
+```
+
+默认 `--hosts all` 会安装 `AGENTS.md`、`.agents/skills/using-pragmatic-skills` 原生入口，以及 Claude Code、OpenCode、Gemini CLI、GitHub Copilot、Cursor 等薄适配器。只想按现有项目文件检测时用 `--hosts auto`；只想装 canonical PSP、不放任何 host adapter 时用 `--no-host-adapters`。
+
+原生 adapter 只是薄入口。真正的内部工作流仍然在 `skills/` 里，用户只需要正常提出任务。

@@ -1,8 +1,9 @@
 ---
 schema: psp.skill/v1
 name: verification
+description: Choose and run the right level of validation before claiming completion.
 kind: support
-version: 1.2.0
+version: 1.5.0
 summary: Choose and run the right level of validation before claiming completion.
 triggers:
 - After implementation.
@@ -15,30 +16,24 @@ outputs:
 - verification level
 - commands log
 - failures and gaps
-routing:
-  user_exposed: false
-  user_invocation_required: false
-  activation: phase-triggered-support
-  invoked_by:
-  - skills/standard-change/SKILL.md
-  - skills/strict-change/SKILL.md
-  - skills/tdd/SKILL.md
-  - skills/delegation/SKILL.md
-  contract: Loaded automatically before running or reporting validation.
 activation:
   automatic: true
   entrypoint: false
   user_direct: false
+  invoked_by:
+  - skills/delegation/SKILL.md#loads.conditional.integration_verification
+  - skills/standard-change/SKILL.md#loads.phased.verification
+  - skills/strict-change/SKILL.md#loads.phased.verification
+  - skills/tdd/SKILL.md#loads.conditional.verification
+  routing_note: Users provide tasks; agents route from AGENTS.md through triage and phase triggers. Users do not manually invoke individual skills.
 ---
-
 # Verification
-## Routing contract
 
-This skill is an internal routing target. Users do not need to ask for this skill directly; the entry workflow, triage, mode, or phase trigger loads it when appropriate.
+## Internal activation
 
+This is a support skill. It is loaded by a mode, router, or another support skill when the relevant phase or condition is reached.
 
-
-This support skill is loaded automatically before validation and before reporting checks. Users do not need to invoke it directly.
+Users do not need to ask for this skill directly.
 
 Use this skill after implementation and before claiming completion.
 

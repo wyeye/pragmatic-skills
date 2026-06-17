@@ -1,8 +1,9 @@
 ---
 schema: psp.skill/v1
 name: tdd
+description: Use tests as the driver for behavior changes and bug fixes when practical.
 kind: support
-version: 1.2.0
+version: 1.5.0
 summary: Use tests as the driver for behavior changes and bug fixes when practical.
 triggers:
 - Behavior change.
@@ -19,28 +20,22 @@ outputs:
 - failing test evidence when practical
 - passing test evidence after fix
 - reason when TDD is not practical
-routing:
-  user_exposed: false
-  user_invocation_required: false
-  activation: phase-triggered-support
-  invoked_by:
-  - skills/standard-change/SKILL.md
-  - skills/strict-change/SKILL.md
-  contract: Loaded automatically for behavior changes, bug fixes, and regression risk.
 activation:
   automatic: true
   entrypoint: false
   user_direct: false
+  invoked_by:
+  - skills/standard-change/SKILL.md#loads.phased.behavior
+  - skills/strict-change/SKILL.md#loads.phased.behavior
+  routing_note: Users provide tasks; agents route from AGENTS.md through triage and phase triggers. Users do not manually invoke individual skills.
 ---
-
 # Test-Driven Development
-## Routing contract
 
-This skill is an internal routing target. Users do not need to ask for this skill directly; the entry workflow, triage, mode, or phase trigger loads it when appropriate.
+## Internal activation
 
+This is a support skill. It is loaded by a mode, router, or another support skill when the relevant phase or condition is reached.
 
-
-This support skill is loaded automatically for behavior changes, bug fixes, and regression risk when executable tests are practical. Users do not need to ask for TDD by name.
+Users do not need to ask for this skill directly.
 
 Use this skill for behavior changes and bug fixes when executable tests are practical.
 

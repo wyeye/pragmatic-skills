@@ -11,11 +11,9 @@ This file is reference material. Do not load it during normal tasks unless you n
 
 ## Philosophy
 
-- Users describe tasks; they do not select individual skills.
 - The entry point should stay small.
-- The triage skill should decide the mode internally.
+- The triage skill should decide the mode.
 - Mode skills should load support skills by phase, not upfront as a bundle.
-- Support skills are internal routing targets, not user-facing commands.
 - Commands should be discovered from the project, not hardcoded in the generic workflow.
 - Evidence beats narrative.
 - Safety gates must be wired into Strict Change.
@@ -41,3 +39,8 @@ Command evidence should include:
 - source
 - confidence
 - run policy
+
+
+## User contract summary
+
+Users provide normal tasks. The agent starts from the entry skill and routes internally. Mode and support skills are selected by triage and phase triggers, not by user command.

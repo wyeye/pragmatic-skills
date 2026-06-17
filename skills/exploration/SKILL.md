@@ -1,8 +1,9 @@
 ---
 schema: psp.skill/v1
 name: exploration
+description: Investigate, diagnose, compare options, or clarify requirements before editing.
 kind: mode
-version: 1.2.0
+version: 1.5.0
 summary: Investigate, diagnose, compare options, or clarify requirements before editing.
 triggers:
 - Ambiguous requirements.
@@ -21,28 +22,22 @@ outputs:
 - options
 - recommendation
 - next mode if implementation is needed
-routing:
-  user_exposed: false
-  user_invocation_required: false
-  activation: router-selected-mode
-  invoked_by:
-  - skills/triage/SKILL.md
-  - skills/standard-change/SKILL.md
-  contract: Selected internally for ambiguous, diagnostic, design, or investigation work.
 activation:
   automatic: true
   entrypoint: false
   user_direct: false
+  invoked_by:
+  - skills/standard-change/SKILL.md#loads.phased.discovery
+  - skills/triage/SKILL.md#loads.select_one
+  routing_note: Users provide tasks; agents route from AGENTS.md through triage and phase triggers. Users do not manually invoke individual skills.
 ---
-
 # Exploration
-## Routing contract
 
-This skill is an internal routing target. Users do not need to ask for this skill directly; the entry workflow, triage, mode, or phase trigger loads it when appropriate.
+## Phase-trigger contract
 
+Do not load all support skills when entering this mode.
 
-
-This mode is selected internally by triage. The user does not need to request Exploration.
+Load support skills only when their phase trigger is reached. The user should not be asked to invoke support skills manually.
 
 Use this skill for investigation, diagnosis, design, or unclear requirements.
 

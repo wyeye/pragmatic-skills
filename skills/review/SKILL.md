@@ -1,10 +1,10 @@
 ---
 schema: psp.skill/v1
 name: review
+description: Review actual changed files, diff, patch, and behavior before calling Standard or Strict work complete.
 kind: support
-version: 1.2.0
-summary: Review actual changed files, diff, patch, and behavior before calling Standard or
-  Strict work complete.
+version: 1.5.0
+summary: Review actual changed files, diff, patch, and behavior before calling Standard or Strict work complete.
 triggers:
 - Strict Change completion.
 - Standard Change with behavior changes, tests, multiple files, or non-tiny diff.
@@ -18,29 +18,23 @@ outputs:
 - blocking findings
 - non-blocking findings
 - unverified items
-routing:
-  user_exposed: false
-  user_invocation_required: false
-  activation: phase-triggered-support
-  invoked_by:
-  - skills/standard-change/SKILL.md
-  - skills/strict-change/SKILL.md
-  - skills/delegation/SKILL.md
-  contract: Loaded automatically before calling Standard or Strict work complete.
 activation:
   automatic: true
   entrypoint: false
   user_direct: false
+  invoked_by:
+  - skills/delegation/SKILL.md#loads.conditional.final_review
+  - skills/standard-change/SKILL.md#loads.phased.review
+  - skills/strict-change/SKILL.md#loads.phased.review
+  routing_note: Users provide tasks; agents route from AGENTS.md through triage and phase triggers. Users do not manually invoke individual skills.
 ---
-
 # Review
-## Routing contract
 
-This skill is an internal routing target. Users do not need to ask for this skill directly; the entry workflow, triage, mode, or phase trigger loads it when appropriate.
+## Internal activation
 
+This is a support skill. It is loaded by a mode, router, or another support skill when the relevant phase or condition is reached.
 
-
-This support skill is loaded automatically before Standard or Strict work is called complete. Users do not need to request review unless they want extra review depth.
+Users do not need to ask for this skill directly.
 
 Use this skill before calling Standard or Strict work complete.
 

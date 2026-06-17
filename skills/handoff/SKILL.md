@@ -1,8 +1,9 @@
 ---
 schema: psp.skill/v1
 name: handoff
+description: Final compact, factual, evidence-based response after changes, proposals, or reviews.
 kind: support
-version: 1.2.0
+version: 1.5.0
 summary: Final compact, factual, evidence-based response after changes, proposals, or reviews.
 triggers:
 - Before final response after file/code work.
@@ -14,32 +15,25 @@ outputs:
 - review
 - not verified
 - notes/risks
-routing:
-  user_exposed: false
-  user_invocation_required: false
-  activation: completion-triggered-support
-  invoked_by:
-  - skills/using-pragmatic-skills/SKILL.md
-  - skills/fast-patch/SKILL.md
-  - skills/exploration/SKILL.md
-  - skills/standard-change/SKILL.md
-  - skills/strict-change/SKILL.md
-  contract: Loaded automatically before final responses after code/file work, proposals, or
-    reviews.
 activation:
   automatic: true
   entrypoint: false
   user_direct: false
+  invoked_by:
+  - skills/exploration/SKILL.md#loads.conditional.completion
+  - skills/fast-patch/SKILL.md#loads.conditional.completion
+  - skills/standard-change/SKILL.md#loads.phased.completion
+  - skills/strict-change/SKILL.md#loads.phased.completion
+  - skills/using-pragmatic-skills/SKILL.md#loads.conditional.completion
+  routing_note: Users provide tasks; agents route from AGENTS.md through triage and phase triggers. Users do not manually invoke individual skills.
 ---
-
 # Handoff
-## Routing contract
 
-This skill is an internal routing target. Users do not need to ask for this skill directly; the entry workflow, triage, mode, or phase trigger loads it when appropriate.
+## Internal activation
 
+This is a support skill. It is loaded by a mode, router, or another support skill when the relevant phase or condition is reached.
 
-
-This support skill is loaded automatically before final responses after code/file work, proposals, or reviews. Users do not need to request a handoff.
+Users do not need to ask for this skill directly.
 
 Use this skill for the final response after making, proposing, or reviewing changes.
 

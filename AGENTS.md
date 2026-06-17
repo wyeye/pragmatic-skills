@@ -1,58 +1,79 @@
-# Pragmatic Skills Pack — Progressive Entry
+<!-- PSP:BEGIN -->
+# Pragmatic Skills Pack — Progressive Entry v1.5
 
-This repository uses Pragmatic Skills Pack, a progressive, phase-routed, evidence-first skill pack for coding agents.
-
-Users provide normal tasks. They do **not** need to invoke, choose, or know individual skills.
-
-## Start rule
-
-For any task that may involve code, files, tests, debugging, review, repository decisions, or project commands:
-
-1. Read only `skills/using-pragmatic-skills/SKILL.md`.
-2. Follow that entry skill's routing instructions.
-3. Load `skills/triage/SKILL.md` next.
-4. Select one primary mode through triage.
-5. Load support skills only when their phase trigger or condition is reached.
-
-Do **not** preload every skill body up front.
+This repository uses a progressive skill workflow. Do **not** preload the entire workflow.
 
 ## User-facing contract
 
-- The user states the task.
-- The agent routes internally from entry -> triage -> one mode -> support skills by phase trigger.
-- Do not ask the user which skill or mode to use unless the user is explicitly designing, debugging, or evaluating this skill system.
-- Internal skill names may be mentioned for transparency, but they must not become required user actions.
+Users only provide normal tasks. They do **not** need to invoke, choose, or know individual skills.
+
+The agent must route internally:
+
+```text
+User task
+  -> AGENTS.md or host-native entry adapter
+  -> skills/using-pragmatic-skills/SKILL.md
+  -> skills/triage/SKILL.md
+  -> one primary mode skill
+  -> support skills by phase trigger only
+```
+
+Do not ask the user which skill or mode to use unless the user is explicitly designing, debugging, or evaluating this skill system.
+
+## Host adapter rule
+
+Different coding agents discover instructions differently. PSP keeps one internal workflow in `skills/` and may install thin host adapters such as `.agents/skills/using-pragmatic-skills/SKILL.md`, `.claude/skills/psp-claude-entry/SKILL.md`, `CLAUDE.md`, `GEMINI.md`, or `.cursor/rules/pragmatic-skills-pack.mdc`.
+
+Those adapters are only entry points. Once activated, always continue with the repository file:
+
+```text
+skills/using-pragmatic-skills/SKILL.md
+```
+
+## Start rule
+
+For any task that may involve code, files, tests, project decisions, debugging, or review:
+
+1. Read only `skills/using-pragmatic-skills/SKILL.md` as the entry skill.
+2. Follow that file's routing instructions.
+3. Load additional `skills/*/SKILL.md` files only when triage or phase triggers activate them.
 
 ## Non-negotiables
 
-- Do not claim tests, builds, reviews, approvals, subagents, file edits, or command results happened unless they actually happened.
-- Do not fabricate command output, tool calls, diffs, user confirmations, or approval.
+- Do not claim tests, builds, reviews, approvals, file changes, command discovery, or subagents happened unless they actually happened.
+- Do not fabricate command output, tool calls, git state, user confirmations, or external facts.
 - Prefer the smallest workflow that is sufficient for the task.
-- Escalate when risk, ambiguity, scope, or blast radius increases.
+- Re-run triage when risk, ambiguity, blast radius, command impact, or implementation scope changes.
+- Do not perform destructive, production-affecting, or hard-to-reverse actions without the relevant safety gate.
 - Final responses must distinguish verified facts from unverified assumptions.
 
 ## Universal command resolution
 
-This generic pack does not hardcode project commands.
+Do **not** hardcode project commands in this generic entry file.
 
-When a task needs install, test, lint, typecheck, build, or local-run commands and the exact command is not already known from explicit project instructions, load `skills/command-discovery/SKILL.md`.
+When a task needs install, test, lint, typecheck, build, or local-run commands:
 
-Command rules:
+1. Prefer explicit user instructions and project-local documentation.
+2. Otherwise load `skills/command-discovery/SKILL.md`.
+3. Resolve commands from the current repository's scripts, configs, task runners, CI files, and ecosystem markers.
+4. Record each command's source and working directory before reporting it as evidence.
+5. If no command is discoverable, say so. Do not invent one.
 
-- Prefer project-defined commands over ecosystem guesses.
-- Do not invent commands.
-- Do not run install or dependency-mutating commands automatically just because they exist.
-- If no command can be discovered, say so and use the strongest available alternative.
-- Record command, cwd, source, confidence, and result when reporting verification.
+Project-specific overrides are optional. A repository may add a local section below, or create `.psp/project-profile.md`, with known commands and extra strict triggers. See `reference/PROJECT-PROFILE.template.md`.
 
-## Optional project profile
+## Generic strict triggers
 
-A repository may add local overrides in `.psp/project-profile.md` or a local section below this file. Project profiles are optional; the generic skill pack must work without fixed command placeholders.
+Use Strict Change when work involves:
 
-Common local overrides:
+- Auth / permissions / security / secrets / privacy.
+- Payment / billing / quota / subscription behavior.
+- Database schema, migrations, destructive operations, or data repair.
+- Public API, SDK, protocol, schema, or compatibility changes.
+- Deployment, infrastructure, CI/CD, release, rollback, or production operations.
+- Dependency upgrades with security, lockfile, runtime, or compatibility impact.
+- Large refactors, cross-package changes, or uncertain blast radius.
 
-- exact test/lint/typecheck/build commands
-- generated files or directories
-- files the agent must not edit automatically
-- project-specific Strict Change triggers
-- dependency, commit, branch, deployment, or approval policies
+## Optional local overrides
+
+Concrete repositories may append local rules here, but the generic pack should remain command-free and project-agnostic.
+<!-- PSP:END -->

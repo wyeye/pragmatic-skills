@@ -1,8 +1,9 @@
 ---
 schema: psp.skill/v1
 name: fast-patch
+description: Small, clear, low-risk edits with narrow verification.
 kind: mode
-version: 1.2.0
+version: 1.5.0
 summary: Small, clear, low-risk edits with narrow verification.
 triggers:
 - Tiny localized edits with low blast radius and no high-risk trigger.
@@ -18,29 +19,23 @@ outputs:
 - minimal change
 - narrow verification evidence
 - handoff summary
-routing:
-  user_exposed: false
-  user_invocation_required: false
-  activation: router-selected-mode
-  invoked_by:
-  - skills/triage/SKILL.md
-  contract: Selected internally for tiny low-risk edits.
 activation:
   automatic: true
   entrypoint: false
   user_direct: false
+  invoked_by:
+  - skills/triage/SKILL.md#loads.select_one
+  routing_note: Users provide tasks; agents route from AGENTS.md through triage and phase triggers. Users do not manually invoke individual skills.
 ---
-
 # Fast Patch
-## Routing contract
 
-This skill is an internal routing target. Users do not need to ask for this skill directly; the entry workflow, triage, mode, or phase trigger loads it when appropriate.
+## Phase-trigger contract
 
+Do not load all support skills when entering this mode.
 
+Load support skills only when their phase trigger is reached. The user should not be asked to invoke support skills manually.
 
 Use this skill for small, clear, low-risk edits.
-
-This mode is selected internally by triage. The user does not need to request Fast Patch.
 
 ## Goal
 
@@ -63,7 +58,7 @@ Use the strongest practical check, in this order:
 3. Build or compile check.
 4. Static inspection when no executable check exists.
 
-If the relevant command is not already known, load `skills/command-discovery/SKILL.md` automatically. Do not invent a test/lint/build command.
+If the relevant command is not already known, load `skills/command-discovery/SKILL.md`. Do not invent a test/lint/build command.
 
 Do not claim full test coverage unless full tests actually ran.
 

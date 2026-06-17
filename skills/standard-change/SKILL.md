@@ -1,10 +1,10 @@
 ---
 schema: psp.skill/v1
 name: standard-change
+description: Normal engineering work with planning, tests, execution evidence, verification, and review by phase.
 kind: mode
-version: 1.2.0
-summary: Normal engineering work with planning, tests, execution evidence, verification, and
-  review by phase.
+version: 1.5.0
+summary: Normal engineering work with planning, tests, execution evidence, verification, and review by phase.
 triggers:
 - Behavior changes.
 - Bug fixes.
@@ -35,33 +35,27 @@ outputs:
 - verification results
 - review findings
 - handoff summary
-routing:
-  user_exposed: false
-  user_invocation_required: false
-  activation: router-selected-mode
-  invoked_by:
-  - skills/triage/SKILL.md
-  contract: Selected internally for normal behavior changes and moderate engineering work.
 activation:
   automatic: true
   entrypoint: false
   user_direct: false
+  invoked_by:
+  - skills/triage/SKILL.md#loads.select_one
+  routing_note: Users provide tasks; agents route from AGENTS.md through triage and phase triggers. Users do not manually invoke individual skills.
 ---
-
 # Standard Change
-## Routing contract
 
-This skill is an internal routing target. Users do not need to ask for this skill directly; the entry workflow, triage, mode, or phase trigger loads it when appropriate.
+## Phase-trigger contract
 
+Do not load all support skills when entering this mode.
 
+Load support skills only when their phase trigger is reached. The user should not be asked to invoke support skills manually.
 
 Use this skill for normal engineering work: real behavior changes, bug fixes, moderate refactors, and multi-file edits.
 
 Standard Change should stay progressive. Do not load every support skill at mode entry.
 
 ## Progressive support loading
-
-Support skills are internal. Load them automatically by phase when their trigger is reached; do not ask the user to invoke them.
 
 Load support skills by phase:
 

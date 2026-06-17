@@ -1,10 +1,10 @@
 ---
 schema: psp.skill/v1
 name: safety-gates
+description: Require explicit approval before destructive, production-affecting, security-sensitive, or hard-to-reverse actions.
 kind: support
-version: 1.2.0
-summary: Require explicit approval before destructive, production-affecting, security-sensitive,
-  or hard-to-reverse actions.
+version: 1.5.0
+summary: Require explicit approval before destructive, production-affecting, security-sensitive, or hard-to-reverse actions.
 triggers:
 - Any gated action is about to occur.
 - Strict Change risk phase.
@@ -21,29 +21,23 @@ safety:
   - shared git history rewrite
   - runtime dependency changes with behavior/security impact
   - auth/billing/public API contract changes
-routing:
-  user_exposed: false
-  user_invocation_required: false
-  activation: risk-or-gated-action-triggered-support
-  invoked_by:
-  - skills/strict-change/SKILL.md
-  - skills/command-discovery/SKILL.md
-  - skills/writing-plans/SKILL.md
-  contract: Loaded automatically for Strict risk classification and before gated actions.
 activation:
   automatic: true
   entrypoint: false
   user_direct: false
+  invoked_by:
+  - skills/command-discovery/SKILL.md#loads.conditional.high_risk_dependency_or_lockfile_action
+  - skills/strict-change/SKILL.md#loads.immediate
+  - skills/writing-plans/SKILL.md#loads.conditional.safety_gated_action
+  routing_note: Users provide tasks; agents route from AGENTS.md through triage and phase triggers. Users do not manually invoke individual skills.
 ---
-
 # Safety Gates
-## Routing contract
 
-This skill is an internal routing target. Users do not need to ask for this skill directly; the entry workflow, triage, mode, or phase trigger loads it when appropriate.
+## Internal activation
 
+This is a support skill. It is loaded by a mode, router, or another support skill when the relevant phase or condition is reached.
 
-
-This support skill is loaded automatically for Strict risk classification and before gated actions. Users approve or reject gated actions; they do not need to invoke the skill.
+Users do not need to ask for this skill directly.
 
 Use this skill before actions that may be destructive, production-affecting, security-sensitive, or hard to reverse.
 

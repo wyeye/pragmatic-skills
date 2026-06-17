@@ -1,10 +1,10 @@
 ---
 schema: psp.skill/v1
 name: command-discovery
+description: Resolve install, test, lint, typecheck, build, and local-run commands from project evidence instead of hardcoding them.
 kind: support
-version: 1.2.0
-summary: Resolve install, test, lint, typecheck, build, and local-run commands from project
-  evidence instead of hardcoding them.
+version: 1.5.0
+summary: Resolve install, test, lint, typecheck, build, and local-run commands from project evidence instead of hardcoding them.
 triggers:
 - A workflow needs a project command and no exact command is already known.
 - Verification, TDD, build, or local-run evidence is needed.
@@ -18,25 +18,28 @@ safety:
   requires_approval_before:
   - Mutating dependency actions when they may change lockfiles or environment state.
   - Long-running servers if they affect shared resources.
-routing:
-  user_exposed: false
-  user_invocation_required: false
-  activation: phase-or-condition-triggered-support
-  invoked_by:
-  - mode phase trigger or support-skill condition
-  contract: Loaded automatically when its phase trigger or condition is reached.
 activation:
   automatic: true
   entrypoint: false
   user_direct: false
+  invoked_by:
+  - skills/exploration/SKILL.md#loads.conditional.command_needed
+  - skills/fast-patch/SKILL.md#loads.conditional.command_needed
+  - skills/standard-change/SKILL.md#loads.phased.discovery
+  - skills/strict-change/SKILL.md#loads.phased.command
+  - skills/tdd/SKILL.md#loads.conditional.test_command_unknown
+  - skills/using-pragmatic-skills/SKILL.md#loads.conditional.command_resolution
+  - skills/verification/SKILL.md#loads.conditional.command_unknown
+  - skills/writing-plans/SKILL.md#loads.conditional.commands_needed_for_verify_steps
+  routing_note: Users provide tasks; agents route from AGENTS.md through triage and phase triggers. Users do not manually invoke individual skills.
 ---
-
 # Command Discovery
 
-## Activation contract
+## Internal activation
 
-This is an internal support skill. Users do not invoke it directly. Load it only when a workflow phase needs a project command and the exact command is not already known from explicit project instructions.
+This is a support skill. It is loaded by a mode, router, or another support skill when the relevant phase or condition is reached.
 
+Users do not need to ask for this skill directly.
 
 Use this skill whenever the workflow needs install, test, lint, typecheck, build, or run-local commands and the exact command is not already known.
 

@@ -1,8 +1,9 @@
 ---
 schema: psp.skill/v1
 name: worktree
+description: Use git worktree isolation only when it materially reduces risk.
 kind: support
-version: 1.2.0
+version: 1.5.0
 summary: Use git worktree isolation only when it materially reduces risk.
 triggers:
 - Dirty tree with unrelated user changes.
@@ -15,28 +16,21 @@ outputs:
 - commands run
 - path/branch if created
 - cleanup status
-routing:
-  user_exposed: false
-  user_invocation_required: false
-  activation: condition-triggered-support
-  invoked_by:
-  - skills/strict-change/SKILL.md
-  contract: Loaded automatically only when isolation materially reduces risk or the user asked
-    for it.
 activation:
   automatic: true
   entrypoint: false
   user_direct: false
+  invoked_by:
+  - skills/strict-change/SKILL.md#loads.phased.isolation
+  routing_note: Users provide tasks; agents route from AGENTS.md through triage and phase triggers. Users do not manually invoke individual skills.
 ---
-
 # Worktree
-## Routing contract
 
-This skill is an internal routing target. Users do not need to ask for this skill directly; the entry workflow, triage, mode, or phase trigger loads it when appropriate.
+## Internal activation
 
+This is a support skill. It is loaded by a mode, router, or another support skill when the relevant phase or condition is reached.
 
-
-This support skill is loaded automatically only when isolation materially reduces risk or the user explicitly requested isolation. Users do not need to request it for ordinary work.
+Users do not need to ask for this skill directly.
 
 Use this skill when branch/worktree isolation materially reduces risk.
 

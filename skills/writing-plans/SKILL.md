@@ -1,8 +1,9 @@
 ---
 schema: psp.skill/v1
 name: writing-plans
+description: Create executable, verifiable plans for non-trivial implementation.
 kind: support
-version: 1.2.0
+version: 1.5.0
 summary: Create executable, verifiable plans for non-trivial implementation.
 triggers:
 - More than one file or step.
@@ -20,28 +21,22 @@ outputs:
 - assumptions
 - steps with file/area/change/verify/expected result
 - risks/rollback
-routing:
-  user_exposed: false
-  user_invocation_required: false
-  activation: phase-triggered-support
-  invoked_by:
-  - skills/standard-change/SKILL.md
-  - skills/strict-change/SKILL.md
-  contract: Loaded automatically during planning when sequencing or reviewability matters.
 activation:
   automatic: true
   entrypoint: false
   user_direct: false
+  invoked_by:
+  - skills/standard-change/SKILL.md#loads.phased.planning
+  - skills/strict-change/SKILL.md#loads.phased.planning
+  routing_note: Users provide tasks; agents route from AGENTS.md through triage and phase triggers. Users do not manually invoke individual skills.
 ---
-
 # Writing Plans
-## Routing contract
 
-This skill is an internal routing target. Users do not need to ask for this skill directly; the entry workflow, triage, mode, or phase trigger loads it when appropriate.
+## Internal activation
 
+This is a support skill. It is loaded by a mode, router, or another support skill when the relevant phase or condition is reached.
 
-
-This support skill is loaded automatically during the planning phase when the work is non-trivial. Users do not need to ask for it by name.
+Users do not need to ask for this skill directly.
 
 Use this skill before non-trivial implementation.
 

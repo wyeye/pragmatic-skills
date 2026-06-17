@@ -1,10 +1,10 @@
 ---
 schema: psp.skill/v1
 name: strict-change
+description: High-risk work with safety gates, traceability, rollback thinking, evidence, verification, and review.
 kind: mode
-version: 1.2.0
-summary: High-risk work with safety gates, traceability, rollback thinking, evidence, verification,
-  and review.
+version: 1.5.0
+summary: High-risk work with safety gates, traceability, rollback thinking, evidence, verification, and review.
 triggers:
 - Security/auth/privacy.
 - Payments/billing.
@@ -42,29 +42,23 @@ outputs:
 - verification results
 - review findings
 safety:
-  approval_required: Before gated actions only; read-only inspection, local tests, and draft
-    patches do not require approval.
-routing:
-  user_exposed: false
-  user_invocation_required: false
-  activation: router-selected-or-escalated-mode
-  invoked_by:
-  - skills/triage/SKILL.md
-  - skills/standard-change/SKILL.md
-  - skills/fast-patch/SKILL.md
-  contract: Selected or escalated internally when high-risk triggers appear.
+  approval_required: Before gated actions only; read-only inspection, local tests, and draft patches do not require approval.
 activation:
   automatic: true
   entrypoint: false
   user_direct: false
+  invoked_by:
+  - skills/standard-change/SKILL.md#loads.escalation
+  - skills/triage/SKILL.md#loads.select_one
+  routing_note: Users provide tasks; agents route from AGENTS.md through triage and phase triggers. Users do not manually invoke individual skills.
 ---
-
 # Strict Change
-## Routing contract
 
-This skill is an internal routing target. Users do not need to ask for this skill directly; the entry workflow, triage, mode, or phase trigger loads it when appropriate.
+## Phase-trigger contract
 
+Do not load all support skills when entering this mode.
 
+Load support skills only when their phase trigger is reached. The user should not be asked to invoke support skills manually.
 
 Use this skill for high-risk work.
 
@@ -77,8 +71,6 @@ Immediately after selecting Strict Change, load `skills/safety-gates/SKILL.md` a
 Loading safety gates does not mean you must ask for approval for read-only inspection, local tests, or draft patches. It means you must know which actions require approval before you perform them.
 
 ## Progressive support loading
-
-Support skills are internal. Load them automatically by phase when their trigger is reached; do not ask the user to invoke them.
 
 Do not load every support skill at mode entry. Load by phase:
 

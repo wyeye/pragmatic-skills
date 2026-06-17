@@ -35,3 +35,13 @@ User task
 ## When skill names may be shown
 
 Skill names may be mentioned when the user is designing, debugging, evaluating, or customizing the workflow. They should not be presented as required user actions during normal coding tasks.
+
+## Installation contract
+
+Users of a concrete repository should not manually copy individual skill files when an installer is available. Use the shell installer:
+
+```bash
+sh /path/to/pragmatic-skills-pack/install.sh --target /path/to/repo
+```
+
+The same command installs when absent and upgrades when present. The installer preserves project-owned `AGENTS.md` content and `.psp/project-profile.md`.

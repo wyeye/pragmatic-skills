@@ -1,8 +1,9 @@
 ---
 schema: psp.skill/v1
 name: using-pragmatic-skills
+description: Start here for any development task and load only the next relevant skill.
 kind: entry
-version: 1.2.0
+version: 1.5.0
 summary: Start here for any development task and load only the next relevant skill.
 triggers:
 - Any task involving code, files, tests, debugging, review, or project decisions.
@@ -18,21 +19,14 @@ outputs:
 - selected primary mode
 - next skill path
 safety:
-  approval_required: Only for safety-gated actions, never just to continue ordinary low-risk
-    work.
+  approval_required: Only for safety-gated actions, never just to continue ordinary low-risk work.
 activation:
   automatic: true
   entrypoint: true
   user_direct: false
-user_facing: entrypoint_only
-routing:
-  user_exposed: false
-  user_invocation_required: false
-  activation: entrypoint
   invoked_by:
-  - AGENTS.md start rule
-  contract: Entry skill loaded by AGENTS.md; users provide tasks and do not invoke internal
-    skills manually.
+  - AGENTS.md#start-rule
+  routing_note: Users provide tasks; agents route from AGENTS.md through triage and phase triggers. Users do not manually invoke individual skills.
 ---
 # Using Pragmatic Skills Pack
 
@@ -57,6 +51,15 @@ Do not expose internal skill names as required user actions. You may mention the
 Use this skill at the start of every development task.
 
 This workflow is progressive and internally routed: load only the next relevant skill, not the entire skill pack, and never require the user to call skills by name.
+
+
+## Host adapter resolution
+
+Host-native skills and rule files are thin adapters. They exist so Claude Code, Codex, OpenCode, Gemini CLI, Copilot, Cursor, Hermes, and similar tools can enter the same workflow using their normal discovery mechanisms.
+
+Regardless of the host adapter that activated the workflow, the internal source of truth is the repository-local `skills/` directory. Resolve support skills relative to the repository root, for example `skills/triage/SKILL.md`, unless a future package version explicitly says otherwise.
+
+Users still do not invoke support skills directly. Host adapters only start the entry skill.
 
 ## Progressive loading rule
 

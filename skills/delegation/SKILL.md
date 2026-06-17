@@ -1,10 +1,10 @@
 ---
 schema: psp.skill/v1
 name: delegation
+description: Use real subagents or explicit role-separated passes without pretending subagents exist.
 kind: support
-version: 1.2.0
-summary: Use real subagents or explicit role-separated passes without pretending subagents
-  exist.
+version: 1.5.0
+summary: Use real subagents or explicit role-separated passes without pretending subagents exist.
 triggers:
 - Large task split.
 - Independent implementation/test/review reduces risk.
@@ -18,29 +18,22 @@ loads:
 outputs:
 - subagent task/evidence or role-pass evidence
 - integration checklist
-routing:
-  user_exposed: false
-  user_invocation_required: false
-  activation: phase-or-risk-triggered-support
-  invoked_by:
-  - skills/strict-change/SKILL.md
-  - skills/review/SKILL.md
-  contract: Loaded automatically only when real subagents or role-separated passes reduce
-    risk.
 activation:
   automatic: true
   entrypoint: false
   user_direct: false
+  invoked_by:
+  - skills/review/SKILL.md#loads.conditional.delegation_useful
+  - skills/strict-change/SKILL.md#loads.phased.delegation
+  routing_note: Users provide tasks; agents route from AGENTS.md through triage and phase triggers. Users do not manually invoke individual skills.
 ---
-
 # Delegation
-## Routing contract
 
-This skill is an internal routing target. Users do not need to ask for this skill directly; the entry workflow, triage, mode, or phase trigger loads it when appropriate.
+## Internal activation
 
+This is a support skill. It is loaded by a mode, router, or another support skill when the relevant phase or condition is reached.
 
-
-This support skill is loaded automatically only when real subagents or explicit role-separated passes reduce risk. Users do not need to request delegation.
+Users do not need to ask for this skill directly.
 
 Use this skill for real subagents or explicit role-separated passes.
 

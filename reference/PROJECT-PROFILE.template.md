@@ -1,85 +1,62 @@
-# Pragmatic Skills Pack Project Profile Template
+# Project Profile Template
 
-This file is optional. Copy it to `.psp/project-profile.md` in a concrete repository when local overrides are useful.
+Copy this file to `.psp/project-profile.md` inside a concrete repository when project-specific overrides are useful.
+
+This file is optional. Pragmatic Skills Pack discovers commands from repository evidence at runtime, so generic packages should not hard-code project commands.
 
 ## Commands
 
-Record only commands that are actually supported by the project.
+Use exact commands when known. Leave unknown entries blank.
 
 ```yaml
 commands:
-  install:
-    command: ""
-    cwd: "."
-    run_policy: "ask-before-running"
-    source: "project profile"
+  install: ""
   test:
-    command: ""
-    cwd: "."
-    run_policy: "safe-to-run"
-    source: "project profile"
-  lint:
-    command: ""
-    cwd: "."
-    run_policy: "safe-to-run"
-    source: "project profile"
-  typecheck:
-    command: ""
-    cwd: "."
-    run_policy: "safe-to-run"
-    source: "project profile"
-  build:
-    command: ""
-    cwd: "."
-    run_policy: "safe-to-run"
-    source: "project profile"
-  run_local:
-    command: ""
-    cwd: "."
-    run_policy: "ask-before-running"
-    source: "project profile"
+    narrow: ""
+    full: ""
+  lint: ""
+  typecheck: ""
+  build: ""
+  run_local: ""
+  format_check: ""
+  format_write: ""
 ```
 
-## Strict triggers
+## Verification policy
+
+```yaml
+verification:
+  fast_patch_default: "static inspection or targeted check"
+  standard_default: "targeted test plus touched-area lint/typecheck when available"
+  strict_default: "targeted tests plus broader test/build/typecheck where available"
+```
+
+## Generated, vendored, or restricted paths
+
+```yaml
+paths:
+  generated: []
+  vendored: []
+  do_not_edit_without_approval: []
+```
+
+## Project-specific Strict Change triggers
 
 ```yaml
 strict_triggers:
-  - auth or permission changes
-  - payment, billing, quota, or plan changes
-  - database migrations, backfills, or destructive operations
-  - public API, SDK, or wire format changes
-  - production deployment or infrastructure changes
+  - ""
 ```
 
-## No-edit zones
+## Permissions
 
 ```yaml
-no_edit:
-  - path/to/generated/files
-  - path/to/vendor/files
+permissions:
+  allow_dependency_install: "ask-first | allowed | disallowed"
+  allow_lockfile_changes: "ask-first | allowed | disallowed"
+  allow_commits: "ask-first | allowed | disallowed"
+  allow_deployments: "ask-first | disallowed"
 ```
 
-## Generated files
+## Notes
 
-```yaml
-generated:
-  - path/to/generated/files
-```
-
-## Dependency policy
-
-```yaml
-dependencies:
-  add_runtime_dependency: ask-first
-  update_lockfile: ask-first
-  install_command: ask-first
-```
-
-## Git policy
-
-```yaml
-git:
-  auto_commit: false
-  force_push: never
-  worktree_when_dirty: true
-```
+Add project conventions, fixture notes, environment setup details, known flaky checks, or local safety rules here.
