@@ -1,5 +1,5 @@
 <!-- PSP:BEGIN -->
-# Pragmatic Skills Pack — Progressive Entry v1.5
+# Pragmatic Skills Pack — Progressive Entry v1.6
 
 This repository uses a progressive skill workflow. Do **not** preload the entire workflow.
 
@@ -46,6 +46,16 @@ For any task that may involve code, files, tests, project decisions, debugging, 
 - Re-run triage when risk, ambiguity, blast radius, command impact, or implementation scope changes.
 - Do not perform destructive, production-affecting, or hard-to-reverse actions without the relevant safety gate.
 - Final responses must distinguish verified facts from unverified assumptions.
+
+
+## Project AGENTS.md maintenance
+
+PSP may help maintain the current repository's project-specific `AGENTS.md`.
+
+- Active trigger: if the user asks to create, update, migrate, improve, or refactor `AGENTS.md` or agent instructions, load `skills/project-agents-md/SKILL.md`.
+- Passive trigger: if repository discovery shows there is no `AGENTS.md`, or `AGENTS.md` has only generic PSP entry content and no project-specific guidance, load `skills/project-agents-md/SKILL.md` and ask the user once whether to generate or improve it.
+- Do not silently create/refactor `AGENTS.md` from passive detection.
+- Do not manually edit PSP-managed blocks; project-specific content belongs outside managed blocks.
 
 ## Universal command resolution
 

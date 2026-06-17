@@ -3,7 +3,7 @@ schema: psp.skill/v1
 name: verification
 description: Choose and run the right level of validation before claiming completion.
 kind: support
-version: 1.5.0
+version: 1.6.0
 summary: Choose and run the right level of validation before claiming completion.
 triggers:
 - After implementation.
@@ -22,6 +22,7 @@ activation:
   user_direct: false
   invoked_by:
   - skills/delegation/SKILL.md#loads.conditional.integration_verification
+  - skills/project-agents-md/SKILL.md#loads.conditional.verification
   - skills/standard-change/SKILL.md#loads.phased.verification
   - skills/strict-change/SKILL.md#loads.phased.verification
   - skills/tdd/SKILL.md#loads.conditional.verification

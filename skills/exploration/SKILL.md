@@ -3,7 +3,7 @@ schema: psp.skill/v1
 name: exploration
 description: Investigate, diagnose, compare options, or clarify requirements before editing.
 kind: mode
-version: 1.5.0
+version: 1.6.0
 summary: Investigate, diagnose, compare options, or clarify requirements before editing.
 triggers:
 - Ambiguous requirements.
@@ -13,6 +13,8 @@ loads:
   conditional:
     command_needed:
     - skills/command-discovery/SKILL.md
+    project_instructions:
+    - skills/project-agents-md/SKILL.md
     implementation_needed:
     - skills/triage/SKILL.md
     completion:
@@ -53,6 +55,13 @@ Learn enough to choose the right next step without prematurely editing files.
 4. If design is involved, produce 2–3 viable options.
 5. Recommend one path with tradeoffs.
 6. Route to the next mode if implementation is needed.
+
+
+## Project instruction exploration
+
+If exploration discovers that the repository lacks `AGENTS.md`, has only generic PSP entry content, or has stale/contradictory agent instructions, load `skills/project-agents-md/SKILL.md`.
+
+Passive discovery should not silently create or refactor `AGENTS.md`; the project-instruction skill must ask the user first.
 
 ## Command discovery during exploration
 

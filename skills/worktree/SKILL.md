@@ -3,7 +3,7 @@ schema: psp.skill/v1
 name: worktree
 description: Use git worktree isolation only when it materially reduces risk.
 kind: support
-version: 1.5.0
+version: 1.6.0
 summary: Use git worktree isolation only when it materially reduces risk.
 triggers:
 - Dirty tree with unrelated user changes.

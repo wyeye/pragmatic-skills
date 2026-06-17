@@ -36,6 +36,17 @@ User task
 
 Skill names may be mentioned when the user is designing, debugging, evaluating, or customizing the workflow. They should not be presented as required user actions during normal coding tasks.
 
+
+## Project AGENTS.md contract
+
+Users do not need to manually invoke the AGENTS.md maintenance skill.
+
+The workflow may route to `skills/project-agents-md/SKILL.md` when the user explicitly asks to create, update, migrate, improve, or refactor repository agent instructions.
+
+The workflow may also passively detect that the current repository lacks a project-specific `AGENTS.md`. In that case the agent should ask once whether the user wants one generated. Passive detection never authorizes silent file creation or major refactoring.
+
+PSP-managed blocks are maintained by the installer. Project-specific AGENTS.md content belongs outside managed blocks.
+
 ## Installation contract
 
 Users of a concrete repository should not manually copy individual skill files when an installer is available. Use the shell installer:

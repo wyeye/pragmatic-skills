@@ -3,7 +3,7 @@ schema: psp.skill/v1
 name: delegation
 description: Use real subagents or explicit role-separated passes without pretending subagents exist.
 kind: support
-version: 1.5.0
+version: 1.6.0
 summary: Use real subagents or explicit role-separated passes without pretending subagents exist.
 triggers:
 - Large task split.

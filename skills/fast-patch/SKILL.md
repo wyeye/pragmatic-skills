@@ -3,7 +3,7 @@ schema: psp.skill/v1
 name: fast-patch
 description: Small, clear, low-risk edits with narrow verification.
 kind: mode
-version: 1.5.0
+version: 1.6.0
 summary: Small, clear, low-risk edits with narrow verification.
 triggers:
 - Tiny localized edits with low blast radius and no high-risk trigger.

@@ -9,21 +9,22 @@ The schema is intentionally small. It is a routing aid, not a replacement for th
 ```yaml
 schema: psp.skill/v1
 name: <skill-name>
+description: <native-host-compatible one-line description>
 kind: <entry | router | mode | support>
 version: <semver-like version>
-activation:
-  automatic: true
-  entrypoint: <true | false>
-  user_direct: false
-  invoked_by:
-    - <AGENTS.md#start-rule | skills/...#loads... | workflow#re-triage-triggers>
-  routing_note: <short note>
 summary: <one-line purpose>
 triggers:
   - <activation condition>
 loads: {}
 outputs:
   - <expected output>
+activation:
+  automatic: true
+  entrypoint: <true | false>
+  user_direct: false
+  invoked_by:
+    - <AGENTS.md#start-rule | skills/...#loads... | workflow#...>
+  routing_note: <short note>
 ```
 
 ## Optional fields
@@ -35,6 +36,12 @@ safety:
     - <gated action>
   requires_approval_before:
     - <gated action>
+activation:
+  active:
+    - <explicit user/task trigger>
+  passive:
+    - <condition observed by the workflow>
+  passive_requires_confirmation: true
 ```
 
 ## `kind` values
@@ -68,14 +75,11 @@ loads:
 ## Interpretation rules
 
 - Metadata helps route and index skills.
-- The skill body is authoritative for procedure once the skill is activated.
-- If metadata and body disagree, follow the safer path and treat the inconsistency as a workflow bug to fix.
+- The skill body is authoritative once the skill is activated.
+- If metadata and body disagree, follow the safer path and treat the inconsistency as a workflow bug.
 - Do not preload every skill body just to read metadata. Prefer `skills/MANIFEST.json` or partial frontmatter reads when available.
 
-
-## `activation` shape
-
-`activation` makes the user contract machine-readable.
+## Activation contract
 
 ```yaml
 activation:
@@ -84,84 +88,26 @@ activation:
   user_direct: false
   invoked_by:
     - skills/standard-change/SKILL.md#loads.phased.verification
-  routing_note: Users provide tasks; agents route from AGENTS.md through triage and phase triggers. Users do not manually invoke individual skills.
+  active:
+    - User explicitly asks for this capability.
+  passive:
+    - Workflow observes a condition that may benefit from this skill.
+  passive_requires_confirmation: true
+  routing_note: Users provide tasks; agents route from AGENTS.md through triage and phase triggers.
 ```
-
-Interpretation:
 
 - `automatic: true`: the agent/runtime loads the skill when routing conditions match.
 - `entrypoint: true`: this is the only skill started directly from `AGENTS.md`.
 - `user_direct: false`: users should not be asked to call this skill by name.
-- `invoked_by`: machine-readable upstream trigger hints.
+- `active`: explicit user/task triggers.
+- `passive`: observed conditions that may trigger a prompt or internal routing.
+- `passive_requires_confirmation: true`: the skill may be loaded automatically, but must ask before writing from a passive observation.
 
 Only `skills/using-pragmatic-skills/SKILL.md` should have `entrypoint: true`.
 
-## Manifest tooling fields
-
-"
-"`skills/MANIFEST.json` may include package-level installation metadata. The public installer should be shell-first; lower-level tools can be listed as implementation details:
-
-"
-"```json
-"
-"{
-"
-"  "installer": {
-"
-"    "path": "install.sh",
-"
-"    "kind": "shell-wrapper",
-"
-"    "implementation": "tools/psp.py",
-"
-"    "commands": ["install", "upgrade", "verify", "status", "verify-package"],
-"
-"    "one_command": "sh /path/to/pragmatic-skills-pack/install.sh --target <repo>",
-"
-"    "state_file": ".psp/install.json",
-"
-"    "installed_tool_path": ".psp/bin/psp.py",
-"
-"    "backup_dir": ".psp/backups",
-"
-"    "conflict_dir": ".psp/conflicts"
-"
-"  },
-"
-"  "tooling": {
-"
-"    "public_installer": "install.sh",
-"
-"    "implementation": "tools/psp.py",
-"
-"    "commands": {
-"
-"      "install_or_upgrade": "sh install.sh --target <repo>",
-"
-"      "upgrade_existing": "sh install.sh upgrade --target <repo>",
-"
-"      "verify": "sh install.sh --verify --target <repo>",
-"
-"      "status": "sh install.sh --status --target <repo>",
-"
-"      "verify_package": "sh install.sh --check"
-"
-"    },
-"
-"    "agent_install_guide": "AGENT-INSTALL.md"
-"
-"  }
-"
-"}
-"
-"```
-
-"
-"This metadata is package-level, not skill-level. It helps installers, runtimes, and release tooling find the correct local management command without hardcoding paths outside the manifest.
-
 ## Package installer metadata
 
-The package manifest should expose the public shell-first installer separately from the implementation tool:
+The package manifest exposes the public shell-first installer separately from the implementation tool:
 
 ```json
 {
@@ -182,3 +128,5 @@ The package manifest should expose the public shell-first installer separately f
 ```
 
 Users should not need to call `tools/psp.py` directly. Agents should prefer `install.sh` and only use the Python implementation as a fallback or for installed verification.
+
+Current schema documentation version: `1.6.0`.

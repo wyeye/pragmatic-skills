@@ -6,7 +6,7 @@ This file is reference material. Do not load it during normal tasks unless you n
 |---|---|---|---|
 | Fast Patch | Tiny, clear, low-risk edits | `command-discovery` only if a command is needed; `handoff` at completion | targeted check or static inspection |
 | Exploration | Diagnosis, design, unclear requirements | `command-discovery` if command knowledge is part of investigation; `handoff` if no implementation | findings/options/recommendation |
-| Standard Change | Normal behavior changes, bug fixes, moderate refactors | `command-discovery` when commands are needed; `writing-plans` when multi-step; `tdd` when behavior changes; `evidence`; `verification`; `review`; `handoff` by phase | targeted tests plus broader checks as needed |
+| Standard Change | Normal behavior changes, bug fixes, moderate refactors | `project-agents-md` when AGENTS.md/instruction files are the target; `command-discovery` when commands are needed; `writing-plans` when multi-step; `tdd` when behavior changes; `evidence`; `verification`; `review`; `handoff` by phase | targeted tests plus broader checks as needed |
 | Strict Change | Security, data, payments, public API, deployment, large refactors | `safety-gates` immediately; `command-discovery` when commands are needed; `worktree` conditionally; `writing-plans`; `evidence`; `tdd`; `verification`; `review`; `handoff` by phase | targeted + broad checks, rollback/mitigation notes |
 
 ## Philosophy
@@ -44,3 +44,10 @@ Command evidence should include:
 ## User contract summary
 
 Users provide normal tasks. The agent starts from the entry skill and routes internally. Mode and support skills are selected by triage and phase triggers, not by user command.
+
+
+## AGENTS.md maintenance summary
+
+Use `skills/project-agents-md/SKILL.md` when creating, updating, migrating, improving, or refactoring project-specific agent instructions.
+
+Passive missing-AGENTS detection should ask the user before writing. Existing PSP-managed blocks should be preserved and updated only through the installer.

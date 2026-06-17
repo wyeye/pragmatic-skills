@@ -3,7 +3,7 @@ schema: psp.skill/v1
 name: safety-gates
 description: Require explicit approval before destructive, production-affecting, security-sensitive, or hard-to-reverse actions.
 kind: support
-version: 1.5.0
+version: 1.6.0
 summary: Require explicit approval before destructive, production-affecting, security-sensitive, or hard-to-reverse actions.
 triggers:
 - Any gated action is about to occur.

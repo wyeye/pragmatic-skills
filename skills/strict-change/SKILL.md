@@ -3,7 +3,7 @@ schema: psp.skill/v1
 name: strict-change
 description: High-risk work with safety gates, traceability, rollback thinking, evidence, verification, and review.
 kind: mode
-version: 1.5.0
+version: 1.6.0
 summary: High-risk work with safety gates, traceability, rollback thinking, evidence, verification, and review.
 triggers:
 - Security/auth/privacy.

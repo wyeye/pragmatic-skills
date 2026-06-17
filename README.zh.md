@@ -93,6 +93,16 @@ AGENTS.md
 
 这样小改动不会加载完整工程规范，大改动又不会跳过测试、计划、审查和证据。
 
+
+## 项目 AGENTS.md 生成与重构
+
+PSP 现在包含 `skills/project-agents-md/SKILL.md`，专门维护当前项目自己的 `AGENTS.md`。
+
+- 主动触发：用户要求创建、更新、迁移、优化或重构 AGENTS.md / agent instructions。
+- 被动触发：agent 在项目发现阶段发现没有 AGENTS.md，或者只有 PSP 通用入口块、没有项目特定说明。
+- 被动触发只能询问用户是否生成，不能静默写文件。
+- PSP 托管块由安装器维护；项目自己的说明写在托管块之外。
+
 ## 通用命令解析
 
 通用包不再要求在 `AGENTS.md` 里固定填写：
@@ -121,7 +131,7 @@ skills/command-discovery/SKILL.md
 schema: psp.skill/v1
 name: standard-change
 kind: mode
-version: 1.5.0
+version: 1.6.0
 summary: ...
 triggers: [...]
 loads: ...
@@ -137,15 +147,15 @@ skills/MANIFEST.json
 
 工具或 agent 可以先读 manifest / frontmatter 做路由，再按需打开具体 skill 正文。
 
-## v1.5 改动
+## v1.6 改动
 
-- 把 `install.sh` 提升为公开主入口；用户不再需要直接调用 Python CLI。
-- 同一个 shell 命令可安装，也可安全升级已有 PSP。
-- 新增 `AGENT-INSTALL.md` / `reference/AGENT-INSTALL.md`，明确 agent 安装路径。
-- 文档改为两种使用方式：一个命令安装，或让 agent 使用安装器安装。
-- `tools/psp.py` 保留为底层无依赖实现和安装后校验器。
+- 新增 `skills/project-agents-md/SKILL.md`，支持给当前项目创建、更新、迁移和重构 `AGENTS.md`。
+- 新增被动检测：如果项目没有 `AGENTS.md`，或只有通用 PSP 入口块，agent 会先询问用户是否生成。
+- 明确被动触发不能静默写文件。
+- 明确 PSP / host adapter 托管块必须保留，不能手动改坏。
+- 新增 `reference/AGENTS-MD-MAINTENANCE.md`。
 
-当前版本：`1.5.0`。
+当前版本：`1.6.0`。
 
 ## 多工具安装
 

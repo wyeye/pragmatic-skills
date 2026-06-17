@@ -3,7 +3,7 @@ schema: psp.skill/v1
 name: tdd
 description: Use tests as the driver for behavior changes and bug fixes when practical.
 kind: support
-version: 1.5.0
+version: 1.6.0
 summary: Use tests as the driver for behavior changes and bug fixes when practical.
 triggers:
 - Behavior change.

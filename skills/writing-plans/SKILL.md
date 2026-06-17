@@ -3,7 +3,7 @@ schema: psp.skill/v1
 name: writing-plans
 description: Create executable, verifiable plans for non-trivial implementation.
 kind: support
-version: 1.5.0
+version: 1.6.0
 summary: Create executable, verifiable plans for non-trivial implementation.
 triggers:
 - More than one file or step.

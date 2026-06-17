@@ -74,6 +74,16 @@ AGENTS.md
                  -> support skills only when the current phase triggers them
 ```
 
+
+## Project AGENTS.md generation and refactoring
+
+PSP now includes `skills/project-agents-md/SKILL.md` for maintaining the current repository's project-specific `AGENTS.md`.
+
+- Active trigger: the user asks to create, update, migrate, improve, or refactor AGENTS.md or agent instructions.
+- Passive trigger: during repository discovery, the agent notices there is no AGENTS.md, or only a generic PSP block with no project-specific guidance.
+- Passive trigger asks the user before writing; it never silently creates/refactors AGENTS.md.
+- Existing PSP-managed blocks are preserved and updated only by the installer.
+
 ## Universal commands
 
 This pack does not ask you to fill fixed commands in the generic `AGENTS.md`.
@@ -90,7 +100,7 @@ Every `SKILL.md` starts with YAML frontmatter, including automatic activation me
 schema: psp.skill/v1
 name: standard-change
 kind: mode
-version: 1.5.0
+version: 1.6.0
 summary: ...
 triggers: [...]
 loads: ...
@@ -122,6 +132,7 @@ skills/
   standard-change/SKILL.md
   strict-change/SKILL.md
   command-discovery/SKILL.md
+  project-agents-md/SKILL.md
   safety-gates/SKILL.md
   writing-plans/SKILL.md
   tdd/SKILL.md
@@ -133,6 +144,7 @@ skills/
   handoff/SKILL.md
 reference/
   AGENT-INSTALL.md
+  AGENTS-MD-MAINTENANCE.md
   INSTALL-UPGRADE.md
   MODE-MATRIX.md
   PROJECT-PROFILE.template.md
@@ -142,7 +154,7 @@ reference/
 
 ## Version
 
-Current package version: `1.5.0`.
+Current package version: `1.6.0`.
 
 ## Multi-agent installation
 
@@ -162,3 +174,11 @@ sh /path/to/pragmatic-skills-pack/install.sh --hosts claude,codex,opencode
 Default `--hosts all` installs `AGENTS.md`, the `.agents/skills/using-pragmatic-skills` native entry adapter, and thin adapters for Claude Code, OpenCode, Gemini CLI, GitHub Copilot, Cursor, and other supported hosts. Use `--hosts auto` if you only want adapters detected from existing project files; use `--no-host-adapters` for canonical PSP only.
 
 Native host adapters are thin entry points. The internal workflow remains in `skills/`, and users still only describe normal tasks.
+
+
+## v1.6 changes
+
+- Added `skills/project-agents-md/SKILL.md` for project-specific AGENTS.md creation, update, migration, and refactoring.
+- Added passive missing-AGENTS detection: the agent asks before generating; it does not silently write.
+- Added managed-block preservation rules for PSP and host adapter blocks.
+- Added `reference/AGENTS-MD-MAINTENANCE.md`.

@@ -3,7 +3,7 @@ schema: psp.skill/v1
 name: handoff
 description: Final compact, factual, evidence-based response after changes, proposals, or reviews.
 kind: support
-version: 1.5.0
+version: 1.6.0
 summary: Final compact, factual, evidence-based response after changes, proposals, or reviews.
 triggers:
 - Before final response after file/code work.
@@ -21,6 +21,7 @@ activation:
   user_direct: false
   invoked_by:
   - skills/exploration/SKILL.md#loads.conditional.completion
+  - skills/project-agents-md/SKILL.md#loads.conditional.completion
   - skills/fast-patch/SKILL.md#loads.conditional.completion
   - skills/standard-change/SKILL.md#loads.phased.completion
   - skills/strict-change/SKILL.md#loads.phased.completion

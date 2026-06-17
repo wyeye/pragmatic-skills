@@ -1,4 +1,4 @@
-# Pragmatic Skills Pack v1.5.0 tree
+# Pragmatic Skills Pack v1.6.0 tree
 
 AGENT-INSTALL.md
 AGENTS.md
@@ -18,6 +18,7 @@ adapters/opencode/README.md
 adapters/opencode/commands/psp.md
 install.sh
 reference/AGENT-INSTALL.md
+reference/AGENTS-MD-MAINTENANCE.md
 reference/HOST-ADAPTERS.md
 reference/INSTALL-UPGRADE.md
 reference/MODE-MATRIX.md
@@ -31,6 +32,7 @@ skills/evidence-driven-execution/SKILL.md
 skills/exploration/SKILL.md
 skills/fast-patch/SKILL.md
 skills/handoff/SKILL.md
+skills/project-agents-md/SKILL.md
 skills/review/SKILL.md
 skills/safety-gates/SKILL.md
 skills/standard-change/SKILL.md

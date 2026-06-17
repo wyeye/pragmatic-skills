@@ -3,7 +3,7 @@ schema: psp.skill/v1
 name: using-pragmatic-skills
 description: Start here for any development task and load only the next relevant skill.
 kind: entry
-version: 1.5.0
+version: 1.6.0
 summary: Start here for any development task and load only the next relevant skill.
 triggers:
 - Any task involving code, files, tests, debugging, review, or project decisions.
@@ -15,6 +15,8 @@ loads:
     - skills/handoff/SKILL.md
     command_resolution:
     - skills/command-discovery/SKILL.md
+    project_agents_md:
+    - skills/project-agents-md/SKILL.md
 outputs:
 - selected primary mode
 - next skill path
@@ -90,6 +92,17 @@ This skill pack does not hardcode repository commands.
 When a workflow needs install, test, lint, typecheck, build, or local-run commands and the exact command is not already known from explicit project instructions, load `skills/command-discovery/SKILL.md`.
 
 Do not invent commands. If no command can be discovered, say so and use the strongest available alternative.
+
+
+## Project AGENTS.md maintenance rule
+
+AGENTS.md is both a host entry file and the best place for project-specific coding-agent instructions.
+
+Active trigger: when the user asks to create, update, migrate, improve, or refactor `AGENTS.md` or repository agent instructions, load `skills/project-agents-md/SKILL.md`.
+
+Passive trigger: during repository discovery, if you notice the current project has no `AGENTS.md`, or it has only the generic PSP managed block and no project-specific guidance, load `skills/project-agents-md/SKILL.md` for the passive prompt. Do not silently create or refactor `AGENTS.md` from passive detection; ask the user once whether they want it generated or improved.
+
+Do not edit PSP-managed blocks in `AGENTS.md` manually. Use the installer/upgrade path for PSP block changes and use `project-agents-md` only for project-owned content outside managed blocks.
 
 ## Always-active principles
 

@@ -3,7 +3,7 @@ schema: psp.skill/v1
 name: triage
 description: Choose the smallest safe primary mode and re-route when evidence changes.
 kind: router
-version: 1.5.0
+version: 1.6.0
 summary: Choose the smallest safe primary mode and re-route when evidence changes.
 triggers:
 - Immediately after using-pragmatic-skills.
@@ -119,6 +119,19 @@ Choose Strict Change when any high-risk trigger appears:
 - Generated files, lockfiles, vendored code, or build artifacts whose ownership is unclear.
 
 Load: `skills/strict-change/SKILL.md`
+
+
+## AGENTS.md and project-instruction tasks
+
+If the user explicitly asks to create, update, migrate, improve, or refactor `AGENTS.md` or repository agent instructions, load `skills/project-agents-md/SKILL.md` as the project-instruction support skill.
+
+Default mode selection:
+
+- Use Exploration when the user only wants an assessment or recommendation.
+- Use Standard Change when creating or editing project-owned instruction content.
+- Use Strict Change only if the instruction change weakens or changes safety-critical policy around production, deployment, secrets, auth, billing, destructive operations, dependencies, or data handling.
+
+Passive missing-AGENTS detection does not authorize writing. The support skill must ask the user before creating or refactoring from a passive trigger.
 
 ## Re-triage triggers
 

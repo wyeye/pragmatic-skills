@@ -3,7 +3,7 @@ schema: psp.skill/v1
 name: standard-change
 description: Normal engineering work with planning, tests, execution evidence, verification, and review by phase.
 kind: mode
-version: 1.5.0
+version: 1.6.0
 summary: Normal engineering work with planning, tests, execution evidence, verification, and review by phase.
 triggers:
 - Behavior changes.
@@ -15,6 +15,8 @@ loads:
     discovery:
     - skills/exploration/SKILL.md
     - skills/command-discovery/SKILL.md
+    project_instructions:
+    - skills/project-agents-md/SKILL.md
     planning:
     - skills/writing-plans/SKILL.md
     behavior:
@@ -61,6 +63,7 @@ Load support skills by phase:
 
 - Discovery phase: inspect the relevant code and tests. If requirements or approach are still unclear, load `skills/exploration/SKILL.md` and re-triage afterward.
 - Command phase: when install/test/lint/typecheck/build/run commands are needed and not already known from explicit project instructions, load `skills/command-discovery/SKILL.md`.
+- Project-instructions phase: when the target is `AGENTS.md` or repository agent instruction files, load `skills/project-agents-md/SKILL.md`.
 - Planning phase: load `skills/writing-plans/SKILL.md` when more than one step or file is involved, order matters, tests must change, or reviewability matters.
 - Behavior phase: load `skills/tdd/SKILL.md` for behavior changes and bug fixes.
 - Execution phase: load `skills/evidence-driven-execution/SKILL.md` before non-trivial edits, delegated work, or any claim that will need audit evidence.
