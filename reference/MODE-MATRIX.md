@@ -20,6 +20,12 @@ This file is reference material. Do not load it during normal tasks unless you n
 - Worktrees are conditional isolation tools, not automatic ceremony.
 - Subagents must be real, or explicitly replaced by role passes.
 
+## Active-only direct support route
+
+`workflow-retrospective` is not a primary mode. When the user explicitly requests a post-task PSP/workflow retrospective, the entry skill routes directly to `skills/workflow-retrospective/SKILL.md` before triage.
+
+It is never triggered or offered automatically at normal completion. If the user also asks to implement its findings, finish the retrospective and then re-enter triage for the changes.
+
 ## Re-triage summary
 
 - Fast -> Standard when behavior, tests, or multi-file scope appears.
@@ -43,7 +49,7 @@ Command evidence should include:
 
 ## User contract summary
 
-Users provide normal tasks. The agent starts from the entry skill and routes internally. Mode and support skills are selected by triage and phase triggers, not by user command.
+Users provide normal tasks. The agent starts from the entry skill and routes internally. Explicit active-only support intents may route directly; otherwise mode and support skills are selected by triage and phase triggers, not by user command.
 
 
 ## AGENTS.md maintenance summary

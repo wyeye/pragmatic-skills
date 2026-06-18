@@ -37,6 +37,9 @@ safety:
   requires_approval_before:
     - <gated action>
 activation:
+  policy: <automatic | active-only | passive-capable>
+  lifecycle: <any | pre-task | in-task | post-task>
+  auto_after_completion: false
   active:
     - <explicit user/task trigger>
   passive:
@@ -62,6 +65,11 @@ loads:
   select_one:
     - skills/fast-patch/SKILL.md
     - skills/standard-change/SKILL.md
+  direct:
+    explicit_intent:
+      - skills/example/SKILL.md
+  fallback:
+    - skills/triage/SKILL.md
   conditional:
     condition_name:
       - skills/example/SKILL.md
@@ -88,20 +96,43 @@ activation:
   user_direct: false
   invoked_by:
     - skills/standard-change/SKILL.md#loads.phased.verification
+  policy: passive-capable
+  lifecycle: any
+  auto_after_completion: false
   active:
     - User explicitly asks for this capability.
   passive:
     - Workflow observes a condition that may benefit from this skill.
   passive_requires_confirmation: true
-  routing_note: Users provide tasks; agents route from AGENTS.md through triage and phase triggers.
+  routing_note: Users provide tasks; agents route from AGENTS.md through an explicit direct route or triage and phase triggers.
 ```
 
 - `automatic: true`: the agent/runtime loads the skill when routing conditions match.
 - `entrypoint: true`: this is the only skill started directly from `AGENTS.md`.
 - `user_direct: false`: users should not be asked to call this skill by name.
+- `policy`: activation policy. `active-only` means explicit user intent is required; it does not mean the user must know the skill name.
+- `lifecycle`: where the capability belongs, such as `post-task` for a retrospective.
+- `auto_after_completion: false`: completion alone must not trigger or offer the skill.
 - `active`: explicit user/task triggers.
 - `passive`: observed conditions that may trigger a prompt or internal routing.
 - `passive_requires_confirmation: true`: the skill may be loaded automatically, but must ask before writing from a passive observation.
+
+For an active-only capability, use:
+
+```yaml
+activation:
+  automatic: true
+  entrypoint: false
+  user_direct: false
+  policy: active-only
+  lifecycle: post-task
+  auto_after_completion: false
+  active:
+    - User explicitly requests the capability in normal language.
+  passive: []
+```
+
+Here `automatic: true` means the agent routes automatically after recognizing explicit intent. It does not authorize passive invocation.
 
 Only `skills/using-pragmatic-skills/SKILL.md` should have `entrypoint: true`.
 
@@ -129,4 +160,4 @@ The package manifest exposes the public shell-first installer separately from th
 
 Users should not need to call `tools/psp.py` directly. Agents should prefer `install.sh` and only use the Python implementation as a fallback or for installed verification.
 
-Current schema documentation version: `1.6.0`.
+Current schema documentation version: `1.7.0`.

@@ -3,7 +3,7 @@ schema: psp.skill/v1
 name: triage
 description: Choose the smallest safe primary mode and re-route when evidence changes.
 kind: router
-version: 1.6.0
+version: 1.7.0
 summary: Choose the smallest safe primary mode and re-route when evidence changes.
 triggers:
 - Immediately after using-pragmatic-skills.
@@ -27,7 +27,7 @@ activation:
   - skills/fast-patch/SKILL.md#loads.conditional.scope_or_risk_increase
   - skills/using-pragmatic-skills/SKILL.md#loads.immediate
   - workflow#re-triage-triggers
-  routing_note: Users provide tasks; agents route from AGENTS.md through triage and phase triggers. Users do not manually invoke individual skills.
+  routing_note: Users provide tasks; agents route from AGENTS.md through an explicit direct route or triage and phase triggers. Users do not manually invoke individual skills.
 ---
 # Triage
 

@@ -2,13 +2,13 @@
 
 A pragmatic, phase-routed, evidence-first skill pack for coding agents.
 
-Users describe tasks normally. Agents start from the entry skill, triage the task, choose one primary mode, and load support skills only when phase triggers are reached.
+Users describe tasks normally. Agents start from the entry skill, route explicit active-only intents directly when applicable, otherwise triage the task, choose one primary mode, and load support skills only when phase triggers are reached.
 
 ## User contract
 
 Users do not call individual skills. They only ask for work normally.
 
-The agent starts from `AGENTS.md`, loads `skills/using-pragmatic-skills/SKILL.md`, routes through `triage`, and then loads mode/support skills automatically by phase trigger.
+The agent starts from `AGENTS.md`, loads `skills/using-pragmatic-skills/SKILL.md`, uses an explicit active-only direct route when applicable, otherwise routes through `triage`, and then loads mode/support skills automatically by phase trigger.
 
 Internal skill names are implementation details, not user commands.
 
@@ -84,6 +84,19 @@ PSP now includes `skills/project-agents-md/SKILL.md` for maintaining the current
 - Passive trigger asks the user before writing; it never silently creates/refactors AGENTS.md.
 - Existing PSP-managed blocks are preserved and updated only by the installer.
 
+## Active-only workflow retrospective
+
+PSP includes `skills/workflow-retrospective/SKILL.md` for learning from a completed or recent task and improving the skill pack itself.
+
+- It is triggered only when the user explicitly asks to retrospect on PSP, its routing, its skills, or workflow friction.
+- It is never run or routinely offered after ordinary task completion.
+- It uses observable evidence only and distinguishes observed facts, inferences, unknowns, and evidence gaps.
+- It produces prioritized findings with exact target files and an eval fixture for every material change.
+- It is read-only by default. If the user asks to apply the findings, the workflow completes the retrospective first and then re-enters triage for implementation.
+- A normal implementation summary still belongs to `handoff`.
+
+Optional saved records use `psp.retrospective/v1` and may be written to `.psp/retrospectives/` only when the user explicitly asks. See `reference/WORKFLOW-RETROSPECTIVE.md`.
+
 ## Universal commands
 
 This pack does not ask you to fill fixed commands in the generic `AGENTS.md`.
@@ -100,7 +113,7 @@ Every `SKILL.md` starts with YAML frontmatter, including automatic activation me
 schema: psp.skill/v1
 name: standard-change
 kind: mode
-version: 1.6.0
+version: 1.7.0
 summary: ...
 triggers: [...]
 loads: ...
@@ -133,6 +146,7 @@ skills/
   strict-change/SKILL.md
   command-discovery/SKILL.md
   project-agents-md/SKILL.md
+  workflow-retrospective/SKILL.md
   safety-gates/SKILL.md
   writing-plans/SKILL.md
   tdd/SKILL.md
@@ -150,11 +164,12 @@ reference/
   PROJECT-PROFILE.template.md
   SKILL-METADATA-SCHEMA.md
   USER-CONTRACT.md
+  WORKFLOW-RETROSPECTIVE.md
 ```
 
 ## Version
 
-Current package version: `1.6.0`.
+Current package version: `1.7.0`.
 
 ## Multi-agent installation
 
@@ -176,9 +191,11 @@ Default `--hosts all` installs `AGENTS.md`, the `.agents/skills/using-pragmatic-
 Native host adapters are thin entry points. The internal workflow remains in `skills/`, and users still only describe normal tasks.
 
 
-## v1.6 changes
+## v1.7 changes
 
-- Added `skills/project-agents-md/SKILL.md` for project-specific AGENTS.md creation, update, migration, and refactoring.
-- Added passive missing-AGENTS detection: the agent asks before generating; it does not silently write.
-- Added managed-block preservation rules for PSP and host adapter blocks.
-- Added `reference/AGENTS-MD-MAINTENANCE.md`.
+- Added `skills/workflow-retrospective/SKILL.md`, an active-only post-task learning loop for PSP itself.
+- Added a direct entry route for explicit retrospective intent before normal triage.
+- Kept ordinary completion lightweight: no automatic retrospective and no routine opt-in prompt.
+- Separated implementation `handoff` from workflow retrospective.
+- Added evidence-bound findings, exact target files, priority/confidence, regression risk, and mandatory eval fixtures for material proposals.
+- Added optional `psp.retrospective/v1` records and `reference/WORKFLOW-RETROSPECTIVE.md`.

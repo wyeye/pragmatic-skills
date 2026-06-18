@@ -5,15 +5,15 @@
   "name": "Pragmatic Skills Pack",
   "display_name": "Pragmatic Skills Pack",
   "short_name": "PSP",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "repo_name": "pragmatic-skills",
   "package_root": "pragmatic-skills-pack",
-  "generated_from": "skills/*/SKILL.md frontmatter plus shell-first installer, host adapter metadata, and project AGENTS.md maintenance metadata",
+  "generated_from": "skills/*/SKILL.md frontmatter plus shell-first installer, host adapter metadata, project AGENTS.md maintenance metadata, and active-only workflow retrospective metadata",
   "entry_skill": "skills/using-pragmatic-skills/SKILL.md",
   "user_contract": {
     "users_invoke_individual_skills": false,
     "entry_skill": "skills/using-pragmatic-skills/SKILL.md",
-    "routing": "AGENTS.md -> entry -> triage -> one mode -> support skills by phase trigger",
+    "routing": "AGENTS.md -> entry -> explicit active-only direct route OR triage -> one mode -> support skills by phase trigger",
     "do_not_ask_user_to_choose_skill": true
   },
   "skills": [
@@ -22,7 +22,7 @@
       "name": "command-discovery",
       "description": "Resolve install, test, lint, typecheck, build, and local-run commands from project evidence instead of hardcoding them.",
       "kind": "support",
-      "version": "1.6.0",
+      "version": "1.7.0",
       "summary": "Resolve install, test, lint, typecheck, build, and local-run commands from project evidence instead of hardcoding them.",
       "triggers": [
         "A workflow needs a project command and no exact command is already known.",
@@ -59,7 +59,7 @@
           "skills/verification/SKILL.md#loads.conditional.command_unknown",
           "skills/writing-plans/SKILL.md#loads.conditional.commands_needed_for_verify_steps"
         ],
-        "routing_note": "Users provide tasks; agents route from AGENTS.md through triage and phase triggers. Users do not manually invoke individual skills."
+        "routing_note": "Users provide tasks; agents route from AGENTS.md through an explicit direct route or triage and phase triggers. Users do not manually invoke individual skills."
       },
       "path": "skills/command-discovery/SKILL.md"
     },
@@ -68,7 +68,7 @@
       "name": "delegation",
       "description": "Use real subagents or explicit role-separated passes without pretending subagents exist.",
       "kind": "support",
-      "version": "1.6.0",
+      "version": "1.7.0",
       "summary": "Use real subagents or explicit role-separated passes without pretending subagents exist.",
       "triggers": [
         "Large task split.",
@@ -97,7 +97,7 @@
           "skills/review/SKILL.md#loads.conditional.delegation_useful",
           "skills/strict-change/SKILL.md#loads.phased.delegation"
         ],
-        "routing_note": "Users provide tasks; agents route from AGENTS.md through triage and phase triggers. Users do not manually invoke individual skills."
+        "routing_note": "Users provide tasks; agents route from AGENTS.md through an explicit direct route or triage and phase triggers. Users do not manually invoke individual skills."
       },
       "path": "skills/delegation/SKILL.md"
     },
@@ -106,7 +106,7 @@
       "name": "evidence-driven-execution",
       "description": "Back every claim with actual evidence or label it as an assumption.",
       "kind": "support",
-      "version": "1.6.0",
+      "version": "1.7.0",
       "summary": "Back every claim with actual evidence or label it as an assumption.",
       "triggers": [
         "Non-trivial edits.",
@@ -129,7 +129,7 @@
           "skills/strict-change/SKILL.md#loads.phased.evidence",
           "skills/project-agents-md/SKILL.md#loads.conditional.editing"
         ],
-        "routing_note": "Users provide tasks; agents route from AGENTS.md through triage and phase triggers. Users do not manually invoke individual skills."
+        "routing_note": "Users provide tasks; agents route from AGENTS.md through an explicit direct route or triage and phase triggers. Users do not manually invoke individual skills."
       },
       "path": "skills/evidence-driven-execution/SKILL.md"
     },
@@ -138,7 +138,7 @@
       "name": "exploration",
       "description": "Investigate, diagnose, compare options, or clarify requirements before editing.",
       "kind": "mode",
-      "version": "1.6.0",
+      "version": "1.7.0",
       "summary": "Investigate, diagnose, compare options, or clarify requirements before editing.",
       "triggers": [
         "Ambiguous requirements.",
@@ -175,7 +175,7 @@
           "skills/standard-change/SKILL.md#loads.phased.discovery",
           "skills/triage/SKILL.md#loads.select_one"
         ],
-        "routing_note": "Users provide tasks; agents route from AGENTS.md through triage and phase triggers. Users do not manually invoke individual skills."
+        "routing_note": "Users provide tasks; agents route from AGENTS.md through an explicit direct route or triage and phase triggers. Users do not manually invoke individual skills."
       },
       "path": "skills/exploration/SKILL.md"
     },
@@ -184,7 +184,7 @@
       "name": "fast-patch",
       "description": "Small, clear, low-risk edits with narrow verification.",
       "kind": "mode",
-      "version": "1.6.0",
+      "version": "1.7.0",
       "summary": "Small, clear, low-risk edits with narrow verification.",
       "triggers": [
         "Tiny localized edits with low blast radius and no high-risk trigger."
@@ -214,7 +214,7 @@
         "invoked_by": [
           "skills/triage/SKILL.md#loads.select_one"
         ],
-        "routing_note": "Users provide tasks; agents route from AGENTS.md through triage and phase triggers. Users do not manually invoke individual skills."
+        "routing_note": "Users provide tasks; agents route from AGENTS.md through an explicit direct route or triage and phase triggers. Users do not manually invoke individual skills."
       },
       "path": "skills/fast-patch/SKILL.md"
     },
@@ -223,7 +223,7 @@
       "name": "handoff",
       "description": "Final compact, factual, evidence-based response after changes, proposals, or reviews.",
       "kind": "support",
-      "version": "1.6.0",
+      "version": "1.7.0",
       "summary": "Final compact, factual, evidence-based response after changes, proposals, or reviews.",
       "triggers": [
         "Before final response after file/code work.",
@@ -247,9 +247,10 @@
           "skills/fast-patch/SKILL.md#loads.conditional.completion",
           "skills/standard-change/SKILL.md#loads.phased.completion",
           "skills/strict-change/SKILL.md#loads.phased.completion",
-          "skills/using-pragmatic-skills/SKILL.md#loads.conditional.completion"
+          "skills/using-pragmatic-skills/SKILL.md#loads.conditional.completion",
+          "skills/workflow-retrospective/SKILL.md#loads.conditional.changed_files_completion"
         ],
-        "routing_note": "Users provide tasks; agents route from AGENTS.md through triage and phase triggers. Users do not manually invoke individual skills."
+        "routing_note": "Users provide tasks; agents route from AGENTS.md through an explicit direct route or triage and phase triggers. Users do not manually invoke individual skills."
       },
       "path": "skills/handoff/SKILL.md"
     },
@@ -258,7 +259,7 @@
       "name": "project-agents-md",
       "description": "Create, update, or refactor project-specific AGENTS.md instructions while preserving PSP and other managed blocks.",
       "kind": "support",
-      "version": "1.6.0",
+      "version": "1.7.0",
       "summary": "Maintain the current repository's project-specific AGENTS.md, including generation, cleanup, refactoring, and evidence-based command sections.",
       "triggers": [
         "User explicitly asks to create, write, generate, update, improve, migrate, or refactor AGENTS.md or repository agent instructions.",
@@ -329,7 +330,7 @@
       "name": "review",
       "description": "Review actual changed files, diff, patch, and behavior before calling Standard or Strict work complete.",
       "kind": "support",
-      "version": "1.6.0",
+      "version": "1.7.0",
       "summary": "Review actual changed files, diff, patch, and behavior before calling Standard or Strict work complete.",
       "triggers": [
         "Strict Change completion.",
@@ -359,7 +360,7 @@
           "skills/strict-change/SKILL.md#loads.phased.review",
           "skills/project-agents-md/SKILL.md#loads.conditional.review"
         ],
-        "routing_note": "Users provide tasks; agents route from AGENTS.md through triage and phase triggers. Users do not manually invoke individual skills."
+        "routing_note": "Users provide tasks; agents route from AGENTS.md through an explicit direct route or triage and phase triggers. Users do not manually invoke individual skills."
       },
       "path": "skills/review/SKILL.md"
     },
@@ -368,7 +369,7 @@
       "name": "safety-gates",
       "description": "Require explicit approval before destructive, production-affecting, security-sensitive, or hard-to-reverse actions.",
       "kind": "support",
-      "version": "1.6.0",
+      "version": "1.7.0",
       "summary": "Require explicit approval before destructive, production-affecting, security-sensitive, or hard-to-reverse actions.",
       "triggers": [
         "Any gated action is about to occur.",
@@ -399,7 +400,7 @@
           "skills/strict-change/SKILL.md#loads.immediate",
           "skills/writing-plans/SKILL.md#loads.conditional.safety_gated_action"
         ],
-        "routing_note": "Users provide tasks; agents route from AGENTS.md through triage and phase triggers. Users do not manually invoke individual skills."
+        "routing_note": "Users provide tasks; agents route from AGENTS.md through an explicit direct route or triage and phase triggers. Users do not manually invoke individual skills."
       },
       "path": "skills/safety-gates/SKILL.md"
     },
@@ -408,7 +409,7 @@
       "name": "standard-change",
       "description": "Normal engineering work with planning, tests, execution evidence, verification, and review by phase.",
       "kind": "mode",
-      "version": "1.6.0",
+      "version": "1.7.0",
       "summary": "Normal engineering work with planning, tests, execution evidence, verification, and review by phase.",
       "triggers": [
         "Behavior changes.",
@@ -462,7 +463,7 @@
         "invoked_by": [
           "skills/triage/SKILL.md#loads.select_one"
         ],
-        "routing_note": "Users provide tasks; agents route from AGENTS.md through triage and phase triggers. Users do not manually invoke individual skills."
+        "routing_note": "Users provide tasks; agents route from AGENTS.md through an explicit direct route or triage and phase triggers. Users do not manually invoke individual skills."
       },
       "path": "skills/standard-change/SKILL.md"
     },
@@ -471,7 +472,7 @@
       "name": "strict-change",
       "description": "High-risk work with safety gates, traceability, rollback thinking, evidence, verification, and review.",
       "kind": "mode",
-      "version": "1.6.0",
+      "version": "1.7.0",
       "summary": "High-risk work with safety gates, traceability, rollback thinking, evidence, verification, and review.",
       "triggers": [
         "Security/auth/privacy.",
@@ -534,7 +535,7 @@
           "skills/standard-change/SKILL.md#loads.escalation",
           "skills/triage/SKILL.md#loads.select_one"
         ],
-        "routing_note": "Users provide tasks; agents route from AGENTS.md through triage and phase triggers. Users do not manually invoke individual skills."
+        "routing_note": "Users provide tasks; agents route from AGENTS.md through an explicit direct route or triage and phase triggers. Users do not manually invoke individual skills."
       },
       "path": "skills/strict-change/SKILL.md"
     },
@@ -543,7 +544,7 @@
       "name": "tdd",
       "description": "Use tests as the driver for behavior changes and bug fixes when practical.",
       "kind": "support",
-      "version": "1.6.0",
+      "version": "1.7.0",
       "summary": "Use tests as the driver for behavior changes and bug fixes when practical.",
       "triggers": [
         "Behavior change.",
@@ -574,7 +575,7 @@
           "skills/standard-change/SKILL.md#loads.phased.behavior",
           "skills/strict-change/SKILL.md#loads.phased.behavior"
         ],
-        "routing_note": "Users provide tasks; agents route from AGENTS.md through triage and phase triggers. Users do not manually invoke individual skills."
+        "routing_note": "Users provide tasks; agents route from AGENTS.md through an explicit direct route or triage and phase triggers. Users do not manually invoke individual skills."
       },
       "path": "skills/tdd/SKILL.md"
     },
@@ -583,7 +584,7 @@
       "name": "triage",
       "description": "Choose the smallest safe primary mode and re-route when evidence changes.",
       "kind": "router",
-      "version": "1.6.0",
+      "version": "1.7.0",
       "summary": "Choose the smallest safe primary mode and re-route when evidence changes.",
       "triggers": [
         "Immediately after using-pragmatic-skills.",
@@ -612,22 +613,27 @@
           "skills/using-pragmatic-skills/SKILL.md#loads.immediate",
           "workflow#re-triage-triggers"
         ],
-        "routing_note": "Users provide tasks; agents route from AGENTS.md through triage and phase triggers. Users do not manually invoke individual skills."
+        "routing_note": "Users provide tasks; agents route from AGENTS.md through an explicit direct route or triage and phase triggers. Users do not manually invoke individual skills."
       },
       "path": "skills/triage/SKILL.md"
     },
     {
       "schema": "psp.skill/v1",
       "name": "using-pragmatic-skills",
-      "description": "Start here for any development task and load only the next relevant skill.",
+      "description": "Start here for any repository or PSP workflow task and load only the next relevant skill.",
       "kind": "entry",
-      "version": "1.6.0",
-      "summary": "Start here for any development task and load only the next relevant skill.",
+      "version": "1.7.0",
+      "summary": "Start here for any repository or PSP workflow task and load only the next relevant skill.",
       "triggers": [
-        "Any task involving code, files, tests, debugging, review, or project decisions."
+        "Any task involving code, files, tests, debugging, review, project decisions, or PSP workflow evaluation."
       ],
       "loads": {
-        "immediate": [
+        "direct": {
+          "explicit_workflow_retrospective": [
+            "skills/workflow-retrospective/SKILL.md"
+          ]
+        },
+        "fallback": [
           "skills/triage/SKILL.md"
         ],
         "conditional": {
@@ -643,7 +649,7 @@
         }
       },
       "outputs": [
-        "selected primary mode",
+        "direct retrospective route or selected primary mode",
         "next skill path"
       ],
       "safety": {
@@ -656,7 +662,7 @@
         "invoked_by": [
           "AGENTS.md#start-rule"
         ],
-        "routing_note": "Users provide tasks; agents route from AGENTS.md through triage and phase triggers. Users do not manually invoke individual skills."
+        "routing_note": "Users provide tasks; agents route from AGENTS.md through an explicit direct route or triage and phase triggers. Users do not manually invoke individual skills."
       },
       "path": "skills/using-pragmatic-skills/SKILL.md"
     },
@@ -665,7 +671,7 @@
       "name": "verification",
       "description": "Choose and run the right level of validation before claiming completion.",
       "kind": "support",
-      "version": "1.6.0",
+      "version": "1.7.0",
       "summary": "Choose and run the right level of validation before claiming completion.",
       "triggers": [
         "After implementation.",
@@ -694,16 +700,78 @@
           "skills/strict-change/SKILL.md#loads.phased.verification",
           "skills/tdd/SKILL.md#loads.conditional.verification"
         ],
-        "routing_note": "Users provide tasks; agents route from AGENTS.md through triage and phase triggers. Users do not manually invoke individual skills."
+        "routing_note": "Users provide tasks; agents route from AGENTS.md through an explicit direct route or triage and phase triggers. Users do not manually invoke individual skills."
       },
       "path": "skills/verification/SKILL.md"
+    },
+    {
+      "schema": "psp.skill/v1",
+      "name": "workflow-retrospective",
+      "description": "Review an explicitly requested completed-task trace and turn workflow evidence into actionable PSP improvements and eval cases.",
+      "kind": "support",
+      "version": "1.7.0",
+      "summary": "Run an active-only post-task retrospective to improve routing, skills, evidence quality, safety calibration, and host compatibility.",
+      "triggers": [
+        "User explicitly asks to retrospect, summarize, evaluate, or improve the PSP workflow after a completed or recent task.",
+        "User asks which skills were useful, missed, redundant, too heavy, or incorrectly triggered.",
+        "User asks to turn task feedback into concrete skill changes, metadata updates, or workflow eval cases."
+      ],
+      "loads": {
+        "conditional": {
+          "implementation_requested": [
+            "skills/triage/SKILL.md"
+          ],
+          "persistent_record_requested": [
+            "skills/evidence-driven-execution/SKILL.md"
+          ],
+          "changed_files_completion": [
+            "skills/verification/SKILL.md",
+            "skills/handoff/SKILL.md"
+          ]
+        }
+      },
+      "outputs": [
+        "evidence-bounded task and workflow summary",
+        "routing and progressive-disclosure assessment",
+        "prioritized PSP improvement findings",
+        "exact target files or metadata fields for each proposal",
+        "regression/eval fixture for each material change",
+        "explicit evidence gaps and confidence"
+      ],
+      "safety": {
+        "approval_required": "Retrospective analysis is read-only by default. Writing a record or changing PSP files requires explicit user intent.",
+        "requires_approval_before": [
+          "Mutating installed PSP-managed files in a consumer repository.",
+          "Applying workflow changes when the user requested analysis only.",
+          "Removing or weakening safety, evidence, verification, or approval rules."
+        ]
+      },
+      "activation": {
+        "automatic": true,
+        "entrypoint": false,
+        "user_direct": false,
+        "policy": "active-only",
+        "lifecycle": "post-task",
+        "auto_after_completion": false,
+        "invoked_by": [
+          "skills/using-pragmatic-skills/SKILL.md#loads.direct.explicit_workflow_retrospective",
+          "workflow#explicit-post-task-retrospective-request"
+        ],
+        "active": [
+          "User asks for a post-task workflow retrospective, PSP iteration review, or skill-system improvement summary."
+        ],
+        "passive": [],
+        "passive_requires_confirmation": false,
+        "routing_note": "Route here only from explicit user intent expressed in normal language. Never invoke or offer this skill automatically at ordinary task completion."
+      },
+      "path": "skills/workflow-retrospective/SKILL.md"
     },
     {
       "schema": "psp.skill/v1",
       "name": "worktree",
       "description": "Use git worktree isolation only when it materially reduces risk.",
       "kind": "support",
-      "version": "1.6.0",
+      "version": "1.7.0",
       "summary": "Use git worktree isolation only when it materially reduces risk.",
       "triggers": [
         "Dirty tree with unrelated user changes.",
@@ -725,7 +793,7 @@
         "invoked_by": [
           "skills/strict-change/SKILL.md#loads.phased.isolation"
         ],
-        "routing_note": "Users provide tasks; agents route from AGENTS.md through triage and phase triggers. Users do not manually invoke individual skills."
+        "routing_note": "Users provide tasks; agents route from AGENTS.md through an explicit direct route or triage and phase triggers. Users do not manually invoke individual skills."
       },
       "path": "skills/worktree/SKILL.md"
     },
@@ -734,7 +802,7 @@
       "name": "writing-plans",
       "description": "Create executable, verifiable plans for non-trivial implementation.",
       "kind": "support",
-      "version": "1.6.0",
+      "version": "1.7.0",
       "summary": "Create executable, verifiable plans for non-trivial implementation.",
       "triggers": [
         "More than one file or step.",
@@ -766,7 +834,7 @@
           "skills/standard-change/SKILL.md#loads.phased.planning",
           "skills/strict-change/SKILL.md#loads.phased.planning"
         ],
-        "routing_note": "Users provide tasks; agents route from AGENTS.md through triage and phase triggers. Users do not manually invoke individual skills."
+        "routing_note": "Users provide tasks; agents route from AGENTS.md through an explicit direct route or triage and phase triggers. Users do not manually invoke individual skills."
       },
       "path": "skills/writing-plans/SKILL.md"
     }
@@ -902,5 +970,21 @@
       "installer": "PSP managed blocks",
       "skill": "project-owned AGENTS.md content outside managed blocks"
     }
+  },
+  "workflow_retrospective": {
+    "skill": "skills/workflow-retrospective/SKILL.md",
+    "activation_policy": "active-only",
+    "lifecycle": "post-task",
+    "auto_after_completion": false,
+    "active_triggers": [
+      "review a completed/recent task to improve PSP routing or skills",
+      "identify workflow friction, missed/redundant skills, or incorrect triggers",
+      "turn task feedback into concrete PSP changes and eval fixtures"
+    ],
+    "passive_triggers": [],
+    "analysis_default": "read-only",
+    "implementation_route": "finish retrospective, then re-enter triage",
+    "record_schema": "psp.retrospective/v1",
+    "reference": "reference/WORKFLOW-RETROSPECTIVE.md"
   }
 }

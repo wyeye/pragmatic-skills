@@ -3,7 +3,7 @@ schema: psp.skill/v1
 name: writing-plans
 description: Create executable, verifiable plans for non-trivial implementation.
 kind: support
-version: 1.6.0
+version: 1.7.0
 summary: Create executable, verifiable plans for non-trivial implementation.
 triggers:
 - More than one file or step.
@@ -28,7 +28,7 @@ activation:
   invoked_by:
   - skills/standard-change/SKILL.md#loads.phased.planning
   - skills/strict-change/SKILL.md#loads.phased.planning
-  routing_note: Users provide tasks; agents route from AGENTS.md through triage and phase triggers. Users do not manually invoke individual skills.
+  routing_note: Users provide tasks; agents route from AGENTS.md through an explicit direct route or triage and phase triggers. Users do not manually invoke individual skills.
 ---
 # Writing Plans
 

@@ -3,7 +3,7 @@ schema: psp.skill/v1
 name: review
 description: Review actual changed files, diff, patch, and behavior before calling Standard or Strict work complete.
 kind: support
-version: 1.6.0
+version: 1.7.0
 summary: Review actual changed files, diff, patch, and behavior before calling Standard or Strict work complete.
 triggers:
 - Strict Change completion.
@@ -27,7 +27,7 @@ activation:
   - skills/standard-change/SKILL.md#loads.phased.review
   - skills/strict-change/SKILL.md#loads.phased.review
   - skills/project-agents-md/SKILL.md#loads.conditional.review
-  routing_note: Users provide tasks; agents route from AGENTS.md through triage and phase triggers. Users do not manually invoke individual skills.
+  routing_note: Users provide tasks; agents route from AGENTS.md through an explicit direct route or triage and phase triggers. Users do not manually invoke individual skills.
 ---
 # Review
 

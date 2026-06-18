@@ -3,7 +3,7 @@ schema: psp.skill/v1
 name: standard-change
 description: Normal engineering work with planning, tests, execution evidence, verification, and review by phase.
 kind: mode
-version: 1.6.0
+version: 1.7.0
 summary: Normal engineering work with planning, tests, execution evidence, verification, and review by phase.
 triggers:
 - Behavior changes.
@@ -43,7 +43,7 @@ activation:
   user_direct: false
   invoked_by:
   - skills/triage/SKILL.md#loads.select_one
-  routing_note: Users provide tasks; agents route from AGENTS.md through triage and phase triggers. Users do not manually invoke individual skills.
+  routing_note: Users provide tasks; agents route from AGENTS.md through an explicit direct route or triage and phase triggers. Users do not manually invoke individual skills.
 ---
 # Standard Change
 

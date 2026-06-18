@@ -3,7 +3,7 @@ schema: psp.skill/v1
 name: delegation
 description: Use real subagents or explicit role-separated passes without pretending subagents exist.
 kind: support
-version: 1.6.0
+version: 1.7.0
 summary: Use real subagents or explicit role-separated passes without pretending subagents exist.
 triggers:
 - Large task split.
@@ -25,7 +25,7 @@ activation:
   invoked_by:
   - skills/review/SKILL.md#loads.conditional.delegation_useful
   - skills/strict-change/SKILL.md#loads.phased.delegation
-  routing_note: Users provide tasks; agents route from AGENTS.md through triage and phase triggers. Users do not manually invoke individual skills.
+  routing_note: Users provide tasks; agents route from AGENTS.md through an explicit direct route or triage and phase triggers. Users do not manually invoke individual skills.
 ---
 # Delegation
 

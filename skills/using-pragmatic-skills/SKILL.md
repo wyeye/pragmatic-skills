@@ -1,14 +1,17 @@
 ---
 schema: psp.skill/v1
 name: using-pragmatic-skills
-description: Start here for any development task and load only the next relevant skill.
+description: Start here for any repository or PSP workflow task and load only the next relevant skill.
 kind: entry
-version: 1.6.0
-summary: Start here for any development task and load only the next relevant skill.
+version: 1.7.0
+summary: Start here for any repository or PSP workflow task and load only the next relevant skill.
 triggers:
-- Any task involving code, files, tests, debugging, review, or project decisions.
+- Any task involving code, files, tests, debugging, review, project decisions, or PSP workflow evaluation.
 loads:
-  immediate:
+  direct:
+    explicit_workflow_retrospective:
+    - skills/workflow-retrospective/SKILL.md
+  fallback:
   - skills/triage/SKILL.md
   conditional:
     completion:
@@ -18,7 +21,7 @@ loads:
     project_agents_md:
     - skills/project-agents-md/SKILL.md
 outputs:
-- selected primary mode
+- direct retrospective route or selected primary mode
 - next skill path
 safety:
   approval_required: Only for safety-gated actions, never just to continue ordinary low-risk work.
@@ -28,7 +31,7 @@ activation:
   user_direct: false
   invoked_by:
   - AGENTS.md#start-rule
-  routing_note: Users provide tasks; agents route from AGENTS.md through triage and phase triggers. Users do not manually invoke individual skills.
+  routing_note: Users provide tasks; agents route from AGENTS.md through an explicit direct route or triage and phase triggers. Users do not manually invoke individual skills.
 ---
 # Using Pragmatic Skills Pack
 
@@ -41,7 +44,8 @@ The user-facing contract is:
 ```text
 User gives a normal task
   -> AGENTS.md starts this entry skill
-  -> this skill loads triage
+  -> explicit post-task PSP retrospective? load workflow-retrospective directly
+  -> otherwise load triage
   -> triage selects one primary mode
   -> the mode skill loads support skills only when phase triggers are reached
 ```
@@ -50,7 +54,7 @@ Do not ask the user which skill, mode, or support workflow to use unless the use
 
 Do not expose internal skill names as required user actions. You may mention them only when useful for transparency, debugging, or handoff.
 
-Use this skill at the start of every development task.
+Use this skill at the start of every repository task and every explicit PSP workflow-evaluation request.
 
 This workflow is progressive and internally routed: load only the next relevant skill, not the entire skill pack, and never require the user to call skills by name.
 
@@ -67,17 +71,33 @@ Users still do not invoke support skills directly. Host adapters only start the 
 
 You must not read all skill files up front.
 
-Start with:
+Start with the smallest applicable route:
 
-1. Read `skills/triage/SKILL.md`.
-2. Classify the task.
-3. Load exactly one primary mode skill:
+1. Check whether the user explicitly requests a post-task PSP/workflow retrospective.
+2. If yes, load only `skills/workflow-retrospective/SKILL.md` and skip triage unless the same request also asks to apply file changes.
+3. Otherwise read `skills/triage/SKILL.md`.
+4. Let triage load exactly one primary mode skill:
    - `skills/fast-patch/SKILL.md`
    - `skills/exploration/SKILL.md`
    - `skills/standard-change/SKILL.md`
    - `skills/strict-change/SKILL.md`
-4. Load support skills by phase, not as a bundle.
-5. Re-run triage if new evidence changes the task shape.
+5. Load support skills by phase, not as a bundle.
+6. Re-run triage if new evidence changes the task shape.
+
+## Active-only post-task retrospective route
+
+Before the default triage route, detect explicit user intent to evaluate PSP itself after a completed or recent task.
+
+Examples include requests to review which skills triggered correctly, identify workflow friction, improve routing, or produce PSP iteration items and eval fixtures.
+
+When this intent is present:
+
+- Load `skills/workflow-retrospective/SKILL.md` directly.
+- Do not load a primary implementation mode for analysis-only retrospective work.
+- Do not run or offer the retrospective automatically at ordinary completion.
+- If the user asks to apply the resulting improvements, finish the retrospective first and then load `skills/triage/SKILL.md` for implementation.
+
+A request for a normal implementation summary alone is handled by `handoff`, not by this route.
 
 ## Metadata-first rule
 
@@ -137,3 +157,5 @@ Do not ask for confirmation just to continue ordinary low-risk work.
 ## Completion
 
 Before final response, load `skills/handoff/SKILL.md` unless no code/file work was performed and the answer is purely conversational.
+
+Do not automatically load or offer `workflow-retrospective` after handoff. It is active-only and requires explicit user intent.

@@ -3,7 +3,7 @@ schema: psp.skill/v1
 name: fast-patch
 description: Small, clear, low-risk edits with narrow verification.
 kind: mode
-version: 1.6.0
+version: 1.7.0
 summary: Small, clear, low-risk edits with narrow verification.
 triggers:
 - Tiny localized edits with low blast radius and no high-risk trigger.
@@ -25,7 +25,7 @@ activation:
   user_direct: false
   invoked_by:
   - skills/triage/SKILL.md#loads.select_one
-  routing_note: Users provide tasks; agents route from AGENTS.md through triage and phase triggers. Users do not manually invoke individual skills.
+  routing_note: Users provide tasks; agents route from AGENTS.md through an explicit direct route or triage and phase triggers. Users do not manually invoke individual skills.
 ---
 # Fast Patch
 

@@ -3,7 +3,7 @@ schema: psp.skill/v1
 name: strict-change
 description: High-risk work with safety gates, traceability, rollback thinking, evidence, verification, and review.
 kind: mode
-version: 1.6.0
+version: 1.7.0
 summary: High-risk work with safety gates, traceability, rollback thinking, evidence, verification, and review.
 triggers:
 - Security/auth/privacy.
@@ -50,7 +50,7 @@ activation:
   invoked_by:
   - skills/standard-change/SKILL.md#loads.escalation
   - skills/triage/SKILL.md#loads.select_one
-  routing_note: Users provide tasks; agents route from AGENTS.md through triage and phase triggers. Users do not manually invoke individual skills.
+  routing_note: Users provide tasks; agents route from AGENTS.md through an explicit direct route or triage and phase triggers. Users do not manually invoke individual skills.
 ---
 # Strict Change
 

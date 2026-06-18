@@ -3,7 +3,7 @@ schema: psp.skill/v1
 name: tdd
 description: Use tests as the driver for behavior changes and bug fixes when practical.
 kind: support
-version: 1.6.0
+version: 1.7.0
 summary: Use tests as the driver for behavior changes and bug fixes when practical.
 triggers:
 - Behavior change.
@@ -27,7 +27,7 @@ activation:
   invoked_by:
   - skills/standard-change/SKILL.md#loads.phased.behavior
   - skills/strict-change/SKILL.md#loads.phased.behavior
-  routing_note: Users provide tasks; agents route from AGENTS.md through triage and phase triggers. Users do not manually invoke individual skills.
+  routing_note: Users provide tasks; agents route from AGENTS.md through an explicit direct route or triage and phase triggers. Users do not manually invoke individual skills.
 ---
 # Test-Driven Development
 

@@ -3,7 +3,7 @@ schema: psp.skill/v1
 name: exploration
 description: Investigate, diagnose, compare options, or clarify requirements before editing.
 kind: mode
-version: 1.6.0
+version: 1.7.0
 summary: Investigate, diagnose, compare options, or clarify requirements before editing.
 triggers:
 - Ambiguous requirements.
@@ -31,7 +31,7 @@ activation:
   invoked_by:
   - skills/standard-change/SKILL.md#loads.phased.discovery
   - skills/triage/SKILL.md#loads.select_one
-  routing_note: Users provide tasks; agents route from AGENTS.md through triage and phase triggers. Users do not manually invoke individual skills.
+  routing_note: Users provide tasks; agents route from AGENTS.md through an explicit direct route or triage and phase triggers. Users do not manually invoke individual skills.
 ---
 # Exploration
 

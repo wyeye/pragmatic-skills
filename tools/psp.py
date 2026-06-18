@@ -247,7 +247,7 @@ def claude_block() -> str:
 
 Claude Code may also discover the native entry skill at `.claude/skills/psp-claude-entry/SKILL.md`.
 
-Use the PSP entry contract for coding, debugging, review, planning, verification, or repository work. Users provide normal tasks; the agent routes internally from `skills/using-pragmatic-skills/SKILL.md` through triage and phase triggers. Do not ask the user to choose individual PSP skills.
+Use the PSP entry contract for coding, debugging, review, planning, verification, or repository work. Users provide normal tasks; the agent routes internally from `skills/using-pragmatic-skills/SKILL.md` through an explicit direct route when applicable, otherwise through triage and phase triggers. Do not ask the user to choose individual PSP skills.
 <!-- PSP:CLAUDE:END -->
 """
 
@@ -258,7 +258,7 @@ def gemini_block() -> str:
 
 @AGENTS.md
 
-Use the PSP entry contract for coding, debugging, review, planning, verification, or repository work. Users provide normal tasks; the agent routes internally from `skills/using-pragmatic-skills/SKILL.md` through triage and phase triggers. Do not ask the user to choose individual PSP skills.
+Use the PSP entry contract for coding, debugging, review, planning, verification, or repository work. Users provide normal tasks; the agent routes internally from `skills/using-pragmatic-skills/SKILL.md` through an explicit direct route when applicable, otherwise through triage and phase triggers. Do not ask the user to choose individual PSP skills.
 <!-- PSP:GEMINI:END -->
 """
 
@@ -269,7 +269,7 @@ def copilot_block() -> str:
 
 This repository also has `AGENTS.md`. For agentic coding work, follow the PSP managed block there.
 
-Start from `skills/using-pragmatic-skills/SKILL.md`, route through triage, select one primary mode, and load support skills only by phase trigger. Do not claim tests, builds, reviews, approvals, or command output happened unless they actually happened.
+Start from `skills/using-pragmatic-skills/SKILL.md`; use an explicit direct route when applicable, otherwise route through triage, select one primary mode, and load support skills only by phase trigger. Do not claim tests, builds, reviews, approvals, or command output happened unless they actually happened.
 <!-- PSP:COPILOT:END -->
 """
 

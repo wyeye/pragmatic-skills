@@ -9,7 +9,7 @@ For coding, debugging, review, planning, verification, or repository work:
 
 1. Follow the PSP managed block in `AGENTS.md`.
 2. Start from `skills/using-pragmatic-skills/SKILL.md`.
-3. Let triage select one primary mode.
+3. Let the entry skill choose an explicit direct route when applicable; otherwise let triage select one primary mode.
 4. Load support skills only when their phase trigger is reached.
 5. Do not ask the user to choose individual skills.
 6. Do not claim tests, builds, reviews, approvals, or command output happened unless they actually happened.

@@ -12,7 +12,8 @@ The user only provides the task. The agent/runtime is responsible for routing:
 User task
   -> AGENTS.md
   -> skills/using-pragmatic-skills/SKILL.md
-  -> skills/triage/SKILL.md
+  -> explicit post-task PSP retrospective? workflow-retrospective
+  -> otherwise skills/triage/SKILL.md
   -> one primary mode skill
   -> support skills by phase trigger
 ```
@@ -20,7 +21,7 @@ User task
 ## Do
 
 - Start every development task from the entry skill named in `AGENTS.md`.
-- Use `triage` to pick the smallest safe mode.
+- Route an explicit post-task PSP retrospective directly to `workflow-retrospective`; otherwise use `triage` to pick the smallest safe mode.
 - Load support skills only when the current phase or condition activates them.
 - Re-run triage when risk, ambiguity, scope, or command impact changes.
 - Report final evidence through `handoff`.
@@ -36,6 +37,19 @@ User task
 
 Skill names may be mentioned when the user is designing, debugging, evaluating, or customizing the workflow. They should not be presented as required user actions during normal coding tasks.
 
+
+## Workflow retrospective contract
+
+Users may explicitly ask in normal language to review a completed or recent task in order to improve PSP. They do not need to know the internal skill name.
+
+The workflow routes that request to `skills/workflow-retrospective/SKILL.md` before normal triage.
+
+- The retrospective is active-only.
+- It is not run or offered automatically after ordinary task completion.
+- It uses observable evidence and labels inferences and gaps.
+- It does not claim access to hidden reasoning or unrecorded runtime state.
+- It is read-only by default.
+- If the user asks to apply improvements, the retrospective completes first, then implementation re-enters triage.
 
 ## Project AGENTS.md contract
 

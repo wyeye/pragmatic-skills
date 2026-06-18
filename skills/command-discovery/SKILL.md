@@ -3,7 +3,7 @@ schema: psp.skill/v1
 name: command-discovery
 description: Resolve install, test, lint, typecheck, build, and local-run commands from project evidence instead of hardcoding them.
 kind: support
-version: 1.6.0
+version: 1.7.0
 summary: Resolve install, test, lint, typecheck, build, and local-run commands from project evidence instead of hardcoding them.
 triggers:
 - A workflow needs a project command and no exact command is already known.
@@ -32,7 +32,7 @@ activation:
   - skills/using-pragmatic-skills/SKILL.md#loads.conditional.command_resolution
   - skills/verification/SKILL.md#loads.conditional.command_unknown
   - skills/writing-plans/SKILL.md#loads.conditional.commands_needed_for_verify_steps
-  routing_note: Users provide tasks; agents route from AGENTS.md through triage and phase triggers. Users do not manually invoke individual skills.
+  routing_note: Users provide tasks; agents route from AGENTS.md through an explicit direct route or triage and phase triggers. Users do not manually invoke individual skills.
 ---
 # Command Discovery
 

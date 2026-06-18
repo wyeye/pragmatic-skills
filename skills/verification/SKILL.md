@@ -3,7 +3,7 @@ schema: psp.skill/v1
 name: verification
 description: Choose and run the right level of validation before claiming completion.
 kind: support
-version: 1.6.0
+version: 1.7.0
 summary: Choose and run the right level of validation before claiming completion.
 triggers:
 - After implementation.
@@ -26,7 +26,7 @@ activation:
   - skills/standard-change/SKILL.md#loads.phased.verification
   - skills/strict-change/SKILL.md#loads.phased.verification
   - skills/tdd/SKILL.md#loads.conditional.verification
-  routing_note: Users provide tasks; agents route from AGENTS.md through triage and phase triggers. Users do not manually invoke individual skills.
+  routing_note: Users provide tasks; agents route from AGENTS.md through an explicit direct route or triage and phase triggers. Users do not manually invoke individual skills.
 ---
 # Verification
 

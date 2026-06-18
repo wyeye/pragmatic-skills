@@ -1,5 +1,5 @@
 <!-- PSP:BEGIN -->
-# Pragmatic Skills Pack — Progressive Entry v1.6
+# Pragmatic Skills Pack — Progressive Entry v1.7
 
 This repository uses a progressive skill workflow. Do **not** preload the entire workflow.
 
@@ -13,7 +13,8 @@ The agent must route internally:
 User task
   -> AGENTS.md or host-native entry adapter
   -> skills/using-pragmatic-skills/SKILL.md
-  -> skills/triage/SKILL.md
+  -> explicit post-task PSP retrospective? workflow-retrospective
+  -> otherwise skills/triage/SKILL.md
   -> one primary mode skill
   -> support skills by phase trigger only
 ```
@@ -32,11 +33,11 @@ skills/using-pragmatic-skills/SKILL.md
 
 ## Start rule
 
-For any task that may involve code, files, tests, project decisions, debugging, or review:
+For any task that may involve code, files, tests, project decisions, debugging, review, or PSP workflow evaluation:
 
 1. Read only `skills/using-pragmatic-skills/SKILL.md` as the entry skill.
 2. Follow that file's routing instructions.
-3. Load additional `skills/*/SKILL.md` files only when triage or phase triggers activate them.
+3. Load additional `skills/*/SKILL.md` files only when an explicit direct trigger, triage, or a phase trigger activates them.
 
 ## Non-negotiables
 
@@ -56,6 +57,16 @@ PSP may help maintain the current repository's project-specific `AGENTS.md`.
 - Passive trigger: if repository discovery shows there is no `AGENTS.md`, or `AGENTS.md` has only generic PSP entry content and no project-specific guidance, load `skills/project-agents-md/SKILL.md` and ask the user once whether to generate or improve it.
 - Do not silently create/refactor `AGENTS.md` from passive detection.
 - Do not manually edit PSP-managed blocks; project-specific content belongs outside managed blocks.
+
+## Active-only workflow retrospective
+
+PSP includes an explicit post-task learning loop for improving the skill pack itself.
+
+- Active trigger only: when the user explicitly asks to retrospect on a completed/recent task, evaluate PSP routing, identify skill friction, or turn the task into workflow improvements/eval cases, load `skills/workflow-retrospective/SKILL.md` directly from the entry skill.
+- Do not run it automatically after ordinary task completion and do not routinely ask the user whether they want one.
+- A normal implementation summary belongs to `handoff`; the retrospective evaluates the workflow itself.
+- Retrospective analysis is read-only by default. If the user also asks to apply improvements, complete the retrospective first, then re-enter triage for the file changes.
+- Use observable evidence only; do not claim access to hidden reasoning or unrecorded runtime state.
 
 ## Universal command resolution
 

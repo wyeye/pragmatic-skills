@@ -41,4 +41,4 @@ sh install.sh --target . --no-host-adapters
 
 ## Agent usage
 
-Users do not invoke individual PSP skills. Users describe normal tasks. Host adapters route the agent to `skills/using-pragmatic-skills/SKILL.md`, which routes through triage, one primary mode, and support skills by phase trigger.
+Users do not invoke individual PSP skills. Users describe normal tasks. Host adapters route the agent to `skills/using-pragmatic-skills/SKILL.md`, which may use an explicit active-only direct route; otherwise it routes through triage, one primary mode, and support skills by phase trigger.

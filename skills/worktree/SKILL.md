@@ -3,7 +3,7 @@ schema: psp.skill/v1
 name: worktree
 description: Use git worktree isolation only when it materially reduces risk.
 kind: support
-version: 1.6.0
+version: 1.7.0
 summary: Use git worktree isolation only when it materially reduces risk.
 triggers:
 - Dirty tree with unrelated user changes.
@@ -22,7 +22,7 @@ activation:
   user_direct: false
   invoked_by:
   - skills/strict-change/SKILL.md#loads.phased.isolation
-  routing_note: Users provide tasks; agents route from AGENTS.md through triage and phase triggers. Users do not manually invoke individual skills.
+  routing_note: Users provide tasks; agents route from AGENTS.md through an explicit direct route or triage and phase triggers. Users do not manually invoke individual skills.
 ---
 # Worktree
 
