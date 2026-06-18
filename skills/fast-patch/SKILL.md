@@ -1,82 +1,30 @@
 ---
-schema: psp.skill/v1
 name: fast-patch
-description: Small, clear, low-risk edits with narrow verification.
-kind: mode
-version: 1.8.0
-summary: Small, clear, low-risk edits with narrow verification.
-triggers:
-- Tiny localized edits with low blast radius and no high-risk trigger.
-loads:
-  conditional:
-    command_needed:
-    - skills/command-discovery/SKILL.md
-    completion:
-    - skills/handoff/SKILL.md
-    scope_or_risk_increase:
-    - skills/triage/SKILL.md
-outputs:
-- minimal change
-- narrow verification evidence
-- handoff summary
-activation:
-  automatic: true
-  entrypoint: false
-  user_direct: false
-  invoked_by:
-  - skills/triage/SKILL.md#loads.select_one
-  routing_note: Users provide tasks; agents route from AGENTS.md through an explicit direct route or triage and phase triggers. Users do not manually invoke individual skills.
+description: Executes a tiny, fully specified, low-risk change with minimal ceremony while still preserving evidence, verification, and a truthful handoff.
+license: Mixed-origin; see repository LICENSE
+compatibility: Agent Skills-compatible hosts or a PSP host adapter.
+metadata:
+  psp-schema: psp.skill/v2
+  psp-kind: mode
+  psp-version: 2.0.1
 ---
+
 # Fast Patch
 
-## Phase-trigger contract
+Use the shortest safe path without skipping evidence.
 
-Do not load all support skills when entering this mode.
+1. Inspect the target file and nearby constraints.
+2. Confirm the requested outcome is unambiguous and low-risk.
+3. Make the smallest coherent edit; do not opportunistically refactor unrelated code.
+4. Discover and run the narrowest meaningful check, then broaden only when repository conventions or risk require it.
+5. Inspect the final diff and deliver a factual handoff.
 
-Load support skills only when their phase trigger is reached. The user should not be asked to invoke support skills manually.
+Escalate to `standard-change` when the edit expands, tests reveal broader behavior, or a design decision appears. Escalate to `strict-change` before any high-impact action.
 
-Use this skill for small, clear, low-risk edits.
+## Operating rule
 
-## Goal
+Use this skill only while its trigger is active. Keep conclusions proportional to observed evidence, preserve user-owned work, and stop when a required decision or approval is unavailable.
 
-Make the smallest useful change with the narrowest meaningful verification.
+## Trace contract
 
-## Workflow
-
-1. Identify the minimal relevant file set.
-2. Make the minimal edit.
-3. Run the narrowest meaningful check available.
-4. Inspect the diff.
-5. Load `skills/handoff/SKILL.md` for the final response.
-
-## Verification preference
-
-Use the strongest practical check, in this order:
-
-1. Targeted test for the touched behavior.
-2. Typecheck or lint for the touched area.
-3. Build or compile check.
-4. Static inspection when no executable check exists.
-
-If the relevant command is not already known, load `skills/command-discovery/SKILL.md`. Do not invent a test/lint/build command.
-
-Do not claim full test coverage unless full tests actually ran.
-
-## Escalate
-
-Escalate to Standard Change if:
-
-- More than a tiny local edit is required.
-- Behavior changes in a non-trivial way.
-- Tests need to be created or updated.
-- The diff becomes hard to review.
-
-Escalate to Strict Change if high-risk triggers appear.
-
-## Final evidence
-
-Report:
-
-- What changed.
-- What verification ran.
-- What was not verified.
+When PSP tracing is enabled, record mode selection, skill activation, commands, file changes, approvals, verification, and claims as structured events. Every strong completion claim must reference earlier evidence event IDs.

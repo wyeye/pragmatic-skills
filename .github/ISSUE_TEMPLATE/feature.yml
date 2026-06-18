@@ -1,0 +1,32 @@
+name: Feature proposal
+description: Propose a workflow, tooling, eval, or adapter improvement.
+title: "[proposal] "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem and evidence
+      description: Describe observed friction or failure, not only the desired implementation.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed contract
+      description: Include triggers, negative triggers, inputs, outputs, stop conditions, and safety boundaries where relevant.
+    validations:
+      required: true
+  - type: textarea
+    id: evals
+    attributes:
+      label: Eval coverage
+      description: Give at least one positive and one negative or adversarial case.
+    validations:
+      required: true
+  - type: textarea
+    id: compatibility
+    attributes:
+      label: Compatibility and rollback impact
+    validations:
+      required: true

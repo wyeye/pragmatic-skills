@@ -1,0 +1,35 @@
+{
+  "activation": {
+    "negative": [
+      "large but low-impact and easily reversible work"
+    ],
+    "positive": [
+      "production, data migration, destructive command, auth, billing, secrets, shared history, or difficult rollback"
+    ]
+  },
+  "entry": false,
+  "kind": "mode",
+  "loads": [
+    "safety-gates",
+    "requirements-and-design",
+    "writing-plans",
+    "tdd",
+    "command-discovery",
+    "evidence-driven-execution",
+    "verification",
+    "review",
+    "delegation",
+    "worktree",
+    "handoff"
+  ],
+  "name": "strict-change",
+  "outputs": [
+    "risk register",
+    "approval scope",
+    "rollback plan",
+    "verified change",
+    "auditable handoff"
+  ],
+  "schema": "psp.skill/v2",
+  "version": "2.0.1"
+}

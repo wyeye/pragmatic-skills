@@ -1,1 +1,17 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+build/
+dist/
+.coverage
+.pytest_cache/
+.mypy_cache/
+.psp/runs/
+.psp/staging/
+*.zip
+.psp/backups/
+.psp/conflicts/
+.psp/install.lock
+/.codegraph/
 /.idea/

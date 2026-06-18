@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/psp/skill-sidecar.schema.json",
+  "title": "Pragmatic Skills Pack Skill sidecar",
+  "type": "object",
+  "required": [
+    "schema",
+    "name",
+    "kind",
+    "version",
+    "entry",
+    "loads",
+    "activation",
+    "outputs"
+  ],
+  "properties": {
+    "schema": {
+      "const": "psp.skill/v2"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "kind": {
+      "enum": [
+        "entry",
+        "router",
+        "mode",
+        "support",
+        "direct"
+      ]
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+"
+    },
+    "entry": {
+      "type": "boolean"
+    },
+    "loads": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "activation": {
+      "type": "object",
+      "required": [
+        "positive",
+        "negative"
+      ],
+      "properties": {
+        "positive": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "negative": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "outputs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "additionalProperties": false
+}

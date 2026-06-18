@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/psp/run-trace.schema.json",
+  "title": "Pragmatic Skills Pack trace event",
+  "type": "object",
+  "required": ["schema", "id", "event", "timestamp", "run_id", "data"],
+  "properties": {
+    "schema": {"const": "psp.trace/v1"},
+    "id": {"type": "string", "minLength": 1},
+    "event": {"type": "string", "minLength": 1},
+    "timestamp": {"type": "string", "format": "date-time"},
+    "run_id": {"type": "string", "pattern": "^[A-Za-z0-9._-]{1,100}$"},
+    "data": {"type": "object"}
+  },
+  "additionalProperties": false
+}

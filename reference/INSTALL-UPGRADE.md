@@ -1,124 +1,92 @@
-# Install, Verify, and Upgrade
+# Installation, upgrade, uninstall, and rollback
 
-Pragmatic Skills Pack is shell-first for users and agent installers.
+## Install
 
-## One command
-
-From the target repository:
-
-```bash
-sh /path/to/pragmatic-skills-pack/install.sh
+```sh
+sh install.sh --target /path/to/repository
 ```
 
-Or from anywhere:
+Host adapters default to `auto`. Use `--hosts all`, `minimal`, `none`, or an
+explicit list such as `agents,claude,opencode`.
 
-```bash
-sh /path/to/pragmatic-skills-pack/install.sh --target /path/to/repo
+The installer validates source and target paths, rejects symlink components,
+computes the complete plan before mutation, stages payloads under
+`.psp/staging/`, creates a transaction backup, atomically replaces files, and
+writes `.psp/install.json` last. It also writes a deterministic self-contained
+`.psp/package.zip` used by the project-local CLI for package-aware lifecycle
+commands. Mixed-origin licensing and provenance notices are copied to
+`.psp/legal/` with the managed payload.
+
+Preview the operation first:
+
+```sh
+sh install.sh --target /path/to/repository --dry-run --json
 ```
 
-The default `install` command is idempotent. It installs PSP when absent and upgrades PSP when an existing installation is detected.
+## Upgrade
 
-## Commands
+An install command safely upgrades an existing PSP state. The explicit upgrade
+command refuses to run when no prior state exists:
 
-```bash
-# Check the unpacked package before using it
-sh /path/to/pragmatic-skills-pack/install.sh --check
-
-# Install or upgrade into a repository
-sh /path/to/pragmatic-skills-pack/install.sh --target /path/to/repo
-
-# Install and create an optional project profile template
-sh /path/to/pragmatic-skills-pack/install.sh --target /path/to/repo --profile
-
-# Verify an installed repository
-sh /path/to/pragmatic-skills-pack/install.sh --verify --target /path/to/repo
-
-# Show installed version and drift
-sh /path/to/pragmatic-skills-pack/install.sh --status --target /path/to/repo
-
-# Require an existing install before upgrading
-sh /path/to/pragmatic-skills-pack/install.sh upgrade --target /path/to/repo
+```sh
+python3 /path/to/package/tools/psp.py upgrade --target /path/to/repository
+# Or, using the installed self-contained lifecycle package:
+python3 /path/to/repository/.psp/bin/psp.py upgrade --target /path/to/repository
 ```
 
-After installation, the verifier is also copied into the target repository:
+Downgrades are rejected unless `--allow-downgrade` is explicit.
 
-```bash
+## Conflicts
+
+A user-owned or modified managed file is never overwritten by default. The
+operation stops and writes:
+
+```text
+.psp/conflicts/<timestamp>/conflicts.json
+.psp/conflicts/<timestamp>/<candidate-paths...>
+```
+
+Review the conflict manifest and candidate content. Use `--force` only when the
+intended overwrite or removal is understood and the generated backup is
+acceptable. Malformed or duplicated managed-block markers are never guessed,
+even with `--force`.
+
+## Verify and diagnose
+
+```sh
 python3 .psp/bin/psp.py verify --target .
+python3 .psp/bin/psp.py status --target .
+python3 .psp/bin/psp.py doctor --target .
+python3 .psp/bin/psp.py diff --target .
 ```
 
-`install.sh` delegates to `tools/psp.py`, which is dependency-free and uses only the Python standard library.
+Use `--json` for automation. `doctor --repair` applies only explicitly safe
+repairs; it does not silently overwrite drift.
 
-## Agent install
+`verify` checks installation integrity. It does not claim that an agent followed
+the workflow; behavioral claims require captured traces and evals.
 
-Give the agent the unpacked package and ask it to use the shell installer:
+## Uninstall
 
-```text
-Install Pragmatic Skills Pack into the current repository using the package's install.sh. Verify afterward. Preserve existing AGENTS.md content outside the PSP managed block and report conflicts instead of overwriting them.
+```sh
+python3 .psp/bin/psp.py uninstall --target . --dry-run
+python3 .psp/bin/psp.py uninstall --target .
 ```
 
-Detailed agent instructions are in `AGENT-INSTALL.md` and `reference/AGENT-INSTALL.md`.
+Uninstall removes unchanged managed files and PSP managed blocks while
+preserving surrounding user content. For blocks inserted into existing UTF-8
+files, the original bytes, BOM, newline convention, and file mode are restored
+when the file has not otherwise drifted. Modified managed files are retained
+unless `--force` is explicit.
 
-## What gets installed
+## Rollback
 
-The installer manages:
-
-- `skills/`
-- `reference/`
-- a managed PSP block in `AGENTS.md`
-- `.psp/install.json`
-- `.psp/bin/psp.py`
-
-Package docs such as the release `README.md`, `README.zh.md`, and `TREE.txt` remain in the zip and are not copied over project-owned files.
-
-`AGENTS.md` is handled as a managed block between markers:
-
-```text
-<!-- PSP:BEGIN -->
-...
-<!-- PSP:END -->
+```sh
+python3 .psp/bin/psp.py rollback --target . --list
+python3 .psp/bin/psp.py rollback --target .
+python3 .psp/bin/psp.py rollback --target . --to <exact-backup-id>
 ```
 
-Existing project instructions outside that block are preserved.
-
-## Upgrade policy
-
-Upgrade is safe by default.
-
-The tool records hashes for installed PSP-managed files in `.psp/install.json`. During upgrade:
-
-- files that are missing are copied;
-- files that are PSP-managed and unchanged are replaced with the new package version;
-- files that already match the new package are adopted;
-- files modified by the user are not overwritten;
-- conflicting new versions are written under `.psp/conflicts/<timestamp>/` for manual review;
-- replaced files are backed up under `.psp/backups/<timestamp>/`;
-- obsolete managed files are removed only when unchanged from the previous managed version.
-
-Use `--force` only when you intentionally want to overwrite conflicts. Even then, the previous files are backed up first.
-
-## Exit codes
-
-- `0`: success
-- `1`: verification failed
-- `2`: invalid command, invalid package, missing runtime, or refused downgrade
-- `3`: conflict detected; no overwrite performed
-
-## Notes
-
-The installer never downloads dependencies, never contacts the network, and never runs project install/test/build commands. It only installs and validates the skill pack files.
-
-## Host adapters
-
-Use `--hosts` to choose which coding-agent integrations are installed.
-
-```bash
-sh install.sh --hosts all      # default: Claude, Codex, OpenCode, Hermes, Gemini, Copilot, Cursor
-sh install.sh --hosts auto     # AGENTS + .agents entry + detected adapters
-sh install.sh --hosts minimal  # only AGENTS + .agents entry
-sh install.sh --hosts none     # canonical PSP only, no host adapter files
-sh install.sh --hosts claude,codex,opencode
-```
-
-Installed adapter files are managed like other PSP files when they are dedicated PSP files. Shared instruction files such as `AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, and `.github/copilot-instructions.md` use PSP managed blocks so existing project content outside the block is preserved.
-
-Upgrade keeps the same safety behavior: unchanged managed adapter files are replaced, user-modified adapter files become conflicts unless `--force` is used, and shared instruction files only update the PSP block.
+Rollback restores the exact pre-operation snapshot. Before restoring, it creates
+a `pre-rollback-*` safety snapshot of the current state. Backup IDs must match
+exactly; prefixes are not accepted.

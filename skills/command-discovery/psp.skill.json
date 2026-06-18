@@ -1,0 +1,21 @@
+{
+  "activation": {
+    "negative": [
+      "the command is already explicitly established and still current"
+    ],
+    "positive": [
+      "a workflow phase needs a project command"
+    ]
+  },
+  "entry": false,
+  "kind": "support",
+  "loads": [],
+  "name": "command-discovery",
+  "outputs": [
+    "command inventory",
+    "source evidence",
+    "confidence and prerequisites"
+  ],
+  "schema": "psp.skill/v2",
+  "version": "2.0.1"
+}

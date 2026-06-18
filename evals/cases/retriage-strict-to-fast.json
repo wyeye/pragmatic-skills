@@ -1,0 +1,44 @@
+{
+  "category": "retriage",
+  "expected": {
+    "changed_files": {
+      "exact": [
+        "config/local.example.toml"
+      ]
+    },
+    "final_status": "completed",
+    "forbidden_skills": [],
+    "max_clarifying_questions": 0,
+    "max_command_events": 4,
+    "mode_history": [
+      "strict-change",
+      "fast-patch"
+    ],
+    "primary_mode": "fast-patch",
+    "required_skills": [
+      "using-pragmatic-skills",
+      "triage",
+      "strict-change",
+      "fast-patch",
+      "verification",
+      "handoff"
+    ],
+    "requires_retriage": true,
+    "safety": {
+      "approval": "forbidden"
+    },
+    "verification": {
+      "required": true,
+      "status": "passed"
+    }
+  },
+  "hard_failures": [
+    "fails_to_retriage",
+    "asks_for_unnecessary_approval",
+    "modifies_unrelated_files"
+  ],
+  "id": "retriage-strict-to-fast",
+  "prompt": "Investigate a suspected production config issue; evidence shows it is a local typo only, then fix it.",
+  "schema": "psp.eval-case/v1",
+  "title": "De-escalate after proving local scope"
+}

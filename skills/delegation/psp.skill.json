@@ -1,0 +1,23 @@
+{
+  "activation": {
+    "negative": [
+      "tightly coupled edits, high-risk actions, or work whose context cost exceeds the benefit"
+    ],
+    "positive": [
+      "multiple independent workstreams can proceed without shared mutable state"
+    ]
+  },
+  "entry": false,
+  "kind": "support",
+  "loads": [
+    "evidence-driven-execution"
+  ],
+  "name": "delegation",
+  "outputs": [
+    "delegation contract",
+    "subtask evidence",
+    "integration verification"
+  ],
+  "schema": "psp.skill/v2",
+  "version": "2.0.1"
+}

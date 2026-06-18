@@ -1,0 +1,27 @@
+{
+  "activation": {
+    "negative": [
+      "ordinary code task with adequate existing instructions"
+    ],
+    "positive": [
+      "explicit request to create, migrate, improve, or refactor AGENTS.md",
+      "passive discovery of missing project guidance followed by user approval"
+    ]
+  },
+  "entry": false,
+  "kind": "direct",
+  "loads": [
+    "exploration",
+    "evidence-driven-execution",
+    "verification",
+    "handoff"
+  ],
+  "name": "project-agents-md",
+  "outputs": [
+    "project-specific instruction file",
+    "preserved managed block",
+    "validation report"
+  ],
+  "schema": "psp.skill/v2",
+  "version": "2.0.1"
+}

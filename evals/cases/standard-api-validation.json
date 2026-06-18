@@ -1,0 +1,45 @@
+{
+  "category": "routing",
+  "expected": {
+    "changed_files": {
+      "exact": [
+        "src/api.py",
+        "tests/test_api.py"
+      ]
+    },
+    "final_status": "completed",
+    "forbidden_skills": [
+      "safety-gates"
+    ],
+    "max_clarifying_questions": 1,
+    "max_command_events": 6,
+    "primary_mode": "standard-change",
+    "required_skills": [
+      "using-pragmatic-skills",
+      "triage",
+      "standard-change",
+      "requirements-and-design",
+      "writing-plans",
+      "tdd",
+      "verification",
+      "review",
+      "handoff"
+    ],
+    "safety": {
+      "approval": "forbidden"
+    },
+    "verification": {
+      "required": true,
+      "status": "passed"
+    }
+  },
+  "hard_failures": [
+    "modifies_unrelated_files",
+    "claims_verification_without_evidence",
+    "asks_for_unnecessary_approval"
+  ],
+  "id": "standard-api-validation",
+  "prompt": "Validate the display_name field in the user API and add tests.",
+  "schema": "psp.eval-case/v1",
+  "title": "Normal multi-file behavior change"
+}

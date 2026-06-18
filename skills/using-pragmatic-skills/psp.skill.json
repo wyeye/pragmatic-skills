@@ -1,0 +1,27 @@
+{
+  "activation": {
+    "negative": [
+      "pure conversation with no repository task"
+    ],
+    "positive": [
+      "coding, debugging, planning, review, verification, or repository work",
+      "explicit PSP retrospective request",
+      "explicit request to create or improve AGENTS.md"
+    ]
+  },
+  "entry": true,
+  "kind": "entry",
+  "loads": [
+    "triage",
+    "project-agents-md",
+    "workflow-retrospective"
+  ],
+  "name": "using-pragmatic-skills",
+  "outputs": [
+    "primary route",
+    "activated skill set",
+    "trace start decision"
+  ],
+  "schema": "psp.skill/v2",
+  "version": "2.0.1"
+}

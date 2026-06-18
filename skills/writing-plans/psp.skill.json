@@ -1,0 +1,24 @@
+{
+  "activation": {
+    "negative": [
+      "tiny patch whose safe execution is obvious"
+    ],
+    "positive": [
+      "non-trivial implementation with multiple steps, files, dependencies, or validation paths"
+    ]
+  },
+  "entry": false,
+  "kind": "support",
+  "loads": [
+    "requirements-and-design"
+  ],
+  "name": "writing-plans",
+  "outputs": [
+    "ordered steps",
+    "target files",
+    "test mapping",
+    "rollback notes"
+  ],
+  "schema": "psp.skill/v2",
+  "version": "2.0.1"
+}

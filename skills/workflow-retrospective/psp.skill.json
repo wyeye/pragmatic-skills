@@ -1,0 +1,25 @@
+{
+  "activation": {
+    "negative": [
+      "routine task completion"
+    ],
+    "positive": [
+      "user explicitly asks to review PSP routing, skills, or workflow friction"
+    ]
+  },
+  "entry": false,
+  "kind": "direct",
+  "loads": [
+    "evidence-driven-execution",
+    "handoff"
+  ],
+  "name": "workflow-retrospective",
+  "outputs": [
+    "observations",
+    "root-cause hypotheses",
+    "prioritized improvements",
+    "eval fixtures"
+  ],
+  "schema": "psp.skill/v2",
+  "version": "2.0.1"
+}

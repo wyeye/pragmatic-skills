@@ -1,0 +1,30 @@
+name: Installer or tooling bug
+description: Report a reproducible package, install, trace, rollback, or eval problem
+title: "[bug] "
+labels: [bug]
+body:
+  - type: input
+    id: version
+    attributes:
+      label: PSP version
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: OS, Python version, host, and target repository shape.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Reproduction
+      description: Commands, expected result, actual result, and sanitized output.
+    validations:
+      required: true
+  - type: textarea
+    id: safety
+    attributes:
+      label: Data or safety impact
+      description: Note overwritten content, escaped paths, leaked secrets, or unapproved actions.

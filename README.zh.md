@@ -1,208 +1,251 @@
-# Pragmatic Skills Pack — 渐进暴露版
+# Pragmatic Skills Pack — 增强版 2.0.1
 
-一个实用、按阶段路由、证据优先的 coding agent skills 包。
+一个面向 Coding Agent 的阶段路由、证据优先工作流包，并配套安全安装器、
+可审计本地 Trace、确定性工作流 Eval 和发布检查。
 
-用户正常提出任务；agent 从入口 skill 开始，先判断是否命中明确的主动直达能力，否则再 triage、选择一个主模式，并在对应阶段触发辅助 skill。用户不需要主动调用任何具体 skill。
+本压缩包是用于**私有工程评估**的增强派生版本，基于
+`SOURCE-BASELINE.md` 记录的上游快照制作，不是上游官方发布。公开分发前请先
+阅读 `LICENSE`。
 
-## 用户契约
+## 它解决什么问题
 
-用户不需要知道内部 skill 名字，也不需要说“调用 TDD / verification / strict-change”。
-
-正常链路是：
+PSP 只向 Agent 暴露一个入口，然后在内部完成任务分流：
 
 ```text
-用户任务
-  -> AGENTS.md
-  -> skills/using-pragmatic-skills/SKILL.md
-  -> 明确的任务后 PSP 复盘？直接进入 workflow-retrospective
-  -> 否则进入 skills/triage/SKILL.md
-  -> 一个主模式 skill
-  -> 当前阶段触发时再加载辅助 skill
+using-pragmatic-skills
+  -> triage
+    -> fast-patch | exploration | standard-change | strict-change
+      -> 按阶段加载支持 Skill
+         需求、计划、TDD、安全审批、验证、审查、交付
 ```
 
-除非用户正在设计、调试或评估这套 workflow，否则 agent 不应该问用户该用哪个 skill 或 mode。
+目标是让小改动保持轻量，同时在范围、歧义或风险增加时，逐步增强计划、审批、
+证据和验证要求。
 
-## 一个命令安装 / 升级
+## 增强版 2.0.1 的主要补强
 
-从目标项目里执行：
+- **事务化安装器：**路径边界校验、符号链接拒绝、操作锁、staging、原子替换、
+  备份、冲突报告、回滚、卸载、doctor、diff、dry-run 和 JSON 输出。
+- **可移植 Skill 元数据：**标准 `SKILL.md` frontmatter，外加机器可读
+  `psp.skill.json` sidecar 和自动生成的依赖 Manifest。
+- **证据 Trace：**可选 JSONL 追加日志、扩展凭据脱敏、声明类型与证据语义
+  匹配、带范围/有效期的审批校验，以及“修改后验证失效”检测。
+- **可执行 Eval：**16 个确定性案例，覆盖路由、安全、证据、修改范围、重新分流
+  和负向控制。
+- **发布工程：**单元、集成、对抗、Trace、Eval、打包及 CI 检查；Python 工具
+  仅使用标准库，GitHub Actions 均固定到不可变的完整提交 SHA。
 
-```bash
-sh /path/to/pragmatic-skills-pack/install.sh
+## 环境要求
+
+- Python 3.9 或更高版本
+- 对目标项目有创建 `.psp/`、Skill 文件及所选宿主适配文件的权限
+
+不需要安装第三方 Python 依赖。
+
+## 安装
+
+在解压后的目录执行：
+
+```sh
+sh install.sh --target /path/to/your/repository
 ```
 
-或者显式指定目标项目：
+Windows 下可直接调用 Python 入口：
 
-```bash
-sh /path/to/pragmatic-skills-pack/install.sh --target /path/to/repo
+```powershell
+py -3 tools\psp.py install --target C:\path\to\repository
 ```
 
-同一个命令可以重复执行：没有安装时会安装，已有 PSP 时会按安全策略升级。
+宿主选择默认为 `auto`：安装器会安装通用 `agents` 入口，并根据目标项目标记追加相关宿主适配器。也可显式覆盖：
 
-校验解压后的包：
-
-```bash
-sh /path/to/pragmatic-skills-pack/install.sh --check
+```sh
+sh install.sh --target /path/to/repository --hosts all
+sh install.sh --target /path/to/repository --hosts minimal
+sh install.sh --target /path/to/repository --hosts none
+sh install.sh --target /path/to/repository --hosts agents,claude,opencode
 ```
 
-校验已安装项目：
+常用安全选项：
 
-```bash
-sh /path/to/pragmatic-skills-pack/install.sh --verify --target /path/to/repo
+```sh
+# 展示完整计划，但不写文件
+sh install.sh --target /path/to/repository --dry-run --json
+
+# 目标不存在项目画像时安装模板
+sh install.sh --target /path/to/repository --profile
+
+# 仅在检查过备份和变更计划后，显式覆盖被修改的托管文件
+sh install.sh --target /path/to/repository --force
 ```
 
-安装后，目标项目里也会有：
+安装状态保存在 `.psp/install.json`。安装器会保留 PSP 托管区块以外的用户内容；
+除非显式使用 `--force`，否则不会覆盖被用户修改的托管文件。对新插入的托管区块，
+安装器会保留原文件的 UTF-8 BOM、换行风格和权限模式，并在卸载时恢复精确原始字节。
+许可与来源说明会安装到 `.psp/legal/`，确保被托管的 Skill 副本仍携带来源上下文。
 
-```bash
+## 管理已安装项目
+
+项目本地 CLI 位于 `.psp/bin/psp.py`。安装时还会生成确定性的自包含生命周期包
+`.psp/package.zip`，因此 `doctor`、`diff`、`verify-package`、重装和同版本
+`upgrade` 不依赖调用时所在目录，也不依赖最初解压的压缩包：
+
+```sh
 python3 .psp/bin/psp.py verify --target .
+python3 .psp/bin/psp.py status --target .
+python3 .psp/bin/psp.py doctor --target .
 ```
 
-`install.sh` 是公开入口；底层实现是无依赖的 `tools/psp.py`。
+使用项目内嵌包比较或重新应用当前版本：
 
-## 使用 agent 安装
-
-也可以直接让 agent 安装。把解压后的包给 agent，然后说：
-
-```text
-请把 Pragmatic Skills Pack 安装到当前仓库。优先使用包里的 install.sh，安装后运行校验。保留 AGENTS.md 里 PSP 托管块之外的已有内容；如果有冲突，报告 .psp/conflicts/ 路径，不要静默覆盖。
+```sh
+python3 .psp/bin/psp.py diff --target .
+python3 .psp/bin/psp.py upgrade --target . --dry-run
+python3 .psp/bin/psp.py upgrade --target .
 ```
 
-agent 安装细则见 `AGENT-INSTALL.md` 和 `reference/AGENT-INSTALL.md`。
+升级到更新的解压包时，可运行新包中的 CLI，或通过 `--package-root` 指定新包目录。 嵌入归档会按安装状态校验哈希，并限制条目数、展开大小、路径、重复项和符号链接。
 
-## 升级策略
+安全卸载或恢复事务快照：
 
-升级安全优先：
+```sh
+python3 .psp/bin/psp.py uninstall --target . --dry-run
+python3 .psp/bin/psp.py uninstall --target .
 
-- `AGENTS.md` 只更新 `<!-- PSP:BEGIN -->` 到 `<!-- PSP:END -->` 的托管块，不覆盖项目自己的说明。
-- PSP 管理的 `skills/` 和 `reference/` 文件会记录 hash 到 `.psp/install.json`。
-- 升级时只覆盖“上次安装后没被改过”的 PSP 文件。
-- 用户改过的文件不会被覆盖，会生成 `.psp/conflicts/<timestamp>/REPORT.md` 和 `.new` 候选文件。
-- 被替换的旧文件会备份到 `.psp/backups/<timestamp>/`。
-- 不会覆盖项目自己的 README。
-- 只有显式传 `--force` 才会覆盖冲突文件，而且覆盖前仍会备份。
-
-详细说明见 `reference/INSTALL-UPGRADE.md`。
-
-## 核心思路
-
-```text
-AGENTS.md
-  -> using-pragmatic-skills
-       -> triage
-            -> 只打开一个主模式 skill
-                 -> 需求/设计阶段命中时加载 requirements-and-design
-                 -> 其他辅助 skill 仍按阶段触发
+python3 .psp/bin/psp.py rollback --target . --list
+python3 .psp/bin/psp.py rollback --target .
+python3 .psp/bin/psp.py rollback --target . --to <完整备份ID>
 ```
 
-这样小改动不会加载完整工程规范，大改动又不会跳过测试、计划、审查和证据。
+回滚会恢复某次操作前的精确快照，并在恢复前先为当前状态创建安全快照。
 
+## 可选执行 Trace
 
-## 头脑风暴、需求确认与设计收敛
+Trace 是保存在 `.psp/runs/<run-id>/events.jsonl` 的本地追加记录。正常使用 Skill
+并不依赖它，但它能让完成声明、审批和验证更容易审计。
 
-PSP 新增 `skills/requirements-and-design/SKILL.md`，负责实现前的头脑风暴、需求澄清、验收标准、方案比较与确认。
+```sh
+python3 .psp/bin/psp.py trace start \
+  --target . \
+  --metadata '{"task":"修复解析器校验"}'
 
-- 用户正常表达“先讨论方案、梳理需求、确认验收标准”等意图，不需要说 skill 名。
-- 仍然先经过 triage：只讨论时进入 Exploration；需要实现时进入 Standard 或 Strict；然后由 mode 在需求阶段自动加载。
-- `exploration` 负责发现项目事实；`requirements-and-design` 负责决定目标行为、范围、非目标、验收标准和设计方向。
-- 小而明确、低风险、规格完整的任务不会强制加载，避免仪式化。
-- 先查项目证据，再问用户；一次只问一个真正会改变结果的问题。
-- 只有低风险、可回滚、非公开接口/安全/数据语义的细节才允许使用明确记录的安全默认值。
-- 最终确认状态固定为 `confirmed`、`conditionally confirmed`、`safe assumptions used` 或 `blocked on user decision`；最后一种状态下不能进入实现。
-- 需求确认和安全审批是两个独立 gate。
+python3 .psp/bin/psp.py trace emit mode_selected \
+  --target . \
+  --data '{"mode":"standard-change"}'
 
-产出的 Requirement Brief 会传给计划、TDD、验证、审查和交付。详细规则与 eval fixtures 见 `reference/REQUIREMENTS-AND-DESIGN.md`。
+python3 .psp/bin/psp.py trace emit command_finished \
+  --target . \
+  --event-id cmd-tests \
+  --data '{"command":"pytest -q","exit_code":0,"purpose":"tests","evidence_id":"tests-ok"}'
 
-## 项目 AGENTS.md 生成与重构
+python3 .psp/bin/psp.py trace emit verification_finished \
+  --target . \
+  --event-id verify-tests \
+  --data '{"status":"passed","scope":"tests","evidence":["tests-ok"],"evidence_id":"verified-tests"}'
 
-PSP 现在包含 `skills/project-agents-md/SKILL.md`，专门维护当前项目自己的 `AGENTS.md`。
+python3 .psp/bin/psp.py trace emit claim \
+  --target . \
+  --data '{"claim":"tests_passed","evidence":["verified-tests"]}'
 
-- 主动触发：用户要求创建、更新、迁移、优化或重构 AGENTS.md / agent instructions。
-- 被动触发：agent 在项目发现阶段发现没有 AGENTS.md，或者只有 PSP 通用入口块、没有项目特定说明。
-- 被动触发只能询问用户是否生成，不能静默写文件。
-- PSP 托管块由安装器维护；项目自己的说明写在托管块之外。
-
-## 主动触发的工作流复盘
-
-PSP 新增 `skills/workflow-retrospective/SKILL.md`，用于在任务完成或形成稳定阶段后，基于真实证据复盘 PSP 本身并推动整套 skills 迭代。
-
-- 只在用户明确提出“复盘这次流程、评估 skill 触发、改进 PSP、生成迭代项”等意图时触发。
-- 普通任务结束时不会自动运行，也不会例行询问用户是否复盘。
-- 只使用可观察证据，并区分 observed、inferred、not observed 和 unknown。
-- 每个重要改进项都必须给出优先级、置信度、准确目标文件、回归风险和 eval fixture。
-- 默认只分析、不修改文件；用户同时要求落地改进时，先完成复盘，再回到 triage 执行修改。
-- 普通实现总结仍由 `handoff` 负责，避免两个 skill 重复。
-
-用户明确要求归档时，可按 `psp.retrospective/v1` 写入 `.psp/retrospectives/`。细则见 `reference/WORKFLOW-RETROSPECTIVE.md`。
-
-## 通用命令解析
-
-通用包不再要求在 `AGENTS.md` 里固定填写：
-
-```text
-Install / Test / Lint / Typecheck / Build / Run locally
+python3 .psp/bin/psp.py trace finish --target . --status completed
+python3 .psp/bin/psp.py trace verify --target .
 ```
 
-不同项目的命令应该从当前仓库里发现，而不是写死在模板里。
+`trace verify` 会拒绝重复事件 ID、引用不存在或未来证据的声明、没有成功上游证据
+的通过验证、声明与证据类型不匹配、缺少先前匹配且未过期审批的高风险动作，以及在
+文件再次变化后已经失效的验证。普通成功命令或文件查看不能再冒充测试、构建通过。
+敏感键、带凭据 URL、DSN 和连接串会在落盘前脱敏，但 Trace 仍应视作敏感运维记录。
 
-需要命令时会加载：
+## 行为 Eval
 
-```text
-skills/command-discovery/SKILL.md
+校验案例定义和确定性评分器：
+
+```sh
+python3 tools/psp.py eval validate --target .
+python3 tools/psp.py eval self-test --target .
+python3 tools/eval_runner.py --self-test --output-dir build/eval --summary
 ```
 
-它会按优先级查找：用户明确指令、项目文档、`.psp/project-profile.md`、`package.json` scripts、`Makefile`、`justfile`、`pyproject.toml`、`tox.ini`、`Cargo.toml`、`go.mod`、`pom.xml`、`build.gradle`、CI 配置等。找不到就必须说找不到，不能编造命令。
+评分真实宿主运行记录：
 
-如果具体项目想固定命令，可以复制 `reference/PROJECT-PROFILE.template.md` 到 `.psp/project-profile.md`，或者安装时加 `--profile`。
+```sh
+python3 tools/eval_runner.py \
+  --trace-dir path/to/captured-traces \
+  --output-dir build/eval
+```
 
-## 机器可读 metadata
+Self-test 只能证明案例、合成通过样本和评分器彼此一致，**不能**证明真实模型或宿主
+通过了工作流。真正的兼容性结论必须记录宿主、版本、模型、日期、案例集和原始运行
+Trace。
 
-每个 `SKILL.md` 顶部都有 YAML frontmatter，例如：
+## Skill 元数据模型
+
+每个 `SKILL.md` 只保留可移植的顶层字段：
 
 ```yaml
-schema: psp.skill/v1
+---
 name: standard-change
-kind: mode
-version: 1.8.0
-summary: ...
-triggers: [...]
-loads: ...
-activation: ...
-outputs: [...]
+description: Execute a bounded repository change through planning, implementation, verification, and handoff.
+license: Mixed-origin; see repository LICENSE
+compatibility: Agent Skills-compatible host or a PSP adapter.
+metadata:
+  psp-schema: psp.skill/v2
+  psp-kind: mode
+  psp-version: 2.0.1
+---
 ```
 
-同时有：
+PSP 自有的路由图数据放在相邻的 `psp.skill.json` 中。自动生成的
+`skills/MANIFEST.json` 记录文件哈希，并校验单一入口、引用存在和所有 Skill 可达。
+
+## 开发与验证本增强包
+
+```sh
+make check
+make test
+make eval
+make package
+```
+
+对应的直接命令：
+
+```sh
+python3 -m compileall -q tools
+python3 tools/build_manifest.py --check
+python3 tools/psp.py verify-package --target .
+python3 -m unittest discover -s tests -v
+python3 tools/psp.py eval validate --target .
+python3 tools/psp.py eval self-test --target .
+python3 tools/eval_runner.py --self-test --summary
+```
+
+`verify-package` 检查目录结构、声明的适配器资源、Manifest、JSON Schema 实例、
+sidecar、捕获结果结构和 Eval 案例语法。它是包完整性检查，不是 Agent 行为已经可靠
+的证明。
+
+## 目录结构
 
 ```text
-skills/MANIFEST.json
+skills/       核心工作流 Skill 与 sidecar
+adapters/     宿主发现入口适配器
+reference/    运维与工作流文档
+schemas/      Trace、Eval、Manifest、sidecar、安装状态 Schema
+evals/        可执行案例、fixture、runner 和确定性评分器
+tools/        安装、Trace、Eval、Manifest、发布 CLI
+tests/        单元、集成、对抗、Trace、Eval 和打包测试
+.github/      CI 与贡献模板
 ```
 
-工具或 agent 可以先读 manifest / frontmatter 做路由，再按需打开具体 skill 正文。
+## 已知边界
 
-## v1.8 改动
+- 除非宿主提供运行时强制 API，否则路由本质上仍由模型按提示词执行。
+- 不同模型和宿主版本对同一 Skill 的遵循行为可能不同。
+- 安装完整性检查不能证明 Agent 真正遵循了工作流。
+- Trace 可以增强审计，但不能独立证明所有外部命令或环境事实都真实。
+- 在发布真实宿主运行结果前，`compat/hosts.yaml` 中的兼容标签保持保守。
 
-- 新增 `skills/requirements-and-design/SKILL.md`，覆盖轻量头脑风暴、需求澄清、方案收敛、验收标准和确认状态。
-- 明确拆分 `exploration`（发现事实）与 `requirements-and-design`（做需求/设计决策）。
-- 给 Standard/Strict 增加按阶段触发的 requirements phase，同时保留 Fast Patch 的轻量路径。
-- `writing-plans` 必须消费已确认的 Requirement Brief，存在关键未决策时不得进入实现计划。
-- 将验收标准贯通到 TDD、verification、review 和 handoff。
-- 新增一次一个关键问题、安全默认值边界、需求变更控制，以及 `reference/REQUIREMENTS-AND-DESIGN.md` 中的 10 个 eval fixtures。
+## 许可与来源
 
-当前版本：`1.8.0`。
-
-## 多工具安装
-
-PSP 现在是 shell-first，并支持 host adapter。
-
-```bash
-# 在目标仓库根目录执行
-sh /path/to/pragmatic-skills-pack/install.sh
-
-# 安装全部支持的 adapter
-sh /path/to/pragmatic-skills-pack/install.sh --hosts all
-
-# 只安装指定工具 adapter
-sh /path/to/pragmatic-skills-pack/install.sh --hosts claude,codex,opencode
-```
-
-默认 `--hosts all` 会安装 `AGENTS.md`、`.agents/skills/using-pragmatic-skills` 原生入口，以及 Claude Code、OpenCode、Gemini CLI、GitHub Copilot、Cursor 等薄适配器。只想按现有项目文件检测时用 `--hosts auto`；只想装 canonical PSP、不放任何 host adapter 时用 `--no-host-adapters`。
-
-原生 adapter 只是薄入口。真正的内部工作流仍然在 `skills/` 里，用户只需要正常提出任务。
+本包属于混合来源。被审查的上游快照没有仓库级许可证，因此本增强包**不会**把
+上游派生材料重新许可。新编写增强内容仅在贡献者确实拥有许可权的范围内按
+Apache-2.0 提供。详见 `LICENSE`、`LICENSE-APACHE-2.0`、`NOTICE` 和
+`SOURCE-BASELINE.md`。

@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/psp/host-adapters.schema.json",
+  "title": "Pragmatic Skills Pack host adapter manifest",
+  "type": "object",
+  "required": [
+    "schema",
+    "version",
+    "default",
+    "hosts"
+  ],
+  "properties": {
+    "schema": {
+      "const": "psp.host-adapters/v2"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+"
+    },
+    "default": {
+      "enum": [
+        "auto",
+        "all",
+        "minimal",
+        "none"
+      ]
+    },
+    "hosts": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "always_in_minimal": {
+            "type": "boolean"
+          },
+          "files": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "uses": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "notes": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

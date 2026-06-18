@@ -1,0 +1,1 @@
+Deterministic graders live in `tools/psp_eval.py` so the installed CLI and CI use exactly the same scoring implementation. Host-specific semantic graders may be added here, but their prompts, model versions, nondeterminism, and fallback behavior must be recorded.

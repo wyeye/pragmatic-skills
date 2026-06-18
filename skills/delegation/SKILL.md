@@ -1,96 +1,24 @@
 ---
-schema: psp.skill/v1
 name: delegation
-description: Use real subagents or explicit role-separated passes without pretending subagents exist.
-kind: support
-version: 1.8.0
-summary: Use real subagents or explicit role-separated passes without pretending subagents exist.
-triggers:
-- Large task split.
-- Independent implementation/test/review reduces risk.
-- Strict Change benefits from second perspective.
-loads:
-  conditional:
-    integration_verification:
-    - skills/verification/SKILL.md
-    final_review:
-    - skills/review/SKILL.md
-outputs:
-- subagent task/evidence or role-pass evidence
-- integration checklist
-activation:
-  automatic: true
-  entrypoint: false
-  user_direct: false
-  invoked_by:
-  - skills/review/SKILL.md#loads.conditional.delegation_useful
-  - skills/strict-change/SKILL.md#loads.phased.delegation
-  routing_note: Users provide tasks; agents route from AGENTS.md through an explicit direct route or triage and phase triggers. Users do not manually invoke individual skills.
+description: Delegates independent, bounded work with explicit inputs, outputs, constraints, and evidence requirements, then verifies integration centrally.
+license: Mixed-origin; see repository LICENSE
+compatibility: Agent Skills-compatible hosts or a PSP host adapter.
+metadata:
+  psp-schema: psp.skill/v2
+  psp-kind: support
+  psp-version: 2.0.1
 ---
+
 # Delegation
 
-## Internal activation
+Delegate only bounded work. Each subtask contract must include the objective, allowed files, prohibited actions, required evidence, expected output, and completion criteria. Avoid assigning overlapping writable scopes.
 
-This is a support skill. It is loaded by a mode, router, or another support skill when the relevant phase or condition is reached.
+The primary workflow remains responsible for reconciling assumptions, reviewing contributions, resolving conflicts, running integrated verification, and making the final claim. A delegated report is evidence to inspect, not proof by itself.
 
-Users do not need to ask for this skill directly.
+## Operating rule
 
-Use this skill for real subagents or explicit role-separated passes.
+Use this skill only while its trigger is active. Keep conclusions proportional to observed evidence, preserve user-owned work, and stop when a required decision or approval is unavailable.
 
-The main rule: never fake subagents.
+## Trace contract
 
-## When to use
-
-Use when:
-
-- The task is large enough to split.
-- Independent implementation, testing, or review would reduce risk.
-- Strict Change would benefit from a second perspective.
-
-Do not use for tiny edits.
-
-## Real subagent mode
-
-If actual subagent/tool support exists:
-
-1. Give each subagent one clear task.
-2. Require concrete evidence:
-   - Files inspected.
-   - Files changed.
-   - Commands run.
-   - Results.
-   - Risks or open questions.
-3. Verify the evidence before integrating.
-4. Run final integrated verification.
-
-## Role-pass fallback
-
-If no real subagent exists, say so and perform separate passes:
-
-- Implementer pass.
-- Tester pass.
-- Reviewer pass.
-
-Use this wording:
-
-```text
-No separate subagent was available, so I used separate implementer/tester/reviewer passes.
-```
-
-## Anti-fabrication rules
-
-Do not invent:
-
-- Subagent names.
-- Subagent conversations.
-- Tool calls.
-- Test output.
-- Review approvals.
-- User confirmations.
-
-## Integration checklist
-
-- Confirm patches apply cleanly.
-- Check for conflicting assumptions.
-- Run relevant tests in the integrated tree.
-- Review the final diff.
+When PSP tracing is enabled, record mode selection, skill activation, commands, file changes, approvals, verification, and claims as structured events. Every strong completion claim must reference earlier evidence event IDs.

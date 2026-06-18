@@ -1,0 +1,24 @@
+{
+  "activation": {
+    "negative": [
+      "documentation-only work, generated files, exploratory spikes, or tests that cannot express the requirement economically"
+    ],
+    "positive": [
+      "behavioral change with an executable test surface"
+    ]
+  },
+  "entry": false,
+  "kind": "support",
+  "loads": [
+    "command-discovery",
+    "evidence-driven-execution"
+  ],
+  "name": "tdd",
+  "outputs": [
+    "failing test evidence",
+    "implementation evidence",
+    "refactor verification"
+  ],
+  "schema": "psp.skill/v2",
+  "version": "2.0.1"
+}

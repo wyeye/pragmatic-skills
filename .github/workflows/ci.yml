@@ -1,0 +1,56 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: ${{ matrix.os }} / Python ${{ matrix.python }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        python: ["3.9", "3.11", "3.13"]
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Compile tools
+        run: python -m compileall -q tools
+      - name: Check generated manifest
+        run: python tools/build_manifest.py --check
+      - name: Verify package
+        run: python tools/psp.py verify-package --target . --json
+      - name: Run tests
+        run: python -m unittest discover -s tests -v
+      - name: Validate eval cases
+        run: python tools/psp.py eval validate --target . --json
+      - name: Test eval framework
+        run: python tools/psp.py eval self-test --target . --json
+      - name: Test deterministic trace grader
+        run: python tools/eval_runner.py --self-test --summary
+
+  shell-scripts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - name: Check POSIX shell syntax
+        run: sh -n install.sh verify.sh
+
+  release-archive:
+    runs-on: ubuntu-latest
+    needs: [test, shell-scripts]
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: "3.11"
+      - name: Build and self-check deterministic archive
+        run: python tools/package_release.py --output-dir dist

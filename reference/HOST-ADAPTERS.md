@@ -1,44 +1,28 @@
-# Host Adapters
+# Host adapter policy
 
-Last reviewed: 2026-06-17.
+The canonical workflow lives under `skills/`. Adapters expose only the entry
+contract and should remain thin, replaceable discovery layers.
 
-Pragmatic Skills Pack uses one canonical internal workflow and thin host adapters. The canonical files are:
+| Host | Discovery | Current label |
+|---|---|---|
+| Agent Skills-style | `.agents/skills` and `AGENTS.md` | Package-tested, behavioral evaluation pending |
+| Codex-style | `AGENTS.md` and Agent Skills | Package-tested, behavioral evaluation pending |
+| Claude Code | `CLAUDE.md` and `.claude/skills` | Experimental |
+| OpenCode | `.agents/skills` and optional command | Experimental |
+| Hermes | `AGENTS.md` | Adapter-only |
+| Gemini CLI | `GEMINI.md` | Adapter-only |
+| GitHub Copilot | `.github/copilot-instructions.md` | Adapter-only |
+| Cursor | `.cursor/rules/*.mdc` | Adapter-only |
 
-- `AGENTS.md`
-- `skills/`
-- `reference/`
+Definitions:
 
-Host adapters should point to that canonical workflow. They should not duplicate the entire workflow.
+- **Package-tested:** installation, file layout, integrity, drift, uninstall,
+  and rollback paths are covered by automated package tests.
+- **Experimental:** the adapter is implemented but recurring host-version
+  behavioral evaluation has not established a stable pass rate.
+- **Adapter-only:** instruction injection exists; runtime-enforced routing and a
+  measured behavioral pass rate are not claimed.
 
-## Default install
-
-`sh install.sh --target <repo>` installs all supported adapters by default:
-
-- Common / Codex / OpenCode / Hermes: `AGENTS.md` plus `.agents/skills/using-pragmatic-skills/SKILL.md`
-- Claude Code: `CLAUDE.md` plus `.claude/skills/psp-claude-entry/SKILL.md`
-- Gemini CLI: `GEMINI.md`
-- GitHub Copilot: `.github/copilot-instructions.md`
-- Cursor: `.cursor/rules/pragmatic-skills-pack.mdc`
-- OpenCode convenience command: `.opencode/commands/psp.md`
-
-## Duplicate native skill names
-
-Some hosts scan multiple skill directories. OpenCode can scan `.opencode/skills`, `.claude/skills`, and `.agents/skills`. To avoid duplicate native skill names when Claude and OpenCode are both used in one repo:
-
-- `.agents/skills/using-pragmatic-skills/SKILL.md` uses `name: using-pragmatic-skills`.
-- `.claude/skills/psp-claude-entry/SKILL.md` uses `name: psp-claude-entry`.
-- PSP does not install `.opencode/skills/using-pragmatic-skills` by default because `.agents/skills` is already supported by OpenCode.
-
-## Install modes
-
-```bash
-sh install.sh --target .                  # all adapters, safe default
-sh install.sh --target . --hosts auto     # common entry plus adapters detected from existing project files
-sh install.sh --target . --hosts minimal  # AGENTS.md + .agents native entry only
-sh install.sh --target . --hosts claude,codex,opencode
-sh install.sh --target . --no-host-adapters
-```
-
-## Agent usage
-
-Users do not invoke individual PSP skills. Users describe normal tasks. Host adapters route the agent to `skills/using-pragmatic-skills/SKILL.md`, which may use an explicit active-only direct route; otherwise it routes through triage, one primary mode, and support skills by phase trigger.
+Do not promote a host to behaviorally supported until published runs identify
+host version, model, date, case count, raw trace provenance, safety results, and
+regressions relative to the previous release.

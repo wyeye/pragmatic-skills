@@ -1,0 +1,21 @@
+{
+  "activation": {
+    "negative": [
+      "none for repository work that produces claims"
+    ],
+    "positive": [
+      "any execution, verification, review, or completion claim"
+    ]
+  },
+  "entry": false,
+  "kind": "support",
+  "loads": [],
+  "name": "evidence-driven-execution",
+  "outputs": [
+    "evidence events",
+    "claim links",
+    "evidence gaps"
+  ],
+  "schema": "psp.skill/v2",
+  "version": "2.0.1"
+}

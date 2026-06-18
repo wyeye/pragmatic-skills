@@ -1,0 +1,25 @@
+{
+  "activation": {
+    "negative": [
+      "purely read-only answer with no changed artifact, unless factual verification is still needed"
+    ],
+    "positive": [
+      "after implementation or before a completion claim"
+    ]
+  },
+  "entry": false,
+  "kind": "support",
+  "loads": [
+    "command-discovery",
+    "evidence-driven-execution"
+  ],
+  "name": "verification",
+  "outputs": [
+    "verification matrix",
+    "command evidence",
+    "acceptance coverage",
+    "unverified risks"
+  ],
+  "schema": "psp.skill/v2",
+  "version": "2.0.1"
+}

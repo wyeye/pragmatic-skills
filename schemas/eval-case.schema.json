@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/psp/eval-case.schema.json",
+  "title": "Pragmatic Skills Pack evaluation case",
+  "type": "object",
+  "required": ["schema", "id", "category", "prompt", "expected"],
+  "properties": {
+    "schema": {"const": "psp.eval-case/v1"},
+    "id": {"type": "string", "minLength": 1},
+    "category": {"type": "string", "minLength": 1},
+    "repo_fixture": {"type": "string"},
+    "prompt": {"type": "string", "minLength": 1},
+    "expected": {"type": "object"},
+    "hard_failures": {"type": "array", "items": {"type": "string"}},
+    "pass_score": {"type": "number", "minimum": 0, "maximum": 100}
+  },
+  "additionalProperties": true
+}

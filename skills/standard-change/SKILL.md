@@ -1,123 +1,32 @@
 ---
-schema: psp.skill/v1
 name: standard-change
-description: Normal engineering work with requirements, planning, tests, evidence, verification, and review loaded by phase.
-kind: mode
-version: 1.8.0
-summary: Normal engineering work with requirements, planning, tests, evidence, verification, and review loaded by phase.
-triggers:
-- Behavior changes.
-- Bug fixes.
-- Moderate refactors.
-- Multi-file edits without Strict triggers.
-loads:
-  phased:
-    discovery:
-    - skills/exploration/SKILL.md
-    command:
-    - skills/command-discovery/SKILL.md
-    project_instructions:
-    - skills/project-agents-md/SKILL.md
-    requirements:
-    - skills/requirements-and-design/SKILL.md
-    planning:
-    - skills/writing-plans/SKILL.md
-    behavior:
-    - skills/tdd/SKILL.md
-    execution:
-    - skills/evidence-driven-execution/SKILL.md
-    verification:
-    - skills/verification/SKILL.md
-    review:
-    - skills/review/SKILL.md
-    completion:
-    - skills/handoff/SKILL.md
-  escalation:
-  - skills/strict-change/SKILL.md
-outputs:
-- requirement/design baseline when needed
-- planned change
-- implementation evidence
-- verification results
-- review findings
-- handoff summary
-activation:
-  automatic: true
-  entrypoint: false
-  user_direct: false
-  invoked_by:
-  - skills/triage/SKILL.md#loads.select_one
-  routing_note: Users provide tasks; agents route from AGENTS.md through an explicit direct route or triage and phase triggers. Users do not manually invoke individual skills.
+description: Runs the normal end-to-end implementation workflow: clarify requirements, plan, implement, test, verify acceptance criteria, review the diff, and hand off.
+license: Mixed-origin; see repository LICENSE
+compatibility: Agent Skills-compatible hosts or a PSP host adapter.
+metadata:
+  psp-schema: psp.skill/v2
+  psp-kind: mode
+  psp-version: 2.0.1
 ---
+
 # Standard Change
 
-## Phase-trigger contract
+Use a complete but proportionate implementation loop.
 
-Do not load all support skills when entering this mode.
+1. Discover repository facts and commands.
+2. Activate requirements and design only when intended behavior, scope, or acceptance criteria are not already settled.
+3. Produce a file-oriented plan for non-trivial work.
+4. Implement in small coherent increments; use test-first development where it improves confidence.
+5. Run risk-appropriate verification and map results to every acceptance criterion.
+6. Review the actual final diff for correctness, regressions, security, maintainability, and scope control.
+7. Deliver a handoff that distinguishes verified facts, unverified areas, and remaining risks.
 
-Load support skills only when their phase trigger is reached. The user should not be asked to invoke support skills manually.
+Do not treat passing tests as proof that every requirement is met. Re-triage immediately when the work gains production, data, access-control, billing, or destructive impact.
 
-Use this skill for normal engineering work: real behavior changes, bug fixes, moderate refactors, and multi-file edits.
+## Operating rule
 
-Standard Change should stay progressive. Do not load every support skill at mode entry.
+Use this skill only while its trigger is active. Keep conclusions proportional to observed evidence, preserve user-owned work, and stop when a required decision or approval is unavailable.
 
-## Progressive support loading
+## Trace contract
 
-Load support skills by phase:
-
-- Discovery phase: inspect relevant code/tests. Load `skills/exploration/SKILL.md` when project facts, current behavior, root cause, or feasibility are unclear.
-- Command phase: load `skills/command-discovery/SKILL.md` only when install/test/lint/typecheck/build/run commands are needed and not already known from explicit project instructions.
-- Project-instructions phase: load `skills/project-agents-md/SKILL.md` when the target is `AGENTS.md` or repository agent instruction files.
-- Requirements phase: load `skills/requirements-and-design/SKILL.md` when the user asks to brainstorm/confirm requirements, a feature lacks scope or acceptance criteria, multiple designs materially differ, or planning would rely on risky assumptions.
-- Planning phase: load `skills/writing-plans/SKILL.md` when more than one step/file is involved, order matters, tests must change, or reviewability matters.
-- Behavior phase: load `skills/tdd/SKILL.md` for behavior changes and bug fixes.
-- Execution phase: load `skills/evidence-driven-execution/SKILL.md` before non-trivial edits, delegated work, or any claim that will need audit evidence.
-- Verification phase: load `skills/verification/SKILL.md` before running checks or reporting validation.
-- Review phase: load `skills/review/SKILL.md` before calling the work complete when behavior changed, tests changed, multiple files changed, or the diff is not tiny.
-- Completion phase: load `skills/handoff/SKILL.md` before the final response.
-
-Do not load requirements-and-design for a tiny, fully specified, low-risk change merely to create a formality.
-
-## Workflow
-
-1. Understand current behavior, relevant code, tests, and constraints.
-2. Resolve project commands only when needed.
-3. If requirements/design is triggered, produce a Requirement Brief and establish its confirmation state.
-4. If the state is `blocked on user decision`, stop before implementation planning or editing.
-5. Plan if the change is not trivial, using the confirmed brief as input.
-6. For behavior changes, write/update the failing test first when practical and map tests to acceptance criteria.
-7. Implement the smallest change that satisfies the accepted requirement.
-8. Refactor only after verification passes.
-9. Run targeted checks; broaden checks when blast radius justifies it.
-10. Review the actual diff against intended scope and acceptance criteria.
-11. Report evidence, unverified criteria, assumptions, and gaps.
-
-## Requirement change control
-
-Do not silently change a confirmed scope, non-goal, acceptance criterion, or recommended design during implementation.
-
-If new evidence invalidates the brief:
-
-1. State the new evidence.
-2. Update the Requirement Brief.
-3. Re-establish its confirmation state.
-4. Re-triage if risk or scope changed.
-
-## Scope control
-
-Do not opportunistically rewrite unrelated code.
-
-If you discover adjacent issues, mention them as follow-ups unless they block the current task.
-
-## Escalate to Strict Change
-
-Stop, re-triage, and load `skills/strict-change/SKILL.md` if the change touches:
-
-- Auth, security, permissions, secrets, privacy.
-- Payment, billing, quotas, subscriptions.
-- Database schema, migrations, destructive data changes.
-- Public API, SDK, backward compatibility.
-- Deployment, infrastructure, CI/CD, production config.
-- Runtime dependencies with behavior or security impact.
-- Generated files, lockfiles, vendored code, or unclear ownership artifacts.
-- Large or hard-to-review refactors.
+When PSP tracing is enabled, record mode selection, skill activation, commands, file changes, approvals, verification, and claims as structured events. Every strong completion claim must reference earlier evidence event IDs.

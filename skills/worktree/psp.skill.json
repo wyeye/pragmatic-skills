@@ -1,0 +1,23 @@
+{
+  "activation": {
+    "negative": [
+      "tiny edit, non-Git repository, or worktree creation would add more risk than it removes"
+    ],
+    "positive": [
+      "long-running or risky branch work benefits from isolation and Git is available"
+    ]
+  },
+  "entry": false,
+  "kind": "support",
+  "loads": [
+    "evidence-driven-execution"
+  ],
+  "name": "worktree",
+  "outputs": [
+    "isolation decision",
+    "worktree path",
+    "baseline and cleanup evidence"
+  ],
+  "schema": "psp.skill/v2",
+  "version": "2.0.1"
+}

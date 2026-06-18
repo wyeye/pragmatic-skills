@@ -1,0 +1,34 @@
+{
+  "activation": {
+    "negative": [
+      "tiny fully specified patch, read-only investigation, or high-impact change requiring strict controls"
+    ],
+    "positive": [
+      "meaningful but normally reversible implementation work"
+    ]
+  },
+  "entry": false,
+  "kind": "mode",
+  "loads": [
+    "requirements-and-design",
+    "writing-plans",
+    "tdd",
+    "command-discovery",
+    "evidence-driven-execution",
+    "verification",
+    "review",
+    "delegation",
+    "worktree",
+    "handoff"
+  ],
+  "name": "standard-change",
+  "outputs": [
+    "confirmed requirement brief",
+    "implementation plan",
+    "verified change",
+    "review findings",
+    "handoff"
+  ],
+  "schema": "psp.skill/v2",
+  "version": "2.0.1"
+}

@@ -1,28 +1,28 @@
 {
-  "schema": "psp.host-adapters/v1",
-  "version": "1.8.0",
-  "default": "all",
+  "schema": "psp.host-adapters/v2",
+  "version": "2.0.1",
+  "default": "auto",
   "hosts": {
     "agents": {
-      "always_default": true,
+      "always_in_minimal": true,
       "files": [
         "AGENTS.md",
         ".agents/skills/using-pragmatic-skills/SKILL.md"
       ],
-      "notes": "Common AGENTS.md plus open Agent Skills entry adapter."
+      "notes": "Common AGENTS.md plus an Agent Skills entry adapter."
     },
     "codex": {
       "uses": [
         "agents"
       ],
-      "notes": "Codex reads AGENTS.md and scans .agents/skills for Agent Skills."
+      "notes": "Uses AGENTS.md and .agents/skills discovery."
     },
     "claude": {
       "files": [
         "CLAUDE.md",
         ".claude/skills/psp-claude-entry/SKILL.md"
       ],
-      "notes": "Claude Code reads CLAUDE.md and project .claude/skills. Adapter name is unique to avoid duplicates in tools that also scan .claude/skills."
+      "notes": "Uses a unique Claude entry name to avoid duplicate discovery."
     },
     "opencode": {
       "files": [
@@ -31,13 +31,12 @@
       "uses": [
         "agents"
       ],
-      "notes": "OpenCode can discover .agents/skills; PSP avoids also installing .opencode/skills to prevent duplicate skill names. Command is a convenience adapter."
+      "notes": "Uses .agents/skills for native discovery; command is optional convenience."
     },
     "hermes": {
       "uses": [
         "agents"
-      ],
-      "notes": "Hermes Agent uses AGENTS.md as project context."
+      ]
     },
     "gemini": {
       "files": [
@@ -63,12 +62,5 @@
         "agents"
       ]
     }
-  },
-  "install_modes": {
-    "all": "Default. Install canonical PSP plus adapters for Claude Code, Codex, OpenCode, Hermes Agent, Gemini CLI, GitHub Copilot, Cursor, and generic Agent Skills hosts.",
-    "auto": "Install canonical PSP plus adapters detected from existing project files.",
-    "minimal": "Install canonical PSP plus AGENTS/.agents entry only.",
-    "none": "Install canonical PSP only; do not create host adapter files."
-  },
-  "duplicate_name_policy": "Generic entry uses .agents/skills/using-pragmatic-skills; Claude-specific entry uses .claude/skills/psp-claude-entry."
+  }
 }

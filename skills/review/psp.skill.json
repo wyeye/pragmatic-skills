@@ -1,0 +1,24 @@
+{
+  "activation": {
+    "negative": [
+      "no artifact or diff exists to review"
+    ],
+    "positive": [
+      "meaningful implementation before handoff",
+      "explicit code review request"
+    ]
+  },
+  "entry": false,
+  "kind": "support",
+  "loads": [
+    "evidence-driven-execution"
+  ],
+  "name": "review",
+  "outputs": [
+    "ranked findings",
+    "acceptance coverage",
+    "review disposition"
+  ],
+  "schema": "psp.skill/v2",
+  "version": "2.0.1"
+}

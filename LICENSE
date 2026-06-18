@@ -1,0 +1,34 @@
+# Licensing and provenance notice
+
+This repository is a **mixed-origin enhanced derivative package** prepared from the
+public `wyeye/pragmatic-skills` repository snapshot identified in
+`SOURCE-BASELINE.md`.
+
+## Upstream-derived material
+
+Files retained or adapted from the upstream snapshot remain subject to the
+copyright and license terms, if any, provided by their respective copyright
+holders. The reviewed upstream snapshot did not contain a repository-level
+license file. Consequently, this package does **not** grant permission to copy,
+modify, publish, sublicense, or redistribute upstream-derived material beyond
+rights you already have from the copyright holder or applicable law.
+
+Use this bundle for private evaluation only unless you have obtained the required
+permission or the upstream project later publishes applicable license terms.
+
+## Newly authored enhancements
+
+To the extent that a file or contribution in this enhanced package is newly
+authored, copyrightable, and owned by the contributor making that contribution,
+that contribution is offered under the Apache License, Version 2.0, reproduced in
+`LICENSE-APACHE-2.0`.
+
+No Apache-2.0 grant in this package overrides or relicenses third-party or
+upstream-derived material.
+
+## No affiliation and no legal advice
+
+This is not an official upstream release and is not endorsed by or affiliated
+with the upstream author. This notice is an engineering provenance statement,
+not legal advice. A project owner should complete a legal review before public
+release or redistribution.

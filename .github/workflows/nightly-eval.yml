@@ -1,0 +1,26 @@
+name: Nightly eval-framework regression
+
+on:
+  schedule:
+    - cron: "17 4 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  framework-regression:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: "3.11"
+      - name: Verify package and deterministic graders
+        run: |
+          python tools/psp.py verify-package --target . --json
+          python tools/psp.py eval validate --target . --json
+          python tools/psp.py eval self-test --target . --json
+          python tools/eval_runner.py --self-test --output-dir build/eval --summary
+      - name: Explain scope
+        run: echo "This workflow tests the eval framework only; it is not a real host/model benchmark."

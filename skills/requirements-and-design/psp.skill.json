@@ -1,0 +1,22 @@
+{
+  "activation": {
+    "negative": [
+      "tiny fully specified work or read-only exploration"
+    ],
+    "positive": [
+      "behavior, scope, user-visible result, or architecture decision is materially ambiguous"
+    ]
+  },
+  "entry": false,
+  "kind": "support",
+  "loads": [],
+  "name": "requirements-and-design",
+  "outputs": [
+    "requirement brief",
+    "acceptance criteria",
+    "confirmation state",
+    "open decisions"
+  ],
+  "schema": "psp.skill/v2",
+  "version": "2.0.1"
+}

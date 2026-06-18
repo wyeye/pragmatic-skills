@@ -1,0 +1,25 @@
+{
+  "activation": {
+    "negative": [
+      "user explicitly requested a code or configuration change"
+    ],
+    "positive": [
+      "investigate, explain, compare, audit, locate, or diagnose without requested implementation"
+    ]
+  },
+  "entry": false,
+  "kind": "mode",
+  "loads": [
+    "command-discovery",
+    "evidence-driven-execution",
+    "handoff"
+  ],
+  "name": "exploration",
+  "outputs": [
+    "evidence map",
+    "findings",
+    "unknowns and next decision"
+  ],
+  "schema": "psp.skill/v2",
+  "version": "2.0.1"
+}

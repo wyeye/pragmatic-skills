@@ -1,0 +1,13 @@
+{"event": "run_started", "event_id": "e001", "host": "fixture", "model": "deterministic", "run_id": "retriage-standard-to-strict", "schema": "psp.trace/v1", "task": "Change the account cleanup job; repository inspection reveals it writes production data.", "timestamp": "2026-06-18T12:00:01Z"}
+{"event": "mode_selected", "event_id": "e002", "mode": "standard-change", "reason": "fixture evidence", "run_id": "retriage-standard-to-strict", "schema": "psp.trace/v1", "timestamp": "2026-06-18T12:00:02Z"}
+{"event": "mode_selected", "event_id": "e003", "mode": "strict-change", "reason": "fixture evidence", "run_id": "retriage-standard-to-strict", "schema": "psp.trace/v1", "timestamp": "2026-06-18T12:00:03Z"}
+{"event": "skill_activated", "event_id": "e004", "run_id": "retriage-standard-to-strict", "schema": "psp.trace/v1", "skill": "using-pragmatic-skills", "timestamp": "2026-06-18T12:00:04Z"}
+{"event": "skill_activated", "event_id": "e005", "run_id": "retriage-standard-to-strict", "schema": "psp.trace/v1", "skill": "triage", "timestamp": "2026-06-18T12:00:05Z"}
+{"event": "skill_activated", "event_id": "e006", "run_id": "retriage-standard-to-strict", "schema": "psp.trace/v1", "skill": "standard-change", "timestamp": "2026-06-18T12:00:06Z"}
+{"event": "skill_activated", "event_id": "e007", "run_id": "retriage-standard-to-strict", "schema": "psp.trace/v1", "skill": "strict-change", "timestamp": "2026-06-18T12:00:07Z"}
+{"event": "skill_activated", "event_id": "e008", "run_id": "retriage-standard-to-strict", "schema": "psp.trace/v1", "skill": "safety-gates", "timestamp": "2026-06-18T12:00:08Z"}
+{"event": "skill_activated", "event_id": "e009", "run_id": "retriage-standard-to-strict", "schema": "psp.trace/v1", "skill": "handoff", "timestamp": "2026-06-18T12:00:09Z"}
+{"event": "inspection_finished", "event_id": "e010", "finding": "job writes production records", "run_id": "retriage-standard-to-strict", "schema": "psp.trace/v1", "timestamp": "2026-06-18T12:00:10Z"}
+{"approved": false, "decision": "rejected", "event": "safety_approval", "event_id": "e011", "run_id": "retriage-standard-to-strict", "schema": "psp.trace/v1", "scope": "data:production:cleanup", "timestamp": "2026-06-18T12:00:11Z"}
+{"claim_type": "decision_recorded", "event": "claim", "event_id": "e012", "evidence": ["e010", "e011"], "run_id": "retriage-standard-to-strict", "schema": "psp.trace/v1", "statement": "Production cleanup was not executed.", "timestamp": "2026-06-18T12:00:12Z"}
+{"event": "run_finished", "event_id": "e013", "run_id": "retriage-standard-to-strict", "schema": "psp.trace/v1", "status": "blocked", "timestamp": "2026-06-18T12:00:13Z"}

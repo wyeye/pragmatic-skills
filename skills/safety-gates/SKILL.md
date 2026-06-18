@@ -1,96 +1,32 @@
 ---
-schema: psp.skill/v1
 name: safety-gates
-description: Require explicit approval before destructive, production-affecting, security-sensitive, or hard-to-reverse actions.
-kind: support
-version: 1.8.0
-summary: Require explicit approval before destructive, production-affecting, security-sensitive, or hard-to-reverse actions.
-triggers:
-- Any gated action is about to occur.
-- Strict Change risk phase.
-loads: {}
-outputs:
-- risk category
-- approval prompt when needed
-- safety gate status
-safety:
-  approval_required_for:
-  - data deletion/migration/backfill
-  - production config/deployments
-  - secrets/credentials
-  - shared git history rewrite
-  - runtime dependency changes with behavior/security impact
-  - auth/billing/public API contract changes
-activation:
-  automatic: true
-  entrypoint: false
-  user_direct: false
-  invoked_by:
-  - skills/command-discovery/SKILL.md#loads.conditional.high_risk_dependency_or_lockfile_action
-  - skills/strict-change/SKILL.md#loads.immediate
-  - skills/writing-plans/SKILL.md#loads.conditional.safety_gated_action
-  - skills/requirements-and-design/SKILL.md#loads.conditional.safety_sensitive_decision
-  routing_note: Users provide tasks; agents route from AGENTS.md through an explicit direct route or triage and phase triggers. Users do not manually invoke individual skills.
+description: Requires explicit, scoped, timely approval before high-impact execution and verifies that the approved scope matches the actual action.
+license: Mixed-origin; see repository LICENSE
+compatibility: Agent Skills-compatible hosts or a PSP host adapter.
+metadata:
+  psp-schema: psp.skill/v2
+  psp-kind: support
+  psp-version: 2.0.1
 ---
+
 # Safety Gates
 
-## Internal activation
+Ask for approval only at an actual execution boundary. The request must state:
 
-This is a support skill. It is loaded by a mode, router, or another support skill when the relevant phase or condition is reached.
+- Exact command or operation.
+- Target environment, repository, branch, account, or data scope.
+- Expected effect and blast radius.
+- Recovery or rollback path.
+- What will not be changed.
 
-Users do not need to ask for this skill directly.
+Approval must be explicit and scoped. A vague “go ahead” does not authorize a materially broader operation. Record approval before the action starts. Stop on rejection, ambiguity, changed preconditions, expired context, or any scope mismatch.
 
-Use this skill before actions that may be destructive, production-affecting, security-sensitive, or hard to reverse.
+Never interpret requirement confirmation, plan approval, or prior unrelated approval as permission for a high-risk action.
 
-Loading this skill is not the same as asking for approval. Approval is required only when a gated action is about to happen.
+## Operating rule
 
-## Approval required
+Use this skill only while its trigger is active. Keep conclusions proportional to observed evidence, preserve user-owned work, and stop when a required decision or approval is unavailable.
 
-Require explicit user approval before:
+## Trace contract
 
-- Deleting, truncating, overwriting, or migrating real data.
-- Running database migrations, backfills, destructive scripts, or production jobs.
-- Changing production configuration or deployment state.
-- Modifying secrets, credentials, keys, tokens, or secret storage.
-- Force-pushing, rewriting shared git history, deleting shared branches/tags.
-- Adding/upgrading/removing runtime dependencies with behavior or security impact.
-- Changing auth, permissions, billing, quotas, or public API contracts.
-- Running install/dependency commands that may mutate lockfiles or shared environment state when that mutation is not already requested.
-
-## Approval prompt
-
-Use this shape:
-
-```text
-This triggers a safety gate: <risk>.
-Planned action: <specific action>.
-Expected impact: <impact>.
-Rollback/mitigation: <plan>.
-Please confirm before I proceed.
-```
-
-## No approval needed
-
-Do not ask for approval for:
-
-- Reading files.
-- Inspecting diffs.
-- Running local non-destructive tests.
-- Drafting patches.
-- Static analysis.
-- Explaining a plan.
-
-unless the environment or user instructions make these actions risky.
-
-## Safety gate status
-
-Track one of:
-
-```text
-Safety gate: not triggered
-Safety gate: triggered, approval required before <action>
-Safety gate: approved by user for <action>
-Safety gate: blocked; approval not provided
-```
-
-Do not treat silence as approval.
+When PSP tracing is enabled, record mode selection, skill activation, commands, file changes, approvals, verification, and claims as structured events. Every strong completion claim must reference earlier evidence event IDs.

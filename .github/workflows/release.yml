@@ -1,0 +1,57 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: "3.13"
+
+      - name: Verify package
+        run: |
+          python tools/build_manifest.py --check
+          python tools/psp.py verify-package --target .
+          python -m unittest discover -s tests -v
+          python tools/psp.py eval validate --target . --json
+          python tools/psp.py eval self-test --target . --json
+          python tools/eval_runner.py --self-test --output-dir build/eval --summary
+
+      - name: Build deterministic archive
+        run: python tools/package_release.py --output-dir dist
+
+      - name: Upload workflow artifact
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: pragmatic-skills-release
+          path: |
+            dist/*.zip
+            dist/*.sha256
+          if-no-files-found: error
+
+      - name: Publish GitHub release
+        if: startsWith(github.ref, 'refs/tags/')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            gh release upload "$GITHUB_REF_NAME" dist/*.zip dist/*.sha256 --clobber
+          else
+            gh release create "$GITHUB_REF_NAME" dist/*.zip dist/*.sha256 \
+              --generate-notes --title "$GITHUB_REF_NAME"
+          fi

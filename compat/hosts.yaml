@@ -1,0 +1,39 @@
+schema: psp.compatibility/v1
+updated: 2026-06-18
+levels:
+  package-tested: adapter installation and package integrity are automated; real host behavior is not yet claimed
+  experimental: adapter is implemented but recurring host-version behavior evaluation is pending
+  adapter-only: instruction injection exists; runtime enforcement and behavioral reliability are not claimed
+hosts:
+  agents:
+    level: package-tested
+    discovery: .agents/skills and AGENTS.md
+    behavioral_evidence: not-run
+  codex:
+    level: package-tested
+    discovery: AGENTS.md and Agent Skills
+    behavioral_evidence: not-run
+  claude:
+    level: experimental
+    discovery: CLAUDE.md and .claude/skills
+    behavioral_evidence: not-run
+  opencode:
+    level: experimental
+    discovery: .agents/skills and optional command
+    behavioral_evidence: not-run
+  hermes:
+    level: adapter-only
+    discovery: AGENTS.md
+    behavioral_evidence: not-run
+  gemini:
+    level: adapter-only
+    discovery: GEMINI.md importing AGENTS.md
+    behavioral_evidence: not-run
+  copilot:
+    level: adapter-only
+    discovery: copilot-instructions.md
+    behavioral_evidence: not-run
+  cursor:
+    level: adapter-only
+    discovery: project rule
+    behavioral_evidence: not-run

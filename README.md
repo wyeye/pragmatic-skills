@@ -1,218 +1,274 @@
-# Pragmatic Skills Pack
+# Pragmatic Skills Pack — Enhanced 2.0.1
 
-A pragmatic, phase-routed, evidence-first skill pack for coding agents.
+A phase-routed, evidence-first workflow pack for coding agents, with a hardened
+installer, auditable local traces, deterministic workflow evals, and release
+checks.
 
-Users describe tasks normally. Agents start from the entry skill, route explicit active-only intents directly when applicable, otherwise triage the task, choose one primary mode, and load support skills only when phase triggers are reached.
+This bundle is an **enhanced derivative for private engineering evaluation**.
+It is based on the upstream snapshot documented in `SOURCE-BASELINE.md`; it is
+not an official upstream release. Read `LICENSE` before redistribution.
 
-## User contract
+## What it provides
 
-Users do not call individual skills. They only ask for work normally.
+PSP gives an agent one entry point and routes work internally:
 
-The agent starts from `AGENTS.md`, loads `skills/using-pragmatic-skills/SKILL.md`, uses an explicit active-only direct route when applicable, otherwise routes through `triage`, and then loads mode/support skills automatically by phase trigger.
-
-Internal skill names are implementation details, not user commands.
-
-## Install or upgrade with one command
-
-From the target repository:
-
-```bash
-sh /path/to/pragmatic-skills-pack/install.sh
+```text
+using-pragmatic-skills
+  -> triage
+    -> fast-patch | exploration | standard-change | strict-change
+      -> phase-triggered support Skills
+         requirements, planning, TDD, safety, verification, review, handoff
 ```
 
-Or from anywhere:
+The workflow aims to keep small changes small while requiring stronger planning,
+approval, evidence, and verification as scope or risk increases.
 
-```bash
-sh /path/to/pragmatic-skills-pack/install.sh --target /path/to/repo
+## Enhanced 2.0.1 highlights
+
+- **Transactional installer:** bounded paths, symlink rejection, operation
+  locking, staging, atomic replacement, backups, conflict reports, rollback,
+  uninstall, doctor, diff, dry-run, and JSON output.
+- **Portable Skill metadata:** standard `SKILL.md` frontmatter plus machine-
+  readable `psp.skill.json` sidecars and a generated dependency manifest.
+- **Evidence traces:** optional append-only JSONL events, expanded credential
+  redaction, claim-specific evidence checks, scoped/expiring approval ordering,
+  and stale-verification detection.
+- **Executable eval framework:** 16 deterministic cases covering routing,
+  safety, evidence, scope, re-triage, and negative controls.
+- **Release engineering:** unit, integration, adversarial, trace, eval, package,
+  and CI checks using only the Python standard library; GitHub Actions are
+  pinned to immutable full commit SHAs.
+
+## Requirements
+
+- Python 3.9 or newer
+- A project directory in which you can create `.psp/`, Skill files, and any
+  selected host adapter files
+
+No third-party Python dependency is required.
+
+## Install
+
+From the unpacked bundle:
+
+```sh
+sh install.sh --target /path/to/your/repository
 ```
 
-The same command is safe to re-run. It installs PSP when absent and upgrades PSP when an existing installation is detected.
+On Windows, invoke the Python entry point directly:
 
-Check the unpacked package:
-
-```bash
-sh /path/to/pragmatic-skills-pack/install.sh --check
+```powershell
+py -3 tools\psp.py install --target C:\path\to\repository
 ```
 
-Verify an installed repository:
+Host selection defaults to `auto`. The installer installs the common `agents` entry and adds only the host adapters detected from project markers. You may override it:
 
-```bash
-sh /path/to/pragmatic-skills-pack/install.sh --verify --target /path/to/repo
+```sh
+sh install.sh --target /path/to/repository --hosts all
+sh install.sh --target /path/to/repository --hosts minimal
+sh install.sh --target /path/to/repository --hosts none
+sh install.sh --target /path/to/repository --hosts agents,claude,opencode
 ```
 
-After installation, a verifier is copied into the target repository:
+Useful safety options:
 
-```bash
+```sh
+# Print the complete plan without writing
+sh install.sh --target /path/to/repository --dry-run --json
+
+# Install a project profile template when absent
+sh install.sh --target /path/to/repository --profile
+
+# Overwrite a modified managed file only after reviewing the backup plan
+sh install.sh --target /path/to/repository --force
+```
+
+The installer writes its state to `.psp/install.json`. It preserves user-owned
+content outside PSP managed blocks and does not overwrite modified managed files
+unless `--force` is explicit. For inserted managed blocks it retains the original
+UTF-8 BOM, newline convention, and file mode, and restores the exact original
+bytes on uninstall. Licensing and provenance notices are installed under
+`.psp/legal/` so managed Skill copies retain their source context.
+
+## Operate an installed project
+
+The project-local CLI is installed under `.psp/bin/psp.py`. A deterministic
+self-contained lifecycle bundle is cached at `.psp/package.zip`, so `doctor`,
+`diff`, `verify-package`, reinstall, and same-version `upgrade` do not depend on
+the caller's current directory or the original unpacked archive:
+
+```sh
 python3 .psp/bin/psp.py verify --target .
+python3 .psp/bin/psp.py status --target .
+python3 .psp/bin/psp.py doctor --target .
 ```
 
-`install.sh` is the public entrypoint. It delegates to the dependency-free implementation in `tools/psp.py`.
+Compare or reapply the embedded installed package without writing first:
 
-## Agent-based install
-
-If you want an agent to install PSP, give it the unpacked package and ask:
-
-```text
-Install Pragmatic Skills Pack into the current repository using the package's install.sh. Verify the installation afterward. Preserve existing AGENTS.md content outside the PSP managed block and report any conflicts.
+```sh
+python3 .psp/bin/psp.py diff --target .
+python3 .psp/bin/psp.py upgrade --target . --dry-run
+python3 .psp/bin/psp.py upgrade --target .
 ```
 
-Agent-specific guidance is in `AGENT-INSTALL.md` and `reference/AGENT-INSTALL.md`.
+To upgrade from a newer unpacked bundle, run that bundle's CLI or pass its path
+with `--package-root`. The embedded archive is hash-checked against install
+state and extracted with bounded entry, size, path, duplicate, and symlink
+validation.
 
-## Upgrade safety
+Safely remove managed content or restore a transaction snapshot:
 
-The installer manages `skills/`, `reference/`, and the PSP block in `AGENTS.md` with `.psp/install.json` hashes. It updates only unchanged managed files, backs up replaced files, and reports conflicts instead of overwriting user edits. It does not overwrite the project README. See `reference/INSTALL-UPGRADE.md`.
+```sh
+python3 .psp/bin/psp.py uninstall --target . --dry-run
+python3 .psp/bin/psp.py uninstall --target .
 
-## Why this shape
-
-A monolithic workflow makes every task pay the context cost of every rule. This pack keeps the always-loaded entry small, then progressively exposes only the relevant rules:
-
-```text
-AGENTS.md
-  -> skills/using-pragmatic-skills/SKILL.md
-       -> skills/triage/SKILL.md
-            -> one mode skill: fast-patch | exploration | standard-change | strict-change
-                 -> requirements-and-design when its phase trigger applies
-                 -> other support skills only when the current phase triggers them
+python3 .psp/bin/psp.py rollback --target . --list
+python3 .psp/bin/psp.py rollback --target .
+python3 .psp/bin/psp.py rollback --target . --to <exact-backup-id>
 ```
 
+A rollback restores the exact pre-operation snapshot and first creates a safety
+snapshot of the current state.
 
-## Requirements clarification and design
+## Optional execution traces
 
-PSP includes `skills/requirements-and-design/SKILL.md` for brainstorming, requirement clarification, acceptance criteria, design comparison, and confirmation before planning or implementation.
+Traces are local append-only records under `.psp/runs/<run-id>/events.jsonl`.
+They are not required for normal Skill use, but make claims and approvals easier
+to audit.
 
-- Users ask normally; they do not invoke the skill name.
-- Triage first selects Exploration, Standard Change, or Strict Change. The selected mode activates the skill only when the requirements phase is needed.
-- Exploration discovers repository facts; Requirements and Design settles intended behavior, scope, non-goals, acceptance criteria, and design choices.
-- It is skipped for tiny, fully specified, low-risk work.
-- It asks one decision-critical question at a time and can continue with documented safe assumptions only for low-risk, reversible defaults.
-- Its confirmation state is one of `confirmed`, `conditionally confirmed`, `safe assumptions used`, or `blocked on user decision`. Implementation does not proceed from the blocked state.
-- Requirement confirmation is separate from safety approval.
+```sh
+python3 .psp/bin/psp.py trace start \
+  --target . \
+  --metadata '{"task":"Fix parser validation"}'
 
-The resulting Requirement Brief flows into planning, TDD, verification, review, and handoff. Detailed rules and eval fixtures are in `reference/REQUIREMENTS-AND-DESIGN.md`.
+python3 .psp/bin/psp.py trace emit mode_selected \
+  --target . \
+  --data '{"mode":"standard-change"}'
 
-## Project AGENTS.md generation and refactoring
+python3 .psp/bin/psp.py trace emit command_finished \
+  --target . \
+  --event-id cmd-tests \
+  --data '{"command":"pytest -q","exit_code":0,"purpose":"tests","evidence_id":"tests-ok"}'
 
-PSP now includes `skills/project-agents-md/SKILL.md` for maintaining the current repository's project-specific `AGENTS.md`.
+python3 .psp/bin/psp.py trace emit verification_finished \
+  --target . \
+  --event-id verify-tests \
+  --data '{"status":"passed","scope":"tests","evidence":["tests-ok"],"evidence_id":"verified-tests"}'
 
-- Active trigger: the user asks to create, update, migrate, improve, or refactor AGENTS.md or agent instructions.
-- Passive trigger: during repository discovery, the agent notices there is no AGENTS.md, or only a generic PSP block with no project-specific guidance.
-- Passive trigger asks the user before writing; it never silently creates/refactors AGENTS.md.
-- Existing PSP-managed blocks are preserved and updated only by the installer.
+python3 .psp/bin/psp.py trace emit claim \
+  --target . \
+  --data '{"claim":"tests_passed","evidence":["verified-tests"]}'
 
-## Active-only workflow retrospective
+python3 .psp/bin/psp.py trace finish --target . --status completed
+python3 .psp/bin/psp.py trace verify --target .
+```
 
-PSP includes `skills/workflow-retrospective/SKILL.md` for learning from a completed or recent task and improving the skill pack itself.
+`trace verify` rejects duplicate event IDs, claims that reference missing or
+future evidence, passed verification without successful upstream evidence,
+claim/evidence type mismatches, high-risk actions without a prior matching and
+unexpired approval, and verification made stale by later file changes. A generic
+successful command or inspected artifact cannot prove that tests or builds
+passed. Sensitive-looking keys, credential-bearing URLs, DSNs, and connection
+strings are redacted before persistence, but traces should still be treated as
+operationally sensitive.
 
-- It is triggered only when the user explicitly asks to retrospect on PSP, its routing, its skills, or workflow friction.
-- It is never run or routinely offered after ordinary task completion.
-- It uses observable evidence only and distinguishes observed facts, inferences, unknowns, and evidence gaps.
-- It produces prioritized findings with exact target files and an eval fixture for every material change.
-- It is read-only by default. If the user asks to apply the findings, the workflow completes the retrospective first and then re-enters triage for implementation.
-- A normal implementation summary still belongs to `handoff`.
+## Behavioral evals
 
-Optional saved records use `psp.retrospective/v1` and may be written to `.psp/retrospectives/` only when the user explicitly asks. See `reference/WORKFLOW-RETROSPECTIVE.md`.
+Validate the case definitions and the deterministic grader:
 
-## Universal commands
+```sh
+python3 tools/psp.py eval validate --target .
+python3 tools/psp.py eval self-test --target .
+python3 tools/eval_runner.py --self-test --output-dir build/eval --summary
+```
 
-This pack does not ask you to fill fixed commands in the generic `AGENTS.md`.
+Grade real captured host runs:
 
-When a task needs test/lint/typecheck/build/install/run-local commands, the workflow loads `skills/command-discovery/SKILL.md` and resolves commands from the actual repository: docs, package scripts, task runners, CI files, config files, lockfiles, and ecosystem markers.
+```sh
+python3 tools/eval_runner.py \
+  --trace-dir path/to/captured-traces \
+  --output-dir build/eval
+```
 
-Project-specific overrides are optional. Use `.psp/project-profile.md` in a concrete repository when you want to pin known commands or extra strict triggers. See `reference/PROJECT-PROFILE.template.md`.
+The self-test proves that the case files, synthetic passing fixtures, and grader
+agree. It does **not** prove that a real model or host passed the workflow. Real
+compatibility claims require captured runs for the specified host, version,
+model, date, and case set.
 
-## Machine-readable skills
+## Skill metadata model
 
-Every `SKILL.md` starts with YAML frontmatter, including automatic activation metadata:
+Each `SKILL.md` keeps portable top-level fields:
 
 ```yaml
-schema: psp.skill/v1
+---
 name: standard-change
-kind: mode
-version: 1.8.0
-summary: ...
-triggers: [...]
-loads: ...
-activation: ...
-outputs: [...]
+description: Execute a bounded repository change through planning, implementation, verification, and handoff.
+license: Mixed-origin; see repository LICENSE
+compatibility: Agent Skills-compatible host or a PSP adapter.
+metadata:
+  psp-schema: psp.skill/v2
+  psp-kind: mode
+  psp-version: 2.0.1
+---
 ```
 
-A generated index is available at `skills/MANIFEST.json` for tools that want to inspect skill metadata without reading every skill body.
+PSP-specific graph data lives in the adjacent `psp.skill.json`. The generated
+`skills/MANIFEST.json` records hashes and validates that there is one entry Skill,
+all references exist, and every Skill is reachable.
 
-## Structure
+## Develop and verify this bundle
+
+```sh
+make check
+make test
+make eval
+make package
+```
+
+Equivalent direct commands:
+
+```sh
+python3 -m compileall -q tools
+python3 tools/build_manifest.py --check
+python3 tools/psp.py verify-package --target .
+python3 -m unittest discover -s tests -v
+python3 tools/psp.py eval validate --target .
+python3 tools/psp.py eval self-test --target .
+python3 tools/eval_runner.py --self-test --summary
+```
+
+`verify-package` checks package structure, declared adapter resources, manifests,
+JSON Schema instances, sidecars, captured-result shapes, and eval case syntax.
+It is an integrity check, not behavioral proof.
+
+## Repository map
 
 ```text
-AGENTS.md
-AGENT-INSTALL.md
-README.md
-README.zh.md
-TREE.txt
-install.sh
-verify.sh
-tools/
-  README.md
-  psp.py
-skills/
-  MANIFEST.json
-  using-pragmatic-skills/SKILL.md
-  triage/SKILL.md
-  fast-patch/SKILL.md
-  exploration/SKILL.md
-  standard-change/SKILL.md
-  strict-change/SKILL.md
-  command-discovery/SKILL.md
-  project-agents-md/SKILL.md
-  requirements-and-design/SKILL.md
-  workflow-retrospective/SKILL.md
-  safety-gates/SKILL.md
-  writing-plans/SKILL.md
-  tdd/SKILL.md
-  evidence-driven-execution/SKILL.md
-  verification/SKILL.md
-  review/SKILL.md
-  delegation/SKILL.md
-  worktree/SKILL.md
-  handoff/SKILL.md
-reference/
-  AGENT-INSTALL.md
-  AGENTS-MD-MAINTENANCE.md
-  INSTALL-UPGRADE.md
-  MODE-MATRIX.md
-  PROJECT-PROFILE.template.md
-  REQUIREMENTS-AND-DESIGN.md
-  SKILL-METADATA-SCHEMA.md
-  USER-CONTRACT.md
-  WORKFLOW-RETROSPECTIVE.md
+skills/       canonical workflow Skills and sidecars
+adapters/     thin host discovery adapters
+reference/    operator and workflow documentation
+schemas/      trace, eval, manifest, sidecar, and installer schemas
+evals/        executable cases, fixtures, runners, and deterministic graders
+tools/        installer, trace, eval, manifest, and release CLI
+tests/        unit, integration, adversarial, trace, eval, and package tests
+.github/      CI and contribution templates
 ```
 
-## Version
+## Known boundaries
 
-Current package version: `1.8.0`.
+- Routing is prompt-mediated unless a host provides a runtime enforcement API.
+- Different models and host versions can follow the same Skill differently.
+- An installer integrity check cannot establish that an agent followed the
+  workflow.
+- A trace improves auditability but cannot independently establish that every
+  external command or environment fact was truthful.
+- Host labels in `compat/hosts.yaml` remain conservative until real captured
+  behavioral runs are published.
 
-## Multi-agent installation
+## Licensing and provenance
 
-PSP is shell-first and host-adapter aware.
-
-```bash
-# From your repository root
-sh /path/to/pragmatic-skills-pack/install.sh
-
-# Install every supported adapter
-sh /path/to/pragmatic-skills-pack/install.sh --hosts all
-
-# Install only selected adapters
-sh /path/to/pragmatic-skills-pack/install.sh --hosts claude,codex,opencode
-```
-
-Default `--hosts all` installs `AGENTS.md`, the `.agents/skills/using-pragmatic-skills` native entry adapter, and thin adapters for Claude Code, OpenCode, Gemini CLI, GitHub Copilot, Cursor, and other supported hosts. Use `--hosts auto` if you only want adapters detected from existing project files; use `--no-host-adapters` for canonical PSP only.
-
-Native host adapters are thin entry points. The internal workflow remains in `skills/`, and users still only describe normal tasks.
-
-
-## v1.8 changes
-
-- Added `skills/requirements-and-design/SKILL.md` for lightweight brainstorming, requirement clarification, design convergence, acceptance criteria, and explicit confirmation states.
-- Separated repository fact-finding (`exploration`) from product/design decisions (`requirements-and-design`).
-- Added a requirements phase to Standard and Strict Change while preserving Fast Patch for clear low-risk work.
-- Made writing plans consume the confirmed Requirement Brief and stop when a material user decision is unresolved.
-- Connected acceptance criteria to TDD, verification, review, and handoff.
-- Added one-question-at-a-time rules, safe-default boundaries, change-control rules, and ten eval fixtures in `reference/REQUIREMENTS-AND-DESIGN.md`.
+This package is mixed-origin. The reviewed upstream snapshot did not include a
+repository-level license, so upstream-derived material is **not** relicensed by
+this enhanced bundle. Newly authored enhancements are offered under
+Apache-2.0 only to the extent their contributor has the right to license them.
+See `LICENSE`, `LICENSE-APACHE-2.0`, `NOTICE`, and `SOURCE-BASELINE.md`.

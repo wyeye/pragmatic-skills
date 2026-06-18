@@ -1,15 +1,7 @@
 ---
-description: Pragmatic Skills Pack progressive workflow entry
+description: Pragmatic Skills Pack entry rule for repository work
+globs:
 alwaysApply: true
 ---
 
-This repository uses Pragmatic Skills Pack.
-
-For coding, debugging, review, planning, verification, or repository work:
-
-1. Follow the PSP managed block in `AGENTS.md`.
-2. Start from `skills/using-pragmatic-skills/SKILL.md`.
-3. Let the entry skill choose an explicit direct route when applicable; otherwise let triage select one primary mode.
-4. Load support skills only when their phase trigger is reached.
-5. Do not ask the user to choose individual skills.
-6. Do not claim tests, builds, reviews, approvals, or command output happened unless they actually happened.
+For coding, debugging, planning, review, verification, and repository work, start from `skills/using-pragmatic-skills/SKILL.md`. Choose one primary mode and load supporting skills only when their phase trigger applies. Never invent command output, test results, review findings, or approvals.

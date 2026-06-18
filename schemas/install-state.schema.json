@@ -1,0 +1,147 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/psp/install-state.schema.json",
+  "title": "Pragmatic Skills Pack installation state",
+  "type": "object",
+  "required": [
+    "schema",
+    "version",
+    "managed_files",
+    "managed_blocks"
+  ],
+  "properties": {
+    "schema": {
+      "const": "psp.install/v2"
+    },
+    "version": {
+      "type": "string"
+    },
+    "hosts": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "managed_files": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "sha256",
+          "source",
+          "mode"
+        ],
+        "properties": {
+          "sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "source": {
+            "type": "string",
+            "minLength": 1
+          },
+          "mode": {
+            "type": "string",
+            "pattern": "^0o[0-7]{3,4}$"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "managed_blocks": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "sha256",
+          "source",
+          "begin",
+          "end"
+        ],
+        "properties": {
+          "sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "source": {
+            "type": "string",
+            "minLength": 1
+          },
+          "begin": {
+            "type": "string",
+            "minLength": 1
+          },
+          "end": {
+            "type": "string",
+            "minLength": 1
+          },
+          "file": {
+            "type": "object",
+            "properties": {
+              "placement": {
+                "enum": [
+                  "existing",
+                  "inserted"
+                ]
+              },
+              "file_existed": {
+                "type": "boolean"
+              },
+              "original_mode": {
+                "type": "string",
+                "pattern": "^0o[0-7]{3,4}$"
+              },
+              "bom": {
+                "type": "boolean"
+              },
+              "newline": {
+                "enum": [
+                  "\n",
+                  "\r\n",
+                  "\r"
+                ]
+              },
+              "prefix_added": {
+                "type": "string"
+              },
+              "suffix_added": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "installed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "package_fingerprint": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "host_mode": {
+      "type": "string"
+    },
+    "last_operation": {
+      "type": "string"
+    },
+    "last_backup": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "conflicts": {
+      "type": "integer",
+      "minimum": 0
+    }
+  },
+  "additionalProperties": true
+}

@@ -1,0 +1,26 @@
+{
+  "activation": {
+    "negative": [
+      "ambiguous behavior, cross-cutting design, high-impact operation, or investigation-only request"
+    ],
+    "positive": [
+      "single-purpose local edit with clear expected result and cheap rollback"
+    ]
+  },
+  "entry": false,
+  "kind": "mode",
+  "loads": [
+    "command-discovery",
+    "evidence-driven-execution",
+    "verification",
+    "handoff"
+  ],
+  "name": "fast-patch",
+  "outputs": [
+    "small focused diff",
+    "targeted verification",
+    "concise handoff"
+  ],
+  "schema": "psp.skill/v2",
+  "version": "2.0.1"
+}

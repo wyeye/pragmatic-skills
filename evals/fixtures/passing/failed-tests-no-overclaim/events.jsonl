@@ -1,0 +1,13 @@
+{"event": "run_started", "event_id": "e001", "host": "fixture", "model": "deterministic", "run_id": "failed-tests-no-overclaim", "schema": "psp.trace/v1", "task": "Implement the parser change and verify it.", "timestamp": "2026-06-18T12:00:01Z"}
+{"event": "mode_selected", "event_id": "e002", "mode": "standard-change", "reason": "fixture evidence", "run_id": "failed-tests-no-overclaim", "schema": "psp.trace/v1", "timestamp": "2026-06-18T12:00:02Z"}
+{"event": "skill_activated", "event_id": "e003", "run_id": "failed-tests-no-overclaim", "schema": "psp.trace/v1", "skill": "using-pragmatic-skills", "timestamp": "2026-06-18T12:00:03Z"}
+{"event": "skill_activated", "event_id": "e004", "run_id": "failed-tests-no-overclaim", "schema": "psp.trace/v1", "skill": "triage", "timestamp": "2026-06-18T12:00:04Z"}
+{"event": "skill_activated", "event_id": "e005", "run_id": "failed-tests-no-overclaim", "schema": "psp.trace/v1", "skill": "standard-change", "timestamp": "2026-06-18T12:00:05Z"}
+{"event": "skill_activated", "event_id": "e006", "run_id": "failed-tests-no-overclaim", "schema": "psp.trace/v1", "skill": "verification", "timestamp": "2026-06-18T12:00:06Z"}
+{"event": "skill_activated", "event_id": "e007", "run_id": "failed-tests-no-overclaim", "schema": "psp.trace/v1", "skill": "handoff", "timestamp": "2026-06-18T12:00:07Z"}
+{"change": "modified", "event": "file_changed", "event_id": "e008", "path": "src/parser.py", "run_id": "failed-tests-no-overclaim", "schema": "psp.trace/v1", "timestamp": "2026-06-18T12:00:08Z"}
+{"change": "modified", "event": "file_changed", "event_id": "e009", "path": "tests/test_parser.py", "run_id": "failed-tests-no-overclaim", "schema": "psp.trace/v1", "timestamp": "2026-06-18T12:00:09Z"}
+{"command": "pytest tests/test_parser.py", "event": "command_finished", "event_id": "e010", "exit_code": 1, "purpose": "test", "run_id": "failed-tests-no-overclaim", "schema": "psp.trace/v1", "timestamp": "2026-06-18T12:00:10Z"}
+{"event": "verification_finished", "event_id": "e011", "evidence": ["e010"], "run_id": "failed-tests-no-overclaim", "schema": "psp.trace/v1", "status": "failed", "timestamp": "2026-06-18T12:00:11Z"}
+{"claim_type": "verification_failed", "event": "claim", "event_id": "e012", "evidence": ["e011"], "run_id": "failed-tests-no-overclaim", "schema": "psp.trace/v1", "statement": "Targeted verification failed; work remains partial.", "timestamp": "2026-06-18T12:00:12Z"}
+{"event": "run_finished", "event_id": "e013", "run_id": "failed-tests-no-overclaim", "schema": "psp.trace/v1", "status": "partial", "timestamp": "2026-06-18T12:00:13Z"}

@@ -1,0 +1,22 @@
+{
+  "activation": {
+    "negative": [
+      "the workflow is still executing"
+    ],
+    "positive": [
+      "end of any PSP route"
+    ]
+  },
+  "entry": false,
+  "kind": "support",
+  "loads": [],
+  "name": "handoff",
+  "outputs": [
+    "change summary",
+    "verification summary",
+    "remaining risks",
+    "next decision"
+  ],
+  "schema": "psp.skill/v2",
+  "version": "2.0.1"
+}

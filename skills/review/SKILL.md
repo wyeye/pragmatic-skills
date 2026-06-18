@@ -1,116 +1,26 @@
 ---
-schema: psp.skill/v1
 name: review
-description: Review actual changed files, diff, patch, and behavior before calling Standard or Strict work complete.
-kind: support
-version: 1.8.0
-summary: Review actual changed files, diff, patch, and behavior before calling Standard or Strict work complete.
-triggers:
-- Strict Change completion.
-- Standard Change with behavior changes, tests, multiple files, or non-tiny diff.
-loads:
-  conditional:
-    delegation_useful:
-    - skills/delegation/SKILL.md
-    requirement_drift_decision:
-    - skills/requirements-and-design/SKILL.md
-outputs:
-- review mode
-- evidence inspected
-- requirement/acceptance alignment
-- blocking findings
-- non-blocking findings
-- unverified items
-activation:
-  automatic: true
-  entrypoint: false
-  user_direct: false
-  invoked_by:
-  - skills/delegation/SKILL.md#loads.conditional.final_review
-  - skills/standard-change/SKILL.md#loads.phased.review
-  - skills/strict-change/SKILL.md#loads.phased.review
-  - skills/project-agents-md/SKILL.md#loads.conditional.review
-  routing_note: Users provide tasks; agents route from AGENTS.md through an explicit direct route or triage and phase triggers. Users do not manually invoke individual skills.
+description: Reviews the actual final diff and evidence for correctness, regressions, security, maintainability, scope control, and acceptance-criteria coverage.
+license: Mixed-origin; see repository LICENSE
+compatibility: Agent Skills-compatible hosts or a PSP host adapter.
+metadata:
+  psp-schema: psp.skill/v2
+  psp-kind: support
+  psp-version: 2.0.1
 ---
+
 # Review
 
-## Internal activation
+Review the final state, not the intended plan.
 
-This is a support skill. It is loaded by a mode, router, or another support skill when the relevant phase or condition is reached.
+Inspect changed files and relevant surrounding code. Prioritize correctness, data loss, security, concurrency, compatibility, error handling, tests, and unmet acceptance criteria. Distinguish blocking defects from improvements. Every finding should identify the path or behavior, why it matters, and a concrete remedy.
 
-Users do not need to ask for this skill directly.
+Do not approve based solely on test results. Do not invent findings to appear thorough. When no defect is found, state the review scope and residual blind spots.
 
-Use this skill before calling Standard or Strict work complete.
+## Operating rule
 
-A review is not complete until it references actual evidence: the changed files, the diff/patch, or the behavior under review.
+Use this skill only while its trigger is active. Keep conclusions proportional to observed evidence, preserve user-owned work, and stop when a required decision or approval is unavailable.
 
-## Activation
+## Trace contract
 
-Review is required for:
-
-- Strict Change.
-- Standard Change with behavior changes.
-- Standard Change touching multiple files.
-- Any change that updated tests, public behavior, data handling, auth, billing, dependencies, deployment, or compatibility.
-
-For a tiny Fast Patch, a diff inspection can be reported in `handoff` without loading this full skill.
-
-## Review evidence
-
-Use the strongest available evidence:
-
-- `git diff --stat` and relevant `git diff` output.
-- Changed file list from the editor/tooling.
-- Patch sections that were applied.
-- Test changes and the behavior they assert.
-- Command evidence when reviewing verification claims.
-
-If git is unavailable, state which files or patch sections were inspected.
-
-## Review checklist
-
-Inspect the actual diff for:
-
-- Intended changes only.
-- The diff matches the confirmed Requirement Brief, authoritative spec, and acceptance criteria when they exist.
-- No silent scope/design drift; any divergence is explained and re-confirmed when required.
-- No unrelated formatting churn.
-- No debug logs, secrets, credentials, or private data.
-- Tests/checks match changed behavior.
-- Command evidence matches the claimed verification level.
-- Error handling is appropriate.
-- Edge cases are covered or acknowledged.
-- Public API/data shape/compatibility changes are intentional.
-- Documentation or comments updated when needed.
-
-## Reviewer modes
-
-Use the strongest available mode:
-
-1. Real independent subagent/tool review.
-2. Separate self-review pass with reviewer mindset.
-3. Static checklist if execution is impossible.
-
-Do not imply mode 1 happened if only mode 2 or 3 happened.
-
-## Findings format
-
-```text
-Review mode: <independent subagent | self-review pass | static checklist>
-Evidence inspected:
-- Files: ...
-- Diff/patch: ...
-- Commands: ...
-- Requirement/design basis: ...
-- Acceptance criteria checked: ...
-
-Findings:
-- Blocking: ...
-- Non-blocking: ...
-- Verified: ...
-- Not verified: ...
-```
-
-Fix blocking findings before saying the work is complete.
-
-If the diff reveals a material requirement/design decision rather than a simple implementation defect, load `skills/requirements-and-design/SKILL.md`, update the Requirement Brief, and re-establish confirmation before continuing.
+When PSP tracing is enabled, record mode selection, skill activation, commands, file changes, approvals, verification, and claims as structured events. Every strong completion claim must reference earlier evidence event IDs.

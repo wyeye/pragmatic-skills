@@ -1,174 +1,38 @@
 ---
-schema: psp.skill/v1
 name: using-pragmatic-skills
-description: Start here for any repository or PSP workflow task and load only the next relevant skill.
-kind: entry
-version: 1.8.0
-summary: Start here for any repository or PSP workflow task and load only the next relevant skill.
-triggers:
-- Any task involving code, files, tests, debugging, review, project decisions, requirements/design, or PSP workflow evaluation.
-loads:
-  direct:
-    explicit_workflow_retrospective:
-    - skills/workflow-retrospective/SKILL.md
-  fallback:
-  - skills/triage/SKILL.md
-  conditional:
-    completion:
-    - skills/handoff/SKILL.md
-    command_resolution:
-    - skills/command-discovery/SKILL.md
-    project_agents_md:
-    - skills/project-agents-md/SKILL.md
-outputs:
-- direct retrospective route or selected primary mode
-- next phase-triggered skill path
-safety:
-  approval_required: Only for safety-gated actions, never just to continue ordinary low-risk work.
-activation:
-  automatic: true
-  entrypoint: true
-  user_direct: false
-  invoked_by:
-  - AGENTS.md#start-rule
-  routing_note: Users provide tasks; agents route from AGENTS.md through an explicit direct route or triage and phase triggers. Users do not manually invoke individual skills.
+description: Entry point for repository work. Routes ordinary requests through one primary workflow mode and exposes support skills only at the phase where they are needed.
+license: Mixed-origin; see repository LICENSE
+compatibility: Agent Skills-compatible hosts or a PSP host adapter.
+metadata:
+  psp-schema: psp.skill/v2
+  psp-kind: entry
+  psp-version: 2.0.1
 ---
-# Using Pragmatic Skills Pack
 
-## User contract
+# Using Pragmatic Skills
 
-Users do not invoke individual skills directly.
+Start here for repository work. Users describe the task normally; never require them to name an internal skill.
 
-The user-facing contract is:
+## Routing sequence
 
-```text
-User gives a normal task
-  -> AGENTS.md starts this entry skill
-  -> explicit post-task PSP retrospective? load workflow-retrospective directly
-  -> otherwise load triage
-  -> triage selects one primary mode
-  -> the mode loads requirements/design and other support skills only when their phase triggers are reached
-```
+1. Read repository-level instructions and preserve higher-priority user constraints.
+2. Use a direct route only for an explicit `AGENTS.md` maintenance request or an explicit PSP workflow retrospective.
+3. Otherwise activate `triage` and select exactly one primary mode.
+4. Load support skills only when the current phase reaches their trigger.
+5. Re-run triage when new evidence materially changes scope, ambiguity, reversibility, or impact.
 
-Do not ask the user which skill, mode, or support workflow to use unless the user is explicitly designing, debugging, or evaluating this skill pack.
+## Invariants
 
-Do not expose internal skill names as required user actions. You may mention them only when useful for transparency, debugging, or handoff.
+- One primary mode is active at a time.
+- Investigation is not implementation.
+- Requirement confirmation and safety approval are separate decisions.
+- No command, test, review, approval, or result may be invented.
+- A task is not complete until its acceptance criteria and risk-appropriate verification are addressed.
 
-Use this skill at the start of every repository task and every explicit PSP workflow-evaluation request.
+## Operating rule
 
-This workflow is progressive and internally routed: load only the next relevant skill, not the entire skill pack, and never require the user to call skills by name.
+Use this skill only while its trigger is active. Keep conclusions proportional to observed evidence, preserve user-owned work, and stop when a required decision or approval is unavailable.
 
-## Host adapter resolution
+## Trace contract
 
-Host-native skills and rule files are thin adapters. They exist so Claude Code, Codex, OpenCode, Gemini CLI, Copilot, Cursor, Hermes, and similar tools can enter the same workflow using their normal discovery mechanisms.
-
-Regardless of the host adapter that activated the workflow, the internal source of truth is the repository-local `skills/` directory. Resolve support skills relative to the repository root, for example `skills/triage/SKILL.md`, unless a future package version explicitly says otherwise.
-
-Users still do not invoke support skills directly. Host adapters only start the entry skill.
-
-## Progressive loading rule
-
-You must not read all skill files up front.
-
-Start with the smallest applicable route:
-
-1. Check whether the user explicitly requests a post-task PSP/workflow retrospective.
-2. If yes, load only `skills/workflow-retrospective/SKILL.md` and skip triage unless the same request also asks to apply file changes.
-3. Otherwise read `skills/triage/SKILL.md`.
-4. Let triage load exactly one primary mode skill:
-   - `skills/fast-patch/SKILL.md`
-   - `skills/exploration/SKILL.md`
-   - `skills/standard-change/SKILL.md`
-   - `skills/strict-change/SKILL.md`
-5. Let the selected mode load `skills/requirements-and-design/SKILL.md` only when explicit brainstorming/requirements intent or unresolved design decisions justify it.
-6. Load other support skills by phase, not as a bundle.
-7. Re-run triage if new evidence changes the task shape.
-
-## Active-only post-task retrospective route
-
-Before the default triage route, detect explicit user intent to evaluate PSP itself after a completed or recent task.
-
-Examples include requests to review which skills triggered correctly, identify workflow friction, improve routing, or produce PSP iteration items and eval fixtures.
-
-When this intent is present:
-
-- Load `skills/workflow-retrospective/SKILL.md` directly.
-- Do not load a primary implementation mode for analysis-only retrospective work.
-- Do not run or offer the retrospective automatically at ordinary completion.
-- If the user asks to apply the resulting improvements, finish the retrospective first and then load `skills/triage/SKILL.md` for implementation.
-
-A request for a normal implementation summary alone is handled by `handoff`, not by this route.
-
-## Requirements and design routing
-
-Users may ask in normal language to brainstorm, clarify requirements, compare designs, define acceptance criteria, or confirm a design before coding.
-
-That intent still goes through triage:
-
-- Use Exploration when the user wants investigation, brainstorming, or design only.
-- Use Standard Change when implementation is expected and no Strict trigger applies.
-- Use Strict Change when the design affects security, data, payments, public compatibility, deployment, or another high-risk area.
-
-The selected mode loads `skills/requirements-and-design/SKILL.md` at the requirements phase. Do not bypass triage, and do not force this phase onto tiny, fully specified, low-risk work.
-
-## Metadata-first rule
-
-Each `SKILL.md` starts with machine-readable frontmatter.
-
-When your environment supports partial file reads, you may inspect frontmatter or `skills/MANIFEST.json` for routing hints before opening a skill body. Do not use metadata as a substitute for a skill body once that skill is activated.
-
-## Universal command rule
-
-This skill pack does not hardcode repository commands.
-
-When a workflow needs install, test, lint, typecheck, build, or local-run commands and the exact command is not already known from explicit project instructions, load `skills/command-discovery/SKILL.md`.
-
-Do not invent commands. If no command can be discovered, say so and use the strongest available alternative.
-
-## Project AGENTS.md maintenance rule
-
-AGENTS.md is both a host entry file and the best place for project-specific coding-agent instructions.
-
-Active trigger: when the user asks to create, update, migrate, improve, or refactor `AGENTS.md` or repository agent instructions, load `skills/project-agents-md/SKILL.md`.
-
-Passive trigger: during repository discovery, if you notice the current project has no `AGENTS.md`, or it has only the generic PSP managed block and no project-specific guidance, load `skills/project-agents-md/SKILL.md` for the passive prompt. Do not silently create or refactor `AGENTS.md` from passive detection; ask the user once whether they want it generated or improved.
-
-Do not edit PSP-managed blocks in `AGENTS.md` manually. Use the installer/upgrade path for PSP block changes and use `project-agents-md` only for project-owned content outside managed blocks.
-
-## Always-active principles
-
-These principles apply even before support skills are loaded:
-
-- Smallest sufficient workflow.
-- No fake evidence.
-- No fake subagents.
-- No destructive actions without an explicit safety gate.
-- Prefer project-defined commands over generic conventions.
-- Investigate discoverable facts before asking product questions.
-- Escalate when risk or ambiguity increases.
-- Downgrade only when the evidence shows a lighter mode is safe.
-- Final answer must state what was verified and what was not.
-
-## Re-triage rule
-
-Return to `skills/triage/SKILL.md` when you discover:
-
-- More files, packages, services, or systems are involved than expected.
-- Behavior, API, data, auth, security, payment, deployment, dependency, or compatibility impact appears.
-- Tests fail for unclear reasons.
-- The user request is underspecified and assumptions would be risky.
-- A requirement/design decision changes the implementation class or risk level.
-- The diff becomes hard to review.
-- Investigation shows the task is simpler than expected and can safely use a lighter mode.
-
-## When to stop and ask
-
-Ask at most one focused question when the answer would materially change the implementation and no safe default exists.
-
-Do not ask for confirmation just to continue ordinary low-risk work. Requirement/design confirmation rules are defined in `skills/requirements-and-design/SKILL.md` when that phase is active.
-
-## Completion
-
-Before final response, load `skills/handoff/SKILL.md` unless no code/file work was performed and the answer is purely conversational.
-
-Do not automatically load or offer `workflow-retrospective` after handoff. It is active-only and requires explicit user intent.
+When PSP tracing is enabled, record mode selection, skill activation, commands, file changes, approvals, verification, and claims as structured events. Every strong completion claim must reference earlier evidence event IDs.

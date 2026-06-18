@@ -1,48 +1,13 @@
-# PSP Tooling
+# PSP tooling
 
-`tools/psp.py` is the dependency-free implementation behind the public shell installer.
+`psp.py` is a dependency-free installer, verifier, recovery tool, and trace recorder. Installed projects retain a deterministic `.psp/package.zip`, allowing package-aware lifecycle commands to run without the original archive. `psp_schema.py` validates PSP-owned JSON Schema instances, `eval_runner.py` grades captured traces, `build_manifest.py` generates the Skill index, and `package_release.py` creates reproducible release archives.
 
-Most users should call:
+Common commands:
 
-```bash
-sh install.sh --target /path/to/repo
-```
-
-or, from the target repository:
-
-```bash
-sh /path/to/pragmatic-skills-pack/install.sh
-```
-
-Direct Python commands are still available for automation:
-
-```bash
+```sh
 python3 tools/psp.py verify-package
 python3 tools/psp.py install --target /path/to/repo
-python3 tools/psp.py verify --target /path/to/repo
-python3 tools/psp.py status --target /path/to/repo
-python3 tools/psp.py upgrade --target /path/to/repo
+python3 tools/psp.py doctor --target /path/to/repo
+python3 tools/psp.py rollback --target /path/to/repo
+python3 tools/eval_runner.py --self-test
 ```
-
-After installation, a copy of the verifier is installed at:
-
-```text
-.psp/bin/psp.py
-```
-
-You can then run from the target repository:
-
-```bash
-python3 .psp/bin/psp.py verify --target .
-```
-
-## Upgrade behavior
-
-- Manages `skills/` and `reference/` files with hashes in `.psp/install.json`.
-- Updates only the PSP managed block in `AGENTS.md`, or appends it to a project-owned `AGENTS.md`.
-- Does not overwrite project README files.
-- Backs up overwritten files under `.psp/backups/<timestamp>/`.
-- Writes conflicts under `.psp/conflicts/<timestamp>/` and refuses to clobber user edits unless `--force` is used.
-- Never overwrites `.psp/project-profile.md`.
-
-The tool uses only the Python standard library.

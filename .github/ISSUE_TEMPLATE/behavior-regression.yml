@@ -1,0 +1,25 @@
+name: Workflow behavior regression
+description: Report a routing, safety, evidence, verification, or handoff regression
+title: "[behavior] "
+labels: [behavior, regression]
+body:
+  - type: textarea
+    id: configuration
+    attributes:
+      label: Reproducible configuration
+      description: Host/version, model, date, case, fixture commit, and run settings.
+    validations:
+      required: true
+  - type: textarea
+    id: traces
+    attributes:
+      label: Sanitized trace and artifacts
+      description: Attach or link captured events and generated artifacts after removing secrets.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected and observed behavior
+    validations:
+      required: true

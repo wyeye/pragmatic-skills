@@ -1,110 +1,30 @@
 ---
-schema: psp.skill/v1
 name: verification
-description: Choose and run the right level of validation before claiming completion.
-kind: support
-version: 1.8.0
-summary: Choose and run the right level of validation before claiming completion.
-triggers:
-- After implementation.
-- Before reporting checks as passed or failed.
-loads:
-  conditional:
-    command_unknown:
-    - skills/command-discovery/SKILL.md
-outputs:
-- verification level
-- acceptance criteria coverage
-- commands log
-- failures and gaps
-activation:
-  automatic: true
-  entrypoint: false
-  user_direct: false
-  invoked_by:
-  - skills/delegation/SKILL.md#loads.conditional.integration_verification
-  - skills/project-agents-md/SKILL.md#loads.conditional.verification
-  - skills/standard-change/SKILL.md#loads.phased.verification
-  - skills/strict-change/SKILL.md#loads.phased.verification
-  - skills/tdd/SKILL.md#loads.conditional.verification
-  - skills/workflow-retrospective/SKILL.md#loads.conditional.changed_files_completion
-  routing_note: Users provide tasks; agents route from AGENTS.md through an explicit direct route or triage and phase triggers. Users do not manually invoke individual skills.
+description: Builds a risk-based verification ladder, executes current checks, and maps results to acceptance criteria without overclaiming coverage.
+license: Mixed-origin; see repository LICENSE
+compatibility: Agent Skills-compatible hosts or a PSP host adapter.
+metadata:
+  psp-schema: psp.skill/v2
+  psp-kind: support
+  psp-version: 2.0.1
 ---
+
 # Verification
 
-## Internal activation
+Use the narrowest-to-broadest ladder justified by risk:
 
-This is a support skill. It is loaded by a mode, router, or another support skill when the relevant phase or condition is reached.
+1. Static inspection and focused diff review.
+2. Targeted unit or behavior test.
+3. Relevant lint, type-check, integration, or contract checks.
+4. Build, packaging, migration dry-run, or local runtime check.
+5. Broader regression suite when impact warrants it.
 
-Users do not need to ask for this skill directly.
+Map each acceptance criterion to actual evidence. Check that generated artifacts, documentation, and configuration remain consistent. Verification becomes stale after later changes; rerun the affected layer. Report skipped checks and their consequences.
 
-Use this skill after implementation and before claiming completion.
+## Operating rule
 
-## Command resolution
+Use this skill only while its trigger is active. Keep conclusions proportional to observed evidence, preserve user-owned work, and stop when a required decision or approval is unavailable.
 
-Before choosing verification commands, load `skills/command-discovery/SKILL.md` unless the exact relevant commands are already known from explicit project instructions or earlier command discovery.
+## Trace contract
 
-Do not invent test, lint, typecheck, build, or smoke-test commands.
-
-## Acceptance criteria coverage
-
-When a Requirement Brief or authoritative acceptance criteria exist, use them as the verification checklist.
-
-For each criterion, record one of:
-
-- verified by test/command
-- verified by static/manual inspection
-- not verified, with reason
-- no longer applicable, with evidence and any required re-confirmation
-
-Do not claim task completion merely because the available test suite passed if an acceptance criterion remains unchecked.
-
-## Choose verification level
-
-### Narrow verification
-
-Use for Fast Patch and localized Standard changes:
-
-- Targeted test.
-- Touched package test.
-- Typecheck/lint for the touched area.
-- Build or compile check.
-- Static inspection when no executable check exists.
-
-### Broad verification
-
-Use for wider Standard changes and Strict changes:
-
-- Full relevant test suite.
-- Full typecheck.
-- Build.
-- Integration or smoke test.
-- Migration dry run or fixture-based validation.
-
-## Failure handling
-
-If a check fails:
-
-1. Determine whether the failure is caused by your change.
-2. Fix if in scope.
-3. Re-run the relevant check.
-4. If unrelated or blocked, report evidence and do not claim success.
-
-## Commands log
-
-Record:
-
-```text
-Command: <exact command>
-Cwd: <directory>
-Source: <user | project docs | package script | config | convention>
-Result: passed | failed | not run
-Summary: <short result or reason>
-```
-
-## Do not
-
-- Do not hide failing checks.
-- Do not summarize a failed command as passed.
-- Do not claim full verification from narrow checks.
-- Do not install dependencies just to make verification possible unless install policy allows it.
+When PSP tracing is enabled, record mode selection, skill activation, commands, file changes, approvals, verification, and claims as structured events. Every strong completion claim must reference earlier evidence event IDs.

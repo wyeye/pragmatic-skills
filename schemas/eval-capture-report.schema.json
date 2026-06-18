@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/psp/eval-capture-report.schema.json",
+  "title": "Pragmatic Skills Pack captured-result report",
+  "type": "object",
+  "required": [
+    "schema",
+    "case_count",
+    "average_score",
+    "passed",
+    "scores",
+    "disclaimer"
+  ],
+  "properties": {
+    "schema": {
+      "const": "psp.eval-capture-report/v1"
+    },
+    "case_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "average_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "passed": {
+      "type": "boolean"
+    },
+    "scores": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "disclaimer": {
+      "type": "string",
+      "minLength": 1
+    }
+  },
+  "additionalProperties": false
+}

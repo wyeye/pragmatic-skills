@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/psp/eval-grade.schema.json",
+  "title": "Pragmatic Skills Pack deterministic trace grade",
+  "type": "object",
+  "required": ["schema", "case_id", "score", "passed", "dimensions", "hard_failures", "findings", "metrics"],
+  "properties": {
+    "schema": {"const": "psp.eval-grade/v1"},
+    "case_id": {"type": "string", "minLength": 1},
+    "score": {"type": "number", "minimum": 0, "maximum": 100},
+    "passed": {"type": "boolean"},
+    "dimensions": {"type": "object", "additionalProperties": {"type": "number"}},
+    "hard_failures": {"type": "array", "items": {"type": "string"}},
+    "findings": {"type": "array", "items": {"type": "string"}},
+    "metrics": {"type": "object"}
+  },
+  "additionalProperties": false
+}

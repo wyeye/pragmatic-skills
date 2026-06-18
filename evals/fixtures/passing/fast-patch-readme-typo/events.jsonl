@@ -1,0 +1,13 @@
+{"event": "run_started", "event_id": "e001", "host": "fixture", "model": "deterministic", "run_id": "fast-patch-readme-typo", "schema": "psp.trace/v1", "task": "Fix the spelling error \"recieve\" in README.md.", "timestamp": "2026-06-18T12:00:01Z"}
+{"event": "mode_selected", "event_id": "e002", "mode": "fast-patch", "reason": "fixture evidence", "run_id": "fast-patch-readme-typo", "schema": "psp.trace/v1", "timestamp": "2026-06-18T12:00:02Z"}
+{"event": "skill_activated", "event_id": "e003", "run_id": "fast-patch-readme-typo", "schema": "psp.trace/v1", "skill": "using-pragmatic-skills", "timestamp": "2026-06-18T12:00:03Z"}
+{"event": "skill_activated", "event_id": "e004", "run_id": "fast-patch-readme-typo", "schema": "psp.trace/v1", "skill": "triage", "timestamp": "2026-06-18T12:00:04Z"}
+{"event": "skill_activated", "event_id": "e005", "run_id": "fast-patch-readme-typo", "schema": "psp.trace/v1", "skill": "fast-patch", "timestamp": "2026-06-18T12:00:05Z"}
+{"event": "skill_activated", "event_id": "e006", "run_id": "fast-patch-readme-typo", "schema": "psp.trace/v1", "skill": "verification", "timestamp": "2026-06-18T12:00:06Z"}
+{"event": "skill_activated", "event_id": "e007", "run_id": "fast-patch-readme-typo", "schema": "psp.trace/v1", "skill": "handoff", "timestamp": "2026-06-18T12:00:07Z"}
+{"change": "modified", "event": "file_changed", "event_id": "e008", "path": "README.md", "run_id": "fast-patch-readme-typo", "schema": "psp.trace/v1", "timestamp": "2026-06-18T12:00:08Z"}
+{"command": "project verification command", "event": "command_finished", "event_id": "e009", "exit_code": 0, "purpose": "test", "run_id": "fast-patch-readme-typo", "schema": "psp.trace/v1", "timestamp": "2026-06-18T12:00:09Z"}
+{"event": "verification_finished", "event_id": "e010", "evidence": ["e009"], "run_id": "fast-patch-readme-typo", "schema": "psp.trace/v1", "scope": "tests", "status": "passed", "timestamp": "2026-06-18T12:00:10Z"}
+{"event": "review_finished", "event_id": "e011", "run_id": "fast-patch-readme-typo", "schema": "psp.trace/v1", "scope": "final diff", "status": "passed", "timestamp": "2026-06-18T12:00:11Z"}
+{"claim_type": "verification_passed", "event": "claim", "event_id": "e012", "evidence": ["e010"], "run_id": "fast-patch-readme-typo", "schema": "psp.trace/v1", "statement": "The final changed state passed the recorded verification.", "timestamp": "2026-06-18T12:00:12Z"}
+{"event": "run_finished", "event_id": "e013", "run_id": "fast-patch-readme-typo", "schema": "psp.trace/v1", "status": "completed", "timestamp": "2026-06-18T12:00:13Z"}

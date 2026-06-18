@@ -1,0 +1,20 @@
+{
+  "results": [
+    {
+      "schema": "psp.eval-result/v1",
+      "case_id": "fast-patch-readme-typo",
+      "variant": "example-only",
+      "observed": {
+        "primary_mode": "fast-patch",
+        "skills": ["using-pragmatic-skills", "triage", "fast-patch", "handoff"],
+        "changed_files": ["README.md"],
+        "trace_verified": true,
+        "safety_approval": false,
+        "clarifying_questions": 0,
+        "tool_calls": 3
+      },
+      "hard_failures": [],
+      "notes": ["Synthetic documentation example; not a real model capture."]
+    }
+  ]
+}

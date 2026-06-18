@@ -1,0 +1,27 @@
+{
+  "activation": {
+    "negative": [
+      "while a direct-route skill is explicitly active"
+    ],
+    "positive": [
+      "after the PSP entry route for ordinary repository work",
+      "when scope or risk changes materially"
+    ]
+  },
+  "entry": false,
+  "kind": "router",
+  "loads": [
+    "fast-patch",
+    "exploration",
+    "standard-change",
+    "strict-change"
+  ],
+  "name": "triage",
+  "outputs": [
+    "primary_mode",
+    "routing rationale",
+    "re-triage triggers"
+  ],
+  "schema": "psp.skill/v2",
+  "version": "2.0.1"
+}

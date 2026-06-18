@@ -1,0 +1,24 @@
+{
+  "activation": {
+    "negative": [
+      "analysis, planning, local reversible edits, or preparation that does not cross the risk boundary"
+    ],
+    "positive": [
+      "imminent destructive, production, data, access-control, billing, secret, deployment, or shared-history action"
+    ]
+  },
+  "entry": false,
+  "kind": "support",
+  "loads": [
+    "evidence-driven-execution"
+  ],
+  "name": "safety-gates",
+  "outputs": [
+    "risk summary",
+    "approval request",
+    "approval event",
+    "stop decision"
+  ],
+  "schema": "psp.skill/v2",
+  "version": "2.0.1"
+}

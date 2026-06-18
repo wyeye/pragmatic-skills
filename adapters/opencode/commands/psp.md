@@ -1,9 +1,5 @@
 ---
-description: Start Pragmatic Skills Pack routing for the current task
+description: Enter the repository's Pragmatic Skills Pack workflow.
 ---
 
-Use Pragmatic Skills Pack for this task.
-
-Read `AGENTS.md`, then read `skills/using-pragmatic-skills/SKILL.md`. Let the entry skill choose an explicit direct route when applicable; otherwise route through triage and phase triggers. Do not ask the user to choose individual skills.
-
-User task: $ARGUMENTS
+Read `skills/using-pragmatic-skills/SKILL.md`, route the user's ordinary task through its direct-route or triage contract, select one primary mode, and attach real evidence to completion claims.
