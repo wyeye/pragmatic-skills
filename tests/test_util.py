@@ -12,6 +12,7 @@ from psp_util import (
     ValidationError,
     build_skill_manifest,
     normalize_relpath,
+    parse_skill_metadata,
     redact,
     safe_join,
     validate_skill_graph,
@@ -62,6 +63,33 @@ class MetadataTests(unittest.TestCase):
             }
             with self.subTest(skill=path.parent.name):
                 self.assertTrue(top_level <= permitted, top_level - permitted)
+
+    def test_skill_frontmatter_avoids_yaml_ambiguous_scalars(self) -> None:
+        for path in sorted((ROOT / "skills").glob("*/SKILL.md")):
+            lines = path.read_text(encoding="utf-8").splitlines()
+            end = lines.index("---", 1)
+            for line_number, line in enumerate(lines[1:end], start=2):
+                if not line or line[0].isspace() or ":" not in line:
+                    continue
+                key, value = line.split(":", 1)
+                value = value.strip()
+                is_quoted = len(value) >= 2 and value[0] == value[-1] and value[0] in {"'", '"'}
+                with self.subTest(skill=path.parent.name, line=line_number):
+                    self.assertFalse(key and ": " in value and not is_quoted)
+
+    def test_skill_metadata_rejects_yaml_ambiguous_scalars(self) -> None:
+        with tempfile.TemporaryDirectory() as raw:
+            path = Path(raw) / "SKILL.md"
+            path.write_text(
+                "---\n"
+                "name: demo\n"
+                "description: workflow: clarify requirements\n"
+                "---\n"
+                "# Demo\n",
+                encoding="utf-8",
+            )
+            with self.assertRaisesRegex(ValidationError, "YAML-ambiguous"):
+                parse_skill_metadata(path)
 
     def test_redaction_hides_secret_keys_and_token_patterns(self) -> None:
         value = {

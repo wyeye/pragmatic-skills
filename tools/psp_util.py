@@ -286,7 +286,14 @@ def parse_skill_metadata(path: Path) -> Dict[str, str]:
             continue
         match = re.match(r"^([A-Za-z0-9_-]+):(?:\s*(.*))?$", line)
         if match:
-            result[match.group(1)] = _unquote(match.group(2) or "")
+            key = match.group(1)
+            raw_value = match.group(2) or ""
+            stripped = raw_value.strip()
+            if ": " in stripped and not (
+                len(stripped) >= 2 and stripped[0] == stripped[-1] and stripped[0] in {"'", '"'}
+            ):
+                raise ValidationError(f"Skill {path} has YAML-ambiguous frontmatter field: {key}")
+            result[key] = _unquote(raw_value)
     for required in ("name", "description"):
         if not result.get(required):
             raise ValidationError(f"Skill {path} is missing frontmatter field: {required}")

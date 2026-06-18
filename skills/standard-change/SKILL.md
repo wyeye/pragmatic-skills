@@ -1,6 +1,6 @@
 ---
 name: standard-change
-description: Runs the normal end-to-end implementation workflow: clarify requirements, plan, implement, test, verify acceptance criteria, review the diff, and hand off.
+description: "Runs the normal end-to-end implementation workflow: clarify requirements, plan, implement, test, verify acceptance criteria, review the diff, and hand off."
 license: Mixed-origin; see repository LICENSE
 compatibility: Agent Skills-compatible hosts or a PSP host adapter.
 metadata:

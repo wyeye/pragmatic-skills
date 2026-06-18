@@ -164,7 +164,7 @@
       ],
       "name": "standard-change",
       "path": "skills/standard-change/SKILL.md",
-      "sha256": "84ad3a136b31d2f3a5e20e86f7c001bf2b533a76d40bd0afe1e06f18783b7940",
+      "sha256": "6b4384fb6dd39c54e2f78c68693fdfe7cb9a6e8e4b5d3196378d00a789e368e1",
       "sidecar": "skills/standard-change/psp.skill.json",
       "sidecar_sha256": "0ee9366f52482b13266fadd846eb531b3989ae1057128038b2bd874a2600c8e3",
       "version": "2.0.1"
