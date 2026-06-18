@@ -3,7 +3,7 @@ schema: psp.skill/v1
 name: workflow-retrospective
 description: Review an explicitly requested completed-task trace and turn workflow evidence into actionable PSP improvements and eval cases.
 kind: support
-version: 1.7.0
+version: 1.8.0
 summary: Run an active-only post-task retrospective to improve routing, skills, evidence quality, safety calibration, and host compatibility.
 triggers:
 - User explicitly asks to retrospect, summarize, evaluate, or improve the PSP workflow after a completed or recent task.

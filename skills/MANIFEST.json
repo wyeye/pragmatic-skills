@@ -5,15 +5,15 @@
   "name": "Pragmatic Skills Pack",
   "display_name": "Pragmatic Skills Pack",
   "short_name": "PSP",
-  "version": "1.7.0",
+  "version": "1.8.0",
   "repo_name": "pragmatic-skills",
   "package_root": "pragmatic-skills-pack",
-  "generated_from": "skills/*/SKILL.md frontmatter plus shell-first installer, host adapter metadata, project AGENTS.md maintenance metadata, and active-only workflow retrospective metadata",
+  "generated_from": "skills/*/SKILL.md frontmatter plus shell-first installer, host adapter metadata, project AGENTS.md maintenance metadata, requirements/design metadata, and active-only workflow retrospective metadata",
   "entry_skill": "skills/using-pragmatic-skills/SKILL.md",
   "user_contract": {
     "users_invoke_individual_skills": false,
     "entry_skill": "skills/using-pragmatic-skills/SKILL.md",
-    "routing": "AGENTS.md -> entry -> explicit active-only direct route OR triage -> one mode -> support skills by phase trigger",
+    "routing": "AGENTS.md -> entry -> explicit active-only direct route OR triage -> one mode -> requirements/design when triggered -> support skills by phase trigger",
     "do_not_ask_user_to_choose_skill": true
   },
   "skills": [
@@ -22,7 +22,7 @@
       "name": "command-discovery",
       "description": "Resolve install, test, lint, typecheck, build, and local-run commands from project evidence instead of hardcoding them.",
       "kind": "support",
-      "version": "1.7.0",
+      "version": "1.8.0",
       "summary": "Resolve install, test, lint, typecheck, build, and local-run commands from project evidence instead of hardcoding them.",
       "triggers": [
         "A workflow needs a project command and no exact command is already known.",
@@ -52,7 +52,7 @@
           "skills/exploration/SKILL.md#loads.conditional.command_needed",
           "skills/project-agents-md/SKILL.md#loads.conditional.command_evidence",
           "skills/fast-patch/SKILL.md#loads.conditional.command_needed",
-          "skills/standard-change/SKILL.md#loads.phased.discovery",
+          "skills/standard-change/SKILL.md#loads.phased.command",
           "skills/strict-change/SKILL.md#loads.phased.command",
           "skills/tdd/SKILL.md#loads.conditional.test_command_unknown",
           "skills/using-pragmatic-skills/SKILL.md#loads.conditional.command_resolution",
@@ -68,7 +68,7 @@
       "name": "delegation",
       "description": "Use real subagents or explicit role-separated passes without pretending subagents exist.",
       "kind": "support",
-      "version": "1.7.0",
+      "version": "1.8.0",
       "summary": "Use real subagents or explicit role-separated passes without pretending subagents exist.",
       "triggers": [
         "Large task split.",
@@ -106,7 +106,7 @@
       "name": "evidence-driven-execution",
       "description": "Back every claim with actual evidence or label it as an assumption.",
       "kind": "support",
-      "version": "1.7.0",
+      "version": "1.8.0",
       "summary": "Back every claim with actual evidence or label it as an assumption.",
       "triggers": [
         "Non-trivial edits.",
@@ -127,7 +127,8 @@
         "invoked_by": [
           "skills/standard-change/SKILL.md#loads.phased.execution",
           "skills/strict-change/SKILL.md#loads.phased.evidence",
-          "skills/project-agents-md/SKILL.md#loads.conditional.editing"
+          "skills/project-agents-md/SKILL.md#loads.conditional.editing",
+          "skills/workflow-retrospective/SKILL.md#loads.conditional.persistent_record_requested"
         ],
         "routing_note": "Users provide tasks; agents route from AGENTS.md through an explicit direct route or triage and phase triggers. Users do not manually invoke individual skills."
       },
@@ -136,14 +137,14 @@
     {
       "schema": "psp.skill/v1",
       "name": "exploration",
-      "description": "Investigate, diagnose, compare options, or clarify requirements before editing.",
+      "description": "Investigate repository facts, diagnose issues, and establish feasible options before deciding or editing.",
       "kind": "mode",
-      "version": "1.7.0",
-      "summary": "Investigate, diagnose, compare options, or clarify requirements before editing.",
+      "version": "1.8.0",
+      "summary": "Investigate repository facts, diagnose issues, and establish feasible options before deciding or editing.",
       "triggers": [
-        "Ambiguous requirements.",
-        "Diagnosis or design tasks.",
-        "Need to inspect project before deciding whether to edit."
+        "Investigation or diagnosis.",
+        "Explicit brainstorming/design-only request.",
+        "Need to inspect project facts before selecting or implementing an approach."
       ],
       "loads": {
         "conditional": {
@@ -152,6 +153,9 @@
           ],
           "project_instructions": [
             "skills/project-agents-md/SKILL.md"
+          ],
+          "requirements_or_design": [
+            "skills/requirements-and-design/SKILL.md"
           ],
           "implementation_needed": [
             "skills/triage/SKILL.md"
@@ -162,8 +166,9 @@
         }
       },
       "outputs": [
-        "findings",
-        "options",
+        "findings and constraints",
+        "feasible options when relevant",
+        "requirement brief when requirements/design is activated",
         "recommendation",
         "next mode if implementation is needed"
       ],
@@ -172,8 +177,11 @@
         "entrypoint": false,
         "user_direct": false,
         "invoked_by": [
+          "skills/requirements-and-design/SKILL.md#loads.conditional.project_facts_missing",
           "skills/standard-change/SKILL.md#loads.phased.discovery",
-          "skills/triage/SKILL.md#loads.select_one"
+          "skills/strict-change/SKILL.md#loads.phased.discovery",
+          "skills/triage/SKILL.md#loads.select_one",
+          "skills/project-agents-md/SKILL.md#loads.conditional.project_context"
         ],
         "routing_note": "Users provide tasks; agents route from AGENTS.md through an explicit direct route or triage and phase triggers. Users do not manually invoke individual skills."
       },
@@ -184,7 +192,7 @@
       "name": "fast-patch",
       "description": "Small, clear, low-risk edits with narrow verification.",
       "kind": "mode",
-      "version": "1.7.0",
+      "version": "1.8.0",
       "summary": "Small, clear, low-risk edits with narrow verification.",
       "triggers": [
         "Tiny localized edits with low blast radius and no high-risk trigger."
@@ -223,7 +231,7 @@
       "name": "handoff",
       "description": "Final compact, factual, evidence-based response after changes, proposals, or reviews.",
       "kind": "support",
-      "version": "1.7.0",
+      "version": "1.8.0",
       "summary": "Final compact, factual, evidence-based response after changes, proposals, or reviews.",
       "triggers": [
         "Before final response after file/code work.",
@@ -232,7 +240,8 @@
       "loads": {},
       "outputs": [
         "changed/proposed/findings",
-        "verified",
+        "requirement/design state when relevant",
+        "verified acceptance criteria",
         "review",
         "not verified",
         "notes/risks"
@@ -248,7 +257,8 @@
           "skills/standard-change/SKILL.md#loads.phased.completion",
           "skills/strict-change/SKILL.md#loads.phased.completion",
           "skills/using-pragmatic-skills/SKILL.md#loads.conditional.completion",
-          "skills/workflow-retrospective/SKILL.md#loads.conditional.changed_files_completion"
+          "skills/workflow-retrospective/SKILL.md#loads.conditional.changed_files_completion",
+          "skills/requirements-and-design/SKILL.md#loads.conditional.design_only_completion"
         ],
         "routing_note": "Users provide tasks; agents route from AGENTS.md through an explicit direct route or triage and phase triggers. Users do not manually invoke individual skills."
       },
@@ -259,7 +269,7 @@
       "name": "project-agents-md",
       "description": "Create, update, or refactor project-specific AGENTS.md instructions while preserving PSP and other managed blocks.",
       "kind": "support",
-      "version": "1.7.0",
+      "version": "1.8.0",
       "summary": "Maintain the current repository's project-specific AGENTS.md, including generation, cleanup, refactoring, and evidence-based command sections.",
       "triggers": [
         "User explicitly asks to create, write, generate, update, improve, migrate, or refactor AGENTS.md or repository agent instructions.",
@@ -327,10 +337,69 @@
     },
     {
       "schema": "psp.skill/v1",
+      "name": "requirements-and-design",
+      "description": "Clarify goals, scope, acceptance criteria, and design choices before planning or implementation.",
+      "kind": "support",
+      "version": "1.8.0",
+      "summary": "Turn ambiguous or design-sensitive work into a concise, confirmed requirement brief without adding ceremony to clear tasks.",
+      "triggers": [
+        "The user asks to brainstorm, clarify requirements, compare designs, or confirm acceptance criteria.",
+        "A new feature or behavior change has unclear scope, non-goals, constraints, or success criteria.",
+        "Multiple reasonable designs would produce materially different behavior or maintenance tradeoffs.",
+        "Implementation planning would otherwise depend on risky assumptions."
+      ],
+      "loads": {
+        "conditional": {
+          "project_facts_missing": [
+            "skills/exploration/SKILL.md"
+          ],
+          "safety_sensitive_decision": [
+            "skills/safety-gates/SKILL.md"
+          ],
+          "design_only_completion": [
+            "skills/handoff/SKILL.md"
+          ]
+        }
+      },
+      "outputs": [
+        "requirement brief",
+        "options and recommendation when alternatives matter",
+        "acceptance criteria",
+        "assumptions and open questions",
+        "confirmation state"
+      ],
+      "activation": {
+        "automatic": true,
+        "entrypoint": false,
+        "user_direct": false,
+        "policy": "passive-capable",
+        "lifecycle": "pre-task",
+        "auto_after_completion": false,
+        "active": [
+          "User asks in normal language to brainstorm, clarify requirements, compare designs, define acceptance criteria, or confirm a design before coding."
+        ],
+        "passive": [
+          "A mode observes unresolved requirements or materially different design choices before planning or implementation."
+        ],
+        "passive_requires_confirmation": false,
+        "invoked_by": [
+          "skills/exploration/SKILL.md#loads.conditional.requirements_or_design",
+          "skills/standard-change/SKILL.md#loads.phased.requirements",
+          "skills/strict-change/SKILL.md#loads.phased.requirements",
+          "skills/writing-plans/SKILL.md#loads.conditional.requirements_unresolved",
+          "skills/tdd/SKILL.md#loads.conditional.requirements_or_criteria_conflict",
+          "skills/review/SKILL.md#loads.conditional.requirement_drift_decision"
+        ],
+        "routing_note": "Users describe the task normally. Modes load this skill when requirement or design decisions must be made; users are not asked to invoke it by name."
+      },
+      "path": "skills/requirements-and-design/SKILL.md"
+    },
+    {
+      "schema": "psp.skill/v1",
       "name": "review",
       "description": "Review actual changed files, diff, patch, and behavior before calling Standard or Strict work complete.",
       "kind": "support",
-      "version": "1.7.0",
+      "version": "1.8.0",
       "summary": "Review actual changed files, diff, patch, and behavior before calling Standard or Strict work complete.",
       "triggers": [
         "Strict Change completion.",
@@ -340,12 +409,16 @@
         "conditional": {
           "delegation_useful": [
             "skills/delegation/SKILL.md"
+          ],
+          "requirement_drift_decision": [
+            "skills/requirements-and-design/SKILL.md"
           ]
         }
       },
       "outputs": [
         "review mode",
         "evidence inspected",
+        "requirement/acceptance alignment",
         "blocking findings",
         "non-blocking findings",
         "unverified items"
@@ -369,7 +442,7 @@
       "name": "safety-gates",
       "description": "Require explicit approval before destructive, production-affecting, security-sensitive, or hard-to-reverse actions.",
       "kind": "support",
-      "version": "1.7.0",
+      "version": "1.8.0",
       "summary": "Require explicit approval before destructive, production-affecting, security-sensitive, or hard-to-reverse actions.",
       "triggers": [
         "Any gated action is about to occur.",
@@ -398,7 +471,8 @@
         "invoked_by": [
           "skills/command-discovery/SKILL.md#loads.conditional.high_risk_dependency_or_lockfile_action",
           "skills/strict-change/SKILL.md#loads.immediate",
-          "skills/writing-plans/SKILL.md#loads.conditional.safety_gated_action"
+          "skills/writing-plans/SKILL.md#loads.conditional.safety_gated_action",
+          "skills/requirements-and-design/SKILL.md#loads.conditional.safety_sensitive_decision"
         ],
         "routing_note": "Users provide tasks; agents route from AGENTS.md through an explicit direct route or triage and phase triggers. Users do not manually invoke individual skills."
       },
@@ -407,10 +481,10 @@
     {
       "schema": "psp.skill/v1",
       "name": "standard-change",
-      "description": "Normal engineering work with planning, tests, execution evidence, verification, and review by phase.",
+      "description": "Normal engineering work with requirements, planning, tests, evidence, verification, and review loaded by phase.",
       "kind": "mode",
-      "version": "1.7.0",
-      "summary": "Normal engineering work with planning, tests, execution evidence, verification, and review by phase.",
+      "version": "1.8.0",
+      "summary": "Normal engineering work with requirements, planning, tests, evidence, verification, and review loaded by phase.",
       "triggers": [
         "Behavior changes.",
         "Bug fixes.",
@@ -420,11 +494,16 @@
       "loads": {
         "phased": {
           "discovery": [
-            "skills/exploration/SKILL.md",
+            "skills/exploration/SKILL.md"
+          ],
+          "command": [
             "skills/command-discovery/SKILL.md"
           ],
           "project_instructions": [
             "skills/project-agents-md/SKILL.md"
+          ],
+          "requirements": [
+            "skills/requirements-and-design/SKILL.md"
           ],
           "planning": [
             "skills/writing-plans/SKILL.md"
@@ -450,6 +529,7 @@
         ]
       },
       "outputs": [
+        "requirement/design baseline when needed",
         "planned change",
         "implementation evidence",
         "verification results",
@@ -470,10 +550,10 @@
     {
       "schema": "psp.skill/v1",
       "name": "strict-change",
-      "description": "High-risk work with safety gates, traceability, rollback thinking, evidence, verification, and review.",
+      "description": "High-risk work with safety gates, requirements confirmation, traceability, rollback thinking, verification, and review.",
       "kind": "mode",
-      "version": "1.7.0",
-      "summary": "High-risk work with safety gates, traceability, rollback thinking, evidence, verification, and review.",
+      "version": "1.8.0",
+      "summary": "High-risk work with safety gates, requirements confirmation, traceability, rollback thinking, verification, and review.",
       "triggers": [
         "Security/auth/privacy.",
         "Payments/billing.",
@@ -487,6 +567,12 @@
           "skills/safety-gates/SKILL.md"
         ],
         "phased": {
+          "discovery": [
+            "skills/exploration/SKILL.md"
+          ],
+          "requirements": [
+            "skills/requirements-and-design/SKILL.md"
+          ],
           "command": [
             "skills/command-discovery/SKILL.md"
           ],
@@ -517,15 +603,15 @@
         }
       },
       "outputs": [
-        "risk category",
-        "safety gate status",
+        "risk category and safety gate status",
+        "confirmed requirement/design baseline",
         "rollback/mitigation notes",
         "evidence log",
         "verification results",
         "review findings"
       ],
       "safety": {
-        "approval_required": "Before gated actions only; read-only inspection, local tests, and draft patches do not require approval."
+        "approval_required": "Before gated actions only; read-only inspection, requirements/design work, local tests, and draft patches do not require approval."
       },
       "activation": {
         "automatic": true,
@@ -544,7 +630,7 @@
       "name": "tdd",
       "description": "Use tests as the driver for behavior changes and bug fixes when practical.",
       "kind": "support",
-      "version": "1.7.0",
+      "version": "1.8.0",
       "summary": "Use tests as the driver for behavior changes and bug fixes when practical.",
       "triggers": [
         "Behavior change.",
@@ -559,10 +645,14 @@
           ],
           "verification": [
             "skills/verification/SKILL.md"
+          ],
+          "requirements_or_criteria_conflict": [
+            "skills/requirements-and-design/SKILL.md"
           ]
         }
       },
       "outputs": [
+        "acceptance-criteria-to-test mapping",
         "failing test evidence when practical",
         "passing test evidence after fix",
         "reason when TDD is not practical"
@@ -584,11 +674,11 @@
       "name": "triage",
       "description": "Choose the smallest safe primary mode and re-route when evidence changes.",
       "kind": "router",
-      "version": "1.7.0",
+      "version": "1.8.0",
       "summary": "Choose the smallest safe primary mode and re-route when evidence changes.",
       "triggers": [
         "Immediately after using-pragmatic-skills.",
-        "Whenever risk, scope, ambiguity, or blast radius changes."
+        "Whenever risk, scope, ambiguity, requirements, or blast radius changes."
       ],
       "loads": {
         "select_one": [
@@ -610,8 +700,9 @@
         "invoked_by": [
           "skills/exploration/SKILL.md#loads.conditional.implementation_needed",
           "skills/fast-patch/SKILL.md#loads.conditional.scope_or_risk_increase",
-          "skills/using-pragmatic-skills/SKILL.md#loads.immediate",
-          "workflow#re-triage-triggers"
+          "skills/using-pragmatic-skills/SKILL.md#loads.fallback",
+          "workflow#re-triage-triggers",
+          "skills/workflow-retrospective/SKILL.md#loads.conditional.implementation_requested"
         ],
         "routing_note": "Users provide tasks; agents route from AGENTS.md through an explicit direct route or triage and phase triggers. Users do not manually invoke individual skills."
       },
@@ -622,10 +713,10 @@
       "name": "using-pragmatic-skills",
       "description": "Start here for any repository or PSP workflow task and load only the next relevant skill.",
       "kind": "entry",
-      "version": "1.7.0",
+      "version": "1.8.0",
       "summary": "Start here for any repository or PSP workflow task and load only the next relevant skill.",
       "triggers": [
-        "Any task involving code, files, tests, debugging, review, project decisions, or PSP workflow evaluation."
+        "Any task involving code, files, tests, debugging, review, project decisions, requirements/design, or PSP workflow evaluation."
       ],
       "loads": {
         "direct": {
@@ -650,7 +741,7 @@
       },
       "outputs": [
         "direct retrospective route or selected primary mode",
-        "next skill path"
+        "next phase-triggered skill path"
       ],
       "safety": {
         "approval_required": "Only for safety-gated actions, never just to continue ordinary low-risk work."
@@ -671,7 +762,7 @@
       "name": "verification",
       "description": "Choose and run the right level of validation before claiming completion.",
       "kind": "support",
-      "version": "1.7.0",
+      "version": "1.8.0",
       "summary": "Choose and run the right level of validation before claiming completion.",
       "triggers": [
         "After implementation.",
@@ -686,6 +777,7 @@
       },
       "outputs": [
         "verification level",
+        "acceptance criteria coverage",
         "commands log",
         "failures and gaps"
       ],
@@ -698,7 +790,8 @@
           "skills/project-agents-md/SKILL.md#loads.conditional.verification",
           "skills/standard-change/SKILL.md#loads.phased.verification",
           "skills/strict-change/SKILL.md#loads.phased.verification",
-          "skills/tdd/SKILL.md#loads.conditional.verification"
+          "skills/tdd/SKILL.md#loads.conditional.verification",
+          "skills/workflow-retrospective/SKILL.md#loads.conditional.changed_files_completion"
         ],
         "routing_note": "Users provide tasks; agents route from AGENTS.md through an explicit direct route or triage and phase triggers. Users do not manually invoke individual skills."
       },
@@ -709,7 +802,7 @@
       "name": "workflow-retrospective",
       "description": "Review an explicitly requested completed-task trace and turn workflow evidence into actionable PSP improvements and eval cases.",
       "kind": "support",
-      "version": "1.7.0",
+      "version": "1.8.0",
       "summary": "Run an active-only post-task retrospective to improve routing, skills, evidence quality, safety calibration, and host compatibility.",
       "triggers": [
         "User explicitly asks to retrospect, summarize, evaluate, or improve the PSP workflow after a completed or recent task.",
@@ -771,7 +864,7 @@
       "name": "worktree",
       "description": "Use git worktree isolation only when it materially reduces risk.",
       "kind": "support",
-      "version": "1.7.0",
+      "version": "1.8.0",
       "summary": "Use git worktree isolation only when it materially reduces risk.",
       "triggers": [
         "Dirty tree with unrelated user changes.",
@@ -800,10 +893,10 @@
     {
       "schema": "psp.skill/v1",
       "name": "writing-plans",
-      "description": "Create executable, verifiable plans for non-trivial implementation.",
+      "description": "Create executable, verifiable plans from confirmed requirements for non-trivial implementation.",
       "kind": "support",
-      "version": "1.7.0",
-      "summary": "Create executable, verifiable plans for non-trivial implementation.",
+      "version": "1.8.0",
+      "summary": "Create executable, verifiable plans from confirmed requirements for non-trivial implementation.",
       "triggers": [
         "More than one file or step.",
         "Tests must change.",
@@ -812,6 +905,9 @@
       ],
       "loads": {
         "conditional": {
+          "requirements_unresolved": [
+            "skills/requirements-and-design/SKILL.md"
+          ],
           "commands_needed_for_verify_steps": [
             "skills/command-discovery/SKILL.md"
           ],
@@ -821,8 +917,8 @@
         }
       },
       "outputs": [
-        "goal",
-        "assumptions",
+        "requirement/design basis",
+        "goal and assumptions",
         "steps with file/area/change/verify/expected result",
         "risks/rollback"
       ],
@@ -986,5 +1082,31 @@
     "implementation_route": "finish retrospective, then re-enter triage",
     "record_schema": "psp.retrospective/v1",
     "reference": "reference/WORKFLOW-RETROSPECTIVE.md"
+  },
+  "requirements_and_design": {
+    "skill": "skills/requirements-and-design/SKILL.md",
+    "kind": "support",
+    "activation_policy": "phase-triggered and explicit-intent capable",
+    "active_triggers": [
+      "brainstorm or compare designs",
+      "clarify requirements or scope",
+      "define acceptance criteria",
+      "confirm design before implementation"
+    ],
+    "automatic_triggers": [
+      "feature/change lacks clear scope or observable success criteria",
+      "multiple viable designs materially differ",
+      "planning would depend on risky assumptions"
+    ],
+    "skip_when": "tiny, fully specified, low-risk work has no material design decision",
+    "confirmation_states": [
+      "confirmed",
+      "conditionally confirmed",
+      "safe assumptions used",
+      "blocked on user decision"
+    ],
+    "implementation_blocked_state": "blocked on user decision",
+    "safety_note": "Requirement/design confirmation does not replace safety-gate approval.",
+    "reference": "reference/REQUIREMENTS-AND-DESIGN.md"
   }
 }

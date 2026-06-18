@@ -3,11 +3,11 @@ schema: psp.skill/v1
 name: triage
 description: Choose the smallest safe primary mode and re-route when evidence changes.
 kind: router
-version: 1.7.0
+version: 1.8.0
 summary: Choose the smallest safe primary mode and re-route when evidence changes.
 triggers:
 - Immediately after using-pragmatic-skills.
-- Whenever risk, scope, ambiguity, or blast radius changes.
+- Whenever risk, scope, ambiguity, requirements, or blast radius changes.
 loads:
   select_one:
   - skills/fast-patch/SKILL.md
@@ -25,8 +25,9 @@ activation:
   invoked_by:
   - skills/exploration/SKILL.md#loads.conditional.implementation_needed
   - skills/fast-patch/SKILL.md#loads.conditional.scope_or_risk_increase
-  - skills/using-pragmatic-skills/SKILL.md#loads.immediate
+  - skills/using-pragmatic-skills/SKILL.md#loads.fallback
   - workflow#re-triage-triggers
+  - skills/workflow-retrospective/SKILL.md#loads.conditional.implementation_requested
   routing_note: Users provide tasks; agents route from AGENTS.md through an explicit direct route or triage and phase triggers. Users do not manually invoke individual skills.
 ---
 # Triage
@@ -39,7 +40,7 @@ The user does not choose the mode. The agent selects the smallest safe mode, loa
 
 Use this skill to choose the smallest safe workflow for the task.
 
-Triage is provisional. Re-run it whenever new evidence changes risk, scope, ambiguity, or blast radius.
+Triage is provisional. Re-run it whenever new evidence changes risk, scope, ambiguity, requirements, or blast radius.
 
 ## Output of triage
 
@@ -67,6 +68,7 @@ Choose Fast Patch when all are true:
 - The task is clear.
 - The change is small and localized.
 - No meaningful behavior change, or behavior is trivial.
+- Existing behavior/specification is sufficient; no requirement/design decision is needed.
 - Low blast radius.
 - No high-risk trigger is present.
 
@@ -85,10 +87,12 @@ Load: `skills/fast-patch/SKILL.md`
 Choose Exploration when any is true:
 
 - The task is investigative or diagnostic.
-- Requirements are ambiguous.
-- The user asks for options, architecture, comparison, or recommendation.
+- The user wants brainstorming, requirements clarification, architecture/options, comparison, or recommendation without immediate implementation.
 - You need to inspect the project before deciding whether to edit.
-- Multiple reasonable implementations exist.
+- Requirements or feasible approaches are not yet understood well enough to select an implementation mode.
+- Multiple reasonable implementations may exist and the user has not yet asked to implement one.
+
+Exploration may load `skills/requirements-and-design/SKILL.md` after project facts are established.
 
 Load: `skills/exploration/SKILL.md`
 
@@ -100,7 +104,10 @@ Choose Standard Change when any is true and no Strict trigger applies:
 - Multiple files are likely involved.
 - Tests should be added or updated.
 - The change needs a plan or review before it is done.
-- The user expects a real implementation, not only investigation.
+- The user expects a real implementation, even if requirements/design still need clarification first.
+- A new feature or behavior needs a Requirement Brief before planning.
+
+Standard Change loads `requirements-and-design` only when its requirements phase is triggered; fully specified work can proceed directly to planning.
 
 Load: `skills/standard-change/SKILL.md`
 
@@ -118,8 +125,9 @@ Choose Strict Change when any high-risk trigger appears:
 - Large refactor, many-file rewrite, uncertain blast radius.
 - Generated files, lockfiles, vendored code, or build artifacts whose ownership is unclear.
 
-Load: `skills/strict-change/SKILL.md`
+High-risk design decisions still require a requirements phase; safety approval and requirement confirmation remain separate concerns.
 
+Load: `skills/strict-change/SKILL.md`
 
 ## AGENTS.md and project-instruction tasks
 
@@ -141,6 +149,7 @@ Re-run triage when any of these happen:
 - Behavior impact becomes non-trivial.
 - Tests reveal a broader regression or unknown failure mode.
 - Security, data, auth, billing, public API, dependency, deployment, or production risk appears.
+- Requirement/design clarification reveals a different scope or risk class.
 - Requirements become clearer and the task can safely be simplified.
 - Implementation turns out to be exploratory rather than mechanical.
 - The diff becomes large or hard to review.
@@ -148,10 +157,10 @@ Re-run triage when any of these happen:
 
 ## Allowed transitions
 
-- `fast-patch` -> `standard-change` when behavior, tests, or multi-file scope appears.
+- `fast-patch` -> `standard-change` when behavior, tests, requirement decisions, or multi-file scope appears.
 - `fast-patch` -> `strict-change` when any high-risk trigger appears.
 - `standard-change` -> `strict-change` when high-risk impact appears.
-- `exploration` -> `fast-patch | standard-change | strict-change` after findings clarify the work.
+- `exploration` -> `fast-patch | standard-change | strict-change` after findings and requirement/design decisions clarify the work.
 - `strict-change` -> `standard-change` only after explicitly stating why the high-risk trigger does not actually apply.
 - Any mode -> `exploration` when implementation cannot safely continue without investigation.
 

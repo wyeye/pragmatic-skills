@@ -3,7 +3,7 @@ schema: psp.skill/v1
 name: evidence-driven-execution
 description: Back every claim with actual evidence or label it as an assumption.
 kind: support
-version: 1.7.0
+version: 1.8.0
 summary: Back every claim with actual evidence or label it as an assumption.
 triggers:
 - Non-trivial edits.
@@ -23,6 +23,7 @@ activation:
   - skills/standard-change/SKILL.md#loads.phased.execution
   - skills/strict-change/SKILL.md#loads.phased.evidence
   - skills/project-agents-md/SKILL.md#loads.conditional.editing
+  - skills/workflow-retrospective/SKILL.md#loads.conditional.persistent_record_requested
   routing_note: Users provide tasks; agents route from AGENTS.md through an explicit direct route or triage and phase triggers. Users do not manually invoke individual skills.
 ---
 # Evidence-Driven Execution

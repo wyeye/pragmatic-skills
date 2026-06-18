@@ -1,14 +1,13 @@
-# Pragmatic Skills Pack v1.7.0 tree
+# Pragmatic Skills Pack v1.8.0 tree
 
 AGENT-INSTALL.md
 AGENTS.md
 README.md
 README.zh.md
-TREE.txt
 adapters/HOSTS.json
 adapters/README.md
-adapters/claude/README.md
 adapters/claude-entry/SKILL.md
+adapters/claude/README.md
 adapters/copilot/README.md
 adapters/cursor/README.md
 adapters/cursor/rules/pragmatic-skills-pack.mdc
@@ -23,6 +22,7 @@ reference/HOST-ADAPTERS.md
 reference/INSTALL-UPGRADE.md
 reference/MODE-MATRIX.md
 reference/PROJECT-PROFILE.template.md
+reference/REQUIREMENTS-AND-DESIGN.md
 reference/SKILL-METADATA-SCHEMA.md
 reference/USER-CONTRACT.md
 reference/WORKFLOW-RETROSPECTIVE.md
@@ -34,7 +34,7 @@ skills/exploration/SKILL.md
 skills/fast-patch/SKILL.md
 skills/handoff/SKILL.md
 skills/project-agents-md/SKILL.md
-skills/workflow-retrospective/SKILL.md
+skills/requirements-and-design/SKILL.md
 skills/review/SKILL.md
 skills/safety-gates/SKILL.md
 skills/standard-change/SKILL.md
@@ -43,8 +43,10 @@ skills/tdd/SKILL.md
 skills/triage/SKILL.md
 skills/using-pragmatic-skills/SKILL.md
 skills/verification/SKILL.md
+skills/workflow-retrospective/SKILL.md
 skills/worktree/SKILL.md
 skills/writing-plans/SKILL.md
 tools/README.md
 tools/psp.py
 verify.sh
+TREE.txt

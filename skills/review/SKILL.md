@@ -3,7 +3,7 @@ schema: psp.skill/v1
 name: review
 description: Review actual changed files, diff, patch, and behavior before calling Standard or Strict work complete.
 kind: support
-version: 1.7.0
+version: 1.8.0
 summary: Review actual changed files, diff, patch, and behavior before calling Standard or Strict work complete.
 triggers:
 - Strict Change completion.
@@ -12,9 +12,12 @@ loads:
   conditional:
     delegation_useful:
     - skills/delegation/SKILL.md
+    requirement_drift_decision:
+    - skills/requirements-and-design/SKILL.md
 outputs:
 - review mode
 - evidence inspected
+- requirement/acceptance alignment
 - blocking findings
 - non-blocking findings
 - unverified items
@@ -69,6 +72,8 @@ If git is unavailable, state which files or patch sections were inspected.
 Inspect the actual diff for:
 
 - Intended changes only.
+- The diff matches the confirmed Requirement Brief, authoritative spec, and acceptance criteria when they exist.
+- No silent scope/design drift; any divergence is explained and re-confirmed when required.
 - No unrelated formatting churn.
 - No debug logs, secrets, credentials, or private data.
 - Tests/checks match changed behavior.
@@ -96,6 +101,8 @@ Evidence inspected:
 - Files: ...
 - Diff/patch: ...
 - Commands: ...
+- Requirement/design basis: ...
+- Acceptance criteria checked: ...
 
 Findings:
 - Blocking: ...
@@ -105,3 +112,5 @@ Findings:
 ```
 
 Fix blocking findings before saying the work is complete.
+
+If the diff reveals a material requirement/design decision rather than a simple implementation defect, load `skills/requirements-and-design/SKILL.md`, update the Requirement Brief, and re-establish confirmation before continuing.

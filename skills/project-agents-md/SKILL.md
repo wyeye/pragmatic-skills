@@ -3,7 +3,7 @@ schema: psp.skill/v1
 name: project-agents-md
 description: Create, update, or refactor project-specific AGENTS.md instructions while preserving PSP and other managed blocks.
 kind: support
-version: 1.7.0
+version: 1.8.0
 summary: Maintain the current repository's project-specific AGENTS.md, including generation, cleanup, refactoring, and evidence-based command sections.
 triggers:
 - User explicitly asks to create, write, generate, update, improve, migrate, or refactor AGENTS.md or repository agent instructions.

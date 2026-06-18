@@ -1,10 +1,10 @@
 ---
 schema: psp.skill/v1
 name: writing-plans
-description: Create executable, verifiable plans for non-trivial implementation.
+description: Create executable, verifiable plans from confirmed requirements for non-trivial implementation.
 kind: support
-version: 1.7.0
-summary: Create executable, verifiable plans for non-trivial implementation.
+version: 1.8.0
+summary: Create executable, verifiable plans from confirmed requirements for non-trivial implementation.
 triggers:
 - More than one file or step.
 - Tests must change.
@@ -12,13 +12,15 @@ triggers:
 - Meaningful risk or reviewability concerns.
 loads:
   conditional:
+    requirements_unresolved:
+    - skills/requirements-and-design/SKILL.md
     commands_needed_for_verify_steps:
     - skills/command-discovery/SKILL.md
     safety_gated_action:
     - skills/safety-gates/SKILL.md
 outputs:
-- goal
-- assumptions
+- requirement/design basis
+- goal and assumptions
 - steps with file/area/change/verify/expected result
 - risks/rollback
 activation:
@@ -42,6 +44,20 @@ Use this skill before non-trivial implementation.
 
 A plan should be executable and verifiable, not a design essay.
 
+## Input contract
+
+When `requirements-and-design` was activated, the latest Requirement Brief is the plan's baseline.
+
+Before planning:
+
+- Confirm the state is `confirmed`, `conditionally confirmed`, or `safe assumptions used`.
+- Do not plan implementation while the state is `blocked on user decision`.
+- Preserve accepted scope, non-goals, constraints, design decisions, and acceptance criteria.
+- If those inputs are missing or unresolved and materially affect implementation, load `skills/requirements-and-design/SKILL.md` first.
+- Do not silently reopen confirmed decisions without new evidence.
+
+When the task is already fully specified by an authoritative project spec or tests, cite that as the requirement basis instead of creating unnecessary ceremony.
+
 ## When to use
 
 Use when:
@@ -55,11 +71,19 @@ Use when:
 ## Plan format
 
 ```text
+Requirement/design basis:
+- <Requirement Brief, authoritative spec, test, or explicit user instruction>
+- Confirmation state: <confirmed | conditionally confirmed | safe assumptions used | not applicable>
+
 Goal:
 ...
 
 Assumptions:
 - ...
+
+Acceptance criteria covered:
+- AC1 -> steps/tests ...
+- AC2 -> steps/tests ...
 
 Steps:
 1. File/area: ...
@@ -80,6 +104,7 @@ Each step must identify:
 - Concrete change.
 - Verification method.
 - Expected result.
+- Relevant acceptance criterion when one exists.
 
 If a step names a command, the command must come from explicit project instructions, command discovery, or a stated conventional fallback.
 
@@ -90,10 +115,25 @@ Avoid vague steps like:
 - “Handle edge cases.”
 - “Refactor as needed.”
 
+## Requirement drift
+
+If planning reveals that the accepted design is infeasible, unsafe, or materially more expensive than expected:
+
+1. Stop planning.
+2. Record the new evidence.
+3. Return to `requirements-and-design`.
+4. Re-establish confirmation before continuing.
+
 ## Plan size
 
 Prefer 3–7 steps. If larger than 10 steps, split into phases.
 
 ## Approval
 
-Ask for approval only when the plan includes a safety-gated action or the user explicitly asked to review the plan first.
+Ask for approval only when:
+
+- The Requirement Brief is blocked on a material user decision.
+- The plan includes a safety-gated action.
+- The user explicitly asked to review the plan first.
+
+Do not ask for ceremonial approval of routine low-risk plans.

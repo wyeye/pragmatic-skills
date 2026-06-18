@@ -3,10 +3,10 @@ schema: psp.skill/v1
 name: using-pragmatic-skills
 description: Start here for any repository or PSP workflow task and load only the next relevant skill.
 kind: entry
-version: 1.7.0
+version: 1.8.0
 summary: Start here for any repository or PSP workflow task and load only the next relevant skill.
 triggers:
-- Any task involving code, files, tests, debugging, review, project decisions, or PSP workflow evaluation.
+- Any task involving code, files, tests, debugging, review, project decisions, requirements/design, or PSP workflow evaluation.
 loads:
   direct:
     explicit_workflow_retrospective:
@@ -22,7 +22,7 @@ loads:
     - skills/project-agents-md/SKILL.md
 outputs:
 - direct retrospective route or selected primary mode
-- next skill path
+- next phase-triggered skill path
 safety:
   approval_required: Only for safety-gated actions, never just to continue ordinary low-risk work.
 activation:
@@ -47,7 +47,7 @@ User gives a normal task
   -> explicit post-task PSP retrospective? load workflow-retrospective directly
   -> otherwise load triage
   -> triage selects one primary mode
-  -> the mode skill loads support skills only when phase triggers are reached
+  -> the mode loads requirements/design and other support skills only when their phase triggers are reached
 ```
 
 Do not ask the user which skill, mode, or support workflow to use unless the user is explicitly designing, debugging, or evaluating this skill pack.
@@ -57,7 +57,6 @@ Do not expose internal skill names as required user actions. You may mention the
 Use this skill at the start of every repository task and every explicit PSP workflow-evaluation request.
 
 This workflow is progressive and internally routed: load only the next relevant skill, not the entire skill pack, and never require the user to call skills by name.
-
 
 ## Host adapter resolution
 
@@ -81,8 +80,9 @@ Start with the smallest applicable route:
    - `skills/exploration/SKILL.md`
    - `skills/standard-change/SKILL.md`
    - `skills/strict-change/SKILL.md`
-5. Load support skills by phase, not as a bundle.
-6. Re-run triage if new evidence changes the task shape.
+5. Let the selected mode load `skills/requirements-and-design/SKILL.md` only when explicit brainstorming/requirements intent or unresolved design decisions justify it.
+6. Load other support skills by phase, not as a bundle.
+7. Re-run triage if new evidence changes the task shape.
 
 ## Active-only post-task retrospective route
 
@@ -99,6 +99,18 @@ When this intent is present:
 
 A request for a normal implementation summary alone is handled by `handoff`, not by this route.
 
+## Requirements and design routing
+
+Users may ask in normal language to brainstorm, clarify requirements, compare designs, define acceptance criteria, or confirm a design before coding.
+
+That intent still goes through triage:
+
+- Use Exploration when the user wants investigation, brainstorming, or design only.
+- Use Standard Change when implementation is expected and no Strict trigger applies.
+- Use Strict Change when the design affects security, data, payments, public compatibility, deployment, or another high-risk area.
+
+The selected mode loads `skills/requirements-and-design/SKILL.md` at the requirements phase. Do not bypass triage, and do not force this phase onto tiny, fully specified, low-risk work.
+
 ## Metadata-first rule
 
 Each `SKILL.md` starts with machine-readable frontmatter.
@@ -112,7 +124,6 @@ This skill pack does not hardcode repository commands.
 When a workflow needs install, test, lint, typecheck, build, or local-run commands and the exact command is not already known from explicit project instructions, load `skills/command-discovery/SKILL.md`.
 
 Do not invent commands. If no command can be discovered, say so and use the strongest available alternative.
-
 
 ## Project AGENTS.md maintenance rule
 
@@ -133,6 +144,7 @@ These principles apply even before support skills are loaded:
 - No fake subagents.
 - No destructive actions without an explicit safety gate.
 - Prefer project-defined commands over generic conventions.
+- Investigate discoverable facts before asking product questions.
 - Escalate when risk or ambiguity increases.
 - Downgrade only when the evidence shows a lighter mode is safe.
 - Final answer must state what was verified and what was not.
@@ -145,6 +157,7 @@ Return to `skills/triage/SKILL.md` when you discover:
 - Behavior, API, data, auth, security, payment, deployment, dependency, or compatibility impact appears.
 - Tests fail for unclear reasons.
 - The user request is underspecified and assumptions would be risky.
+- A requirement/design decision changes the implementation class or risk level.
 - The diff becomes hard to review.
 - Investigation shows the task is simpler than expected and can safely use a lighter mode.
 
@@ -152,7 +165,7 @@ Return to `skills/triage/SKILL.md` when you discover:
 
 Ask at most one focused question when the answer would materially change the implementation and no safe default exists.
 
-Do not ask for confirmation just to continue ordinary low-risk work.
+Do not ask for confirmation just to continue ordinary low-risk work. Requirement/design confirmation rules are defined in `skills/requirements-and-design/SKILL.md` when that phase is active.
 
 ## Completion
 

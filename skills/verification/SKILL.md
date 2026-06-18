@@ -3,7 +3,7 @@ schema: psp.skill/v1
 name: verification
 description: Choose and run the right level of validation before claiming completion.
 kind: support
-version: 1.7.0
+version: 1.8.0
 summary: Choose and run the right level of validation before claiming completion.
 triggers:
 - After implementation.
@@ -14,6 +14,7 @@ loads:
     - skills/command-discovery/SKILL.md
 outputs:
 - verification level
+- acceptance criteria coverage
 - commands log
 - failures and gaps
 activation:
@@ -26,6 +27,7 @@ activation:
   - skills/standard-change/SKILL.md#loads.phased.verification
   - skills/strict-change/SKILL.md#loads.phased.verification
   - skills/tdd/SKILL.md#loads.conditional.verification
+  - skills/workflow-retrospective/SKILL.md#loads.conditional.changed_files_completion
   routing_note: Users provide tasks; agents route from AGENTS.md through an explicit direct route or triage and phase triggers. Users do not manually invoke individual skills.
 ---
 # Verification
@@ -43,6 +45,19 @@ Use this skill after implementation and before claiming completion.
 Before choosing verification commands, load `skills/command-discovery/SKILL.md` unless the exact relevant commands are already known from explicit project instructions or earlier command discovery.
 
 Do not invent test, lint, typecheck, build, or smoke-test commands.
+
+## Acceptance criteria coverage
+
+When a Requirement Brief or authoritative acceptance criteria exist, use them as the verification checklist.
+
+For each criterion, record one of:
+
+- verified by test/command
+- verified by static/manual inspection
+- not verified, with reason
+- no longer applicable, with evidence and any required re-confirmation
+
+Do not claim task completion merely because the available test suite passed if an acceptance criterion remains unchecked.
 
 ## Choose verification level
 

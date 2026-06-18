@@ -3,7 +3,7 @@ schema: psp.skill/v1
 name: tdd
 description: Use tests as the driver for behavior changes and bug fixes when practical.
 kind: support
-version: 1.7.0
+version: 1.8.0
 summary: Use tests as the driver for behavior changes and bug fixes when practical.
 triggers:
 - Behavior change.
@@ -16,7 +16,10 @@ loads:
     - skills/command-discovery/SKILL.md
     verification:
     - skills/verification/SKILL.md
+    requirements_or_criteria_conflict:
+    - skills/requirements-and-design/SKILL.md
 outputs:
+- acceptance-criteria-to-test mapping
 - failing test evidence when practical
 - passing test evidence after fix
 - reason when TDD is not practical
@@ -40,6 +43,15 @@ Users do not need to ask for this skill directly.
 Use this skill for behavior changes and bug fixes when executable tests are practical.
 
 TDD is a tool for confidence, not ceremony. It is strongly preferred for behavior changes, but exceptions must be explicit.
+
+## Acceptance criteria input
+
+When a Requirement Brief exists, map each executable acceptance criterion to one or more tests or checks before implementation.
+
+- Preserve the criterion's observable meaning.
+- Do not silently narrow or reinterpret it to fit an easier test.
+- Mark criteria that cannot be tested automatically and pass them to verification/handoff.
+- If a criterion is ambiguous or contradicts the design, return to `skills/requirements-and-design/SKILL.md` rather than guessing.
 
 ## Required for
 

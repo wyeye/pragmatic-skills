@@ -3,7 +3,7 @@ schema: psp.skill/v1
 name: handoff
 description: Final compact, factual, evidence-based response after changes, proposals, or reviews.
 kind: support
-version: 1.7.0
+version: 1.8.0
 summary: Final compact, factual, evidence-based response after changes, proposals, or reviews.
 triggers:
 - Before final response after file/code work.
@@ -11,7 +11,8 @@ triggers:
 loads: {}
 outputs:
 - changed/proposed/findings
-- verified
+- requirement/design state when relevant
+- verified acceptance criteria
 - review
 - not verified
 - notes/risks
@@ -27,6 +28,7 @@ activation:
   - skills/strict-change/SKILL.md#loads.phased.completion
   - skills/using-pragmatic-skills/SKILL.md#loads.conditional.completion
   - skills/workflow-retrospective/SKILL.md#loads.conditional.changed_files_completion
+  - skills/requirements-and-design/SKILL.md#loads.conditional.design_only_completion
   routing_note: Users provide tasks; agents route from AGENTS.md through an explicit direct route or triage and phase triggers. Users do not manually invoke individual skills.
 ---
 # Handoff
@@ -47,6 +49,18 @@ Handoff is the normal end-of-task factual summary. Do not automatically turn eve
 
 If the user explicitly asks to evaluate PSP, its routing, its skill triggers, or its friction after the task, the entry workflow routes that new request to `skills/workflow-retrospective/SKILL.md`.
 
+## Requirements/design handoff
+
+For design-only or requirement-clarification work with no file changes, use `Proposed:` or `Requirement Brief:` and include:
+
+- Recommended design.
+- Confirmation state and its basis.
+- Open decisions that block implementation.
+- Acceptance criteria.
+- Project evidence inspected.
+
+For implementation work, report any accepted criterion that was not verified and any safe assumption that remains relevant. Do not imply `confirmed` unless the confirmation basis exists.
+
 ## Required sections
 
 Use the relevant sections only:
@@ -56,7 +70,7 @@ Changed:
 - <file or area>: <what changed>
 
 Verified:
-- <command/check>: <result>
+- <command/check or acceptance criterion>: <result>
 
 Review:
 - <mode and evidence, if review happened>

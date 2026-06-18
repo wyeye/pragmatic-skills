@@ -1,5 +1,5 @@
 <!-- PSP:BEGIN -->
-# Pragmatic Skills Pack — Progressive Entry v1.7
+# Pragmatic Skills Pack — Progressive Entry v1.8
 
 This repository uses a progressive skill workflow. Do **not** preload the entire workflow.
 
@@ -16,7 +16,8 @@ User task
   -> explicit post-task PSP retrospective? workflow-retrospective
   -> otherwise skills/triage/SKILL.md
   -> one primary mode skill
-  -> support skills by phase trigger only
+  -> requirements/design when its phase trigger applies
+  -> other support skills by phase trigger only
 ```
 
 Do not ask the user which skill or mode to use unless the user is explicitly designing, debugging, or evaluating this skill system.
@@ -44,7 +45,7 @@ For any task that may involve code, files, tests, project decisions, debugging, 
 - Do not claim tests, builds, reviews, approvals, file changes, command discovery, or subagents happened unless they actually happened.
 - Do not fabricate command output, tool calls, git state, user confirmations, or external facts.
 - Prefer the smallest workflow that is sufficient for the task.
-- Re-run triage when risk, ambiguity, blast radius, command impact, or implementation scope changes.
+- Re-run triage when risk, ambiguity, requirements, blast radius, command impact, or implementation scope changes.
 - Do not perform destructive, production-affecting, or hard-to-reverse actions without the relevant safety gate.
 - Final responses must distinguish verified facts from unverified assumptions.
 
@@ -57,6 +58,18 @@ PSP may help maintain the current repository's project-specific `AGENTS.md`.
 - Passive trigger: if repository discovery shows there is no `AGENTS.md`, or `AGENTS.md` has only generic PSP entry content and no project-specific guidance, load `skills/project-agents-md/SKILL.md` and ask the user once whether to generate or improve it.
 - Do not silently create/refactor `AGENTS.md` from passive detection.
 - Do not manually edit PSP-managed blocks; project-specific content belongs outside managed blocks.
+
+## Requirements clarification and design
+
+PSP may automatically load `skills/requirements-and-design/SKILL.md` after triage selects a mode.
+
+- Trigger it when the user asks to brainstorm, clarify requirements, compare designs, define acceptance criteria, or confirm a design before coding.
+- Also trigger it when a feature/change lacks clear scope or success criteria, materially different designs exist, or planning would depend on risky assumptions.
+- Do not trigger it for tiny, fully specified, low-risk work merely to create ceremony.
+- Investigate repository facts through `exploration` before asking the user questions that the project can answer.
+- Ask one decision-critical question at a time.
+- Do not implement while its confirmation state is `blocked on user decision`.
+- Requirement/design confirmation does not replace safety approval for gated actions.
 
 ## Active-only workflow retrospective
 

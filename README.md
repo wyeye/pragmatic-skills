@@ -71,9 +71,24 @@ AGENTS.md
   -> skills/using-pragmatic-skills/SKILL.md
        -> skills/triage/SKILL.md
             -> one mode skill: fast-patch | exploration | standard-change | strict-change
-                 -> support skills only when the current phase triggers them
+                 -> requirements-and-design when its phase trigger applies
+                 -> other support skills only when the current phase triggers them
 ```
 
+
+## Requirements clarification and design
+
+PSP includes `skills/requirements-and-design/SKILL.md` for brainstorming, requirement clarification, acceptance criteria, design comparison, and confirmation before planning or implementation.
+
+- Users ask normally; they do not invoke the skill name.
+- Triage first selects Exploration, Standard Change, or Strict Change. The selected mode activates the skill only when the requirements phase is needed.
+- Exploration discovers repository facts; Requirements and Design settles intended behavior, scope, non-goals, acceptance criteria, and design choices.
+- It is skipped for tiny, fully specified, low-risk work.
+- It asks one decision-critical question at a time and can continue with documented safe assumptions only for low-risk, reversible defaults.
+- Its confirmation state is one of `confirmed`, `conditionally confirmed`, `safe assumptions used`, or `blocked on user decision`. Implementation does not proceed from the blocked state.
+- Requirement confirmation is separate from safety approval.
+
+The resulting Requirement Brief flows into planning, TDD, verification, review, and handoff. Detailed rules and eval fixtures are in `reference/REQUIREMENTS-AND-DESIGN.md`.
 
 ## Project AGENTS.md generation and refactoring
 
@@ -113,7 +128,7 @@ Every `SKILL.md` starts with YAML frontmatter, including automatic activation me
 schema: psp.skill/v1
 name: standard-change
 kind: mode
-version: 1.7.0
+version: 1.8.0
 summary: ...
 triggers: [...]
 loads: ...
@@ -146,6 +161,7 @@ skills/
   strict-change/SKILL.md
   command-discovery/SKILL.md
   project-agents-md/SKILL.md
+  requirements-and-design/SKILL.md
   workflow-retrospective/SKILL.md
   safety-gates/SKILL.md
   writing-plans/SKILL.md
@@ -162,6 +178,7 @@ reference/
   INSTALL-UPGRADE.md
   MODE-MATRIX.md
   PROJECT-PROFILE.template.md
+  REQUIREMENTS-AND-DESIGN.md
   SKILL-METADATA-SCHEMA.md
   USER-CONTRACT.md
   WORKFLOW-RETROSPECTIVE.md
@@ -169,7 +186,7 @@ reference/
 
 ## Version
 
-Current package version: `1.7.0`.
+Current package version: `1.8.0`.
 
 ## Multi-agent installation
 
@@ -191,11 +208,11 @@ Default `--hosts all` installs `AGENTS.md`, the `.agents/skills/using-pragmatic-
 Native host adapters are thin entry points. The internal workflow remains in `skills/`, and users still only describe normal tasks.
 
 
-## v1.7 changes
+## v1.8 changes
 
-- Added `skills/workflow-retrospective/SKILL.md`, an active-only post-task learning loop for PSP itself.
-- Added a direct entry route for explicit retrospective intent before normal triage.
-- Kept ordinary completion lightweight: no automatic retrospective and no routine opt-in prompt.
-- Separated implementation `handoff` from workflow retrospective.
-- Added evidence-bound findings, exact target files, priority/confidence, regression risk, and mandatory eval fixtures for material proposals.
-- Added optional `psp.retrospective/v1` records and `reference/WORKFLOW-RETROSPECTIVE.md`.
+- Added `skills/requirements-and-design/SKILL.md` for lightweight brainstorming, requirement clarification, design convergence, acceptance criteria, and explicit confirmation states.
+- Separated repository fact-finding (`exploration`) from product/design decisions (`requirements-and-design`).
+- Added a requirements phase to Standard and Strict Change while preserving Fast Patch for clear low-risk work.
+- Made writing plans consume the confirmed Requirement Brief and stop when a material user decision is unresolved.
+- Connected acceptance criteria to TDD, verification, review, and handoff.
+- Added one-question-at-a-time rules, safe-default boundaries, change-control rules, and ten eval fixtures in `reference/REQUIREMENTS-AND-DESIGN.md`.

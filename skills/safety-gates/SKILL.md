@@ -3,7 +3,7 @@ schema: psp.skill/v1
 name: safety-gates
 description: Require explicit approval before destructive, production-affecting, security-sensitive, or hard-to-reverse actions.
 kind: support
-version: 1.7.0
+version: 1.8.0
 summary: Require explicit approval before destructive, production-affecting, security-sensitive, or hard-to-reverse actions.
 triggers:
 - Any gated action is about to occur.
@@ -29,6 +29,7 @@ activation:
   - skills/command-discovery/SKILL.md#loads.conditional.high_risk_dependency_or_lockfile_action
   - skills/strict-change/SKILL.md#loads.immediate
   - skills/writing-plans/SKILL.md#loads.conditional.safety_gated_action
+  - skills/requirements-and-design/SKILL.md#loads.conditional.safety_sensitive_decision
   routing_note: Users provide tasks; agents route from AGENTS.md through an explicit direct route or triage and phase triggers. Users do not manually invoke individual skills.
 ---
 # Safety Gates

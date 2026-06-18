@@ -117,6 +117,25 @@ activation:
 - `passive`: observed conditions that may trigger a prompt or internal routing.
 - `passive_requires_confirmation: true`: the skill may be loaded automatically, but must ask before writing from a passive observation.
 
+For a non-mutating pre-task capability that may be activated by phase detection, use:
+
+```yaml
+activation:
+  automatic: true
+  entrypoint: false
+  user_direct: false
+  policy: passive-capable
+  lifecycle: pre-task
+  auto_after_completion: false
+  active:
+    - User explicitly asks for the capability in normal language.
+  passive:
+    - A mode observes that the capability is needed before planning or implementation.
+  passive_requires_confirmation: false
+```
+
+`passive_requires_confirmation: false` permits loading the non-mutating skill. It does not permit the workflow to assume material user decisions; the skill body still defines when confirmation is required.
+
 For an active-only capability, use:
 
 ```yaml
@@ -160,4 +179,4 @@ The package manifest exposes the public shell-first installer separately from th
 
 Users should not need to call `tools/psp.py` directly. Agents should prefer `install.sh` and only use the Python implementation as a fallback or for installed verification.
 
-Current schema documentation version: `1.7.0`.
+Current schema documentation version: `1.8.0`.

@@ -89,11 +89,27 @@ AGENTS.md
   -> using-pragmatic-skills
        -> triage
             -> 只打开一个主模式 skill
-                 -> 当前阶段触发时再打开辅助 skill
+                 -> 需求/设计阶段命中时加载 requirements-and-design
+                 -> 其他辅助 skill 仍按阶段触发
 ```
 
 这样小改动不会加载完整工程规范，大改动又不会跳过测试、计划、审查和证据。
 
+
+## 头脑风暴、需求确认与设计收敛
+
+PSP 新增 `skills/requirements-and-design/SKILL.md`，负责实现前的头脑风暴、需求澄清、验收标准、方案比较与确认。
+
+- 用户正常表达“先讨论方案、梳理需求、确认验收标准”等意图，不需要说 skill 名。
+- 仍然先经过 triage：只讨论时进入 Exploration；需要实现时进入 Standard 或 Strict；然后由 mode 在需求阶段自动加载。
+- `exploration` 负责发现项目事实；`requirements-and-design` 负责决定目标行为、范围、非目标、验收标准和设计方向。
+- 小而明确、低风险、规格完整的任务不会强制加载，避免仪式化。
+- 先查项目证据，再问用户；一次只问一个真正会改变结果的问题。
+- 只有低风险、可回滚、非公开接口/安全/数据语义的细节才允许使用明确记录的安全默认值。
+- 最终确认状态固定为 `confirmed`、`conditionally confirmed`、`safe assumptions used` 或 `blocked on user decision`；最后一种状态下不能进入实现。
+- 需求确认和安全审批是两个独立 gate。
+
+产出的 Requirement Brief 会传给计划、TDD、验证、审查和交付。详细规则与 eval fixtures 见 `reference/REQUIREMENTS-AND-DESIGN.md`。
 
 ## 项目 AGENTS.md 生成与重构
 
@@ -145,7 +161,7 @@ skills/command-discovery/SKILL.md
 schema: psp.skill/v1
 name: standard-change
 kind: mode
-version: 1.7.0
+version: 1.8.0
 summary: ...
 triggers: [...]
 loads: ...
@@ -161,16 +177,16 @@ skills/MANIFEST.json
 
 工具或 agent 可以先读 manifest / frontmatter 做路由，再按需打开具体 skill 正文。
 
-## v1.7 改动
+## v1.8 改动
 
-- 新增 `skills/workflow-retrospective/SKILL.md`，作为 PSP 的主动触发任务后学习闭环。
-- 入口 skill 在正常 triage 前识别明确的工作流复盘意图并直接路由。
-- 普通任务结束不会自动复盘，也不会例行询问用户。
-- 明确区分 `handoff`（交付事实）与 workflow retrospective（评估并迭代 workflow）。
-- 复盘输出包含证据、精确目标文件、优先级、置信度、回归风险和 eval fixture。
-- 新增可选的 `psp.retrospective/v1` 记录格式与 `reference/WORKFLOW-RETROSPECTIVE.md`。
+- 新增 `skills/requirements-and-design/SKILL.md`，覆盖轻量头脑风暴、需求澄清、方案收敛、验收标准和确认状态。
+- 明确拆分 `exploration`（发现事实）与 `requirements-and-design`（做需求/设计决策）。
+- 给 Standard/Strict 增加按阶段触发的 requirements phase，同时保留 Fast Patch 的轻量路径。
+- `writing-plans` 必须消费已确认的 Requirement Brief，存在关键未决策时不得进入实现计划。
+- 将验收标准贯通到 TDD、verification、review 和 handoff。
+- 新增一次一个关键问题、安全默认值边界、需求变更控制，以及 `reference/REQUIREMENTS-AND-DESIGN.md` 中的 10 个 eval fixtures。
 
-当前版本：`1.7.0`。
+当前版本：`1.8.0`。
 
 ## 多工具安装
 
