@@ -1,12 +1,12 @@
 ---
 name: verification
-description: Builds a risk-based verification ladder, executes current checks, and maps results to acceptance criteria without overclaiming coverage.
+description: Builds a risk-based verification ladder, executes current checks, and maps results to acceptance criteria and cross-path behavior without overclaiming coverage.
 license: Mixed-origin; see repository LICENSE
 compatibility: Agent Skills-compatible hosts or a PSP host adapter.
 metadata:
   psp-schema: psp.skill/v2
   psp-kind: support
-  psp-version: 2.0.1
+  psp-version: 2.0.2
 ---
 
 # Verification
@@ -19,7 +19,9 @@ Use the narrowest-to-broadest ladder justified by risk:
 4. Build, packaging, migration dry-run, or local runtime check.
 5. Broader regression suite when impact warrants it.
 
-Map each acceptance criterion to actual evidence. Check that generated artifacts, documentation, and configuration remain consistent. Verification becomes stale after later changes; rerun the affected layer. Report skipped checks and their consequences.
+Map each acceptance criterion to actual evidence. When a behavior/state matrix exists, report every `BM-*` row and cross-path invariant as `verified`, `partially verified`, or `unverified`, with the evidence and untested segment. Check the complete applicable chain: entry, reads/source of truth, local write or transition, external/platform effect, device/event effect, synchronization behavior, and final query visibility. One verified row does not prove its adjacent rows.
+
+Check that generated artifacts, documentation, and configuration remain consistent. Verification becomes stale after later changes; rerun the affected layer. Report skipped checks and their consequences.
 
 ## Operating rule
 

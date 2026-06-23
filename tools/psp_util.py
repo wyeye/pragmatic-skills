@@ -16,7 +16,7 @@ from dataclasses import dataclass
 from pathlib import Path, PurePosixPath
 from typing import Any, Dict, Iterable, Iterator, List, Mapping, Optional, Sequence, Tuple, Union
 
-PACKAGE_VERSION = "2.0.1"
+PACKAGE_VERSION = "2.0.2"
 PACKAGE_ID = "pragmatic-skills-pack"
 INSTALL_SCHEMA = "psp.install/v2"
 MANIFEST_SCHEMA = "psp.manifest/v2"
@@ -350,7 +350,7 @@ def build_skill_manifest(package_root: Path) -> Dict[str, Any]:
     return {
         "schema": MANIFEST_SCHEMA,
         "package_id": PACKAGE_ID,
-        "name": "Pragmatic Skills Pack — Enhanced 2.0.1",
+        "name": "Pragmatic Skills Pack — Enhanced 2.0.2",
         "version": PACKAGE_VERSION,
         "generated_at": "deterministic",
         "entry_skill": entry_path,

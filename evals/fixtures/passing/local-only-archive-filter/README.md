@@ -1,0 +1,1 @@
+Known-good deterministic negative control. A fully specified single-entry local state filter does not activate requirements-and-design or a behavior/state matrix merely because the task contains state-related vocabulary.

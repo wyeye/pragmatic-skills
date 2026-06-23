@@ -33,7 +33,7 @@ EXCLUDED_DIRS = {
     "dist",
 }
 EXCLUDED_SUFFIXES = {".pyc", ".pyo", ".zip"}
-FIXED_TIMESTAMP = (2026, 6, 18, 0, 0, 0)
+FIXED_TIMESTAMP = (2026, 6, 22, 0, 0, 0)
 
 
 def package_root() -> Path:

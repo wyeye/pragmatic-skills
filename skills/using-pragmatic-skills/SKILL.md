@@ -6,7 +6,7 @@ compatibility: Agent Skills-compatible hosts or a PSP host adapter.
 metadata:
   psp-schema: psp.skill/v2
   psp-kind: entry
-  psp-version: 2.0.1
+  psp-version: 2.0.2
 ---
 
 # Using Pragmatic Skills

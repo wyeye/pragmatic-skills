@@ -5,7 +5,7 @@ license: Mixed-origin; see repository LICENSE
 compatibility: Agent Skills-compatible hosts that discover .agents/skills.
 metadata:
   psp-adapter: native-entry
-  psp-version: 2.0.1
+  psp-version: 2.0.2
 ---
 
 # Pragmatic Skills Pack entry

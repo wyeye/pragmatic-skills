@@ -16,9 +16,10 @@
   "name": "tdd",
   "outputs": [
     "failing test evidence",
+    "matrix row regression coverage",
     "implementation evidence",
     "refactor verification"
   ],
   "schema": "psp.skill/v2",
-  "version": "2.0.1"
+  "version": "2.0.2"
 }

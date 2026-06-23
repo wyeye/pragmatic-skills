@@ -1,0 +1,17 @@
+{"event":"run_started","event_id":"e001","host":"fixture","model":"deterministic","run_id":"local-only-archive-filter","schema":"psp.trace/v1","task":"Exclude archived rows in one local-only query.","timestamp":"2026-06-22T12:10:01Z"}
+{"event":"mode_selected","event_id":"e002","mode":"standard-change","reason":"fully specified local behavior change with a focused regression test","run_id":"local-only-archive-filter","schema":"psp.trace/v1","timestamp":"2026-06-22T12:10:02Z"}
+{"event":"skill_activated","event_id":"e003","run_id":"local-only-archive-filter","schema":"psp.trace/v1","skill":"using-pragmatic-skills","timestamp":"2026-06-22T12:10:03Z"}
+{"event":"skill_activated","event_id":"e004","run_id":"local-only-archive-filter","schema":"psp.trace/v1","skill":"triage","timestamp":"2026-06-22T12:10:04Z"}
+{"event":"skill_activated","event_id":"e005","run_id":"local-only-archive-filter","schema":"psp.trace/v1","skill":"standard-change","timestamp":"2026-06-22T12:10:05Z"}
+{"event":"skill_activated","event_id":"e006","run_id":"local-only-archive-filter","schema":"psp.trace/v1","skill":"writing-plans","timestamp":"2026-06-22T12:10:06Z"}
+{"event":"skill_activated","event_id":"e007","run_id":"local-only-archive-filter","schema":"psp.trace/v1","skill":"tdd","timestamp":"2026-06-22T12:10:07Z"}
+{"event":"skill_activated","event_id":"e008","run_id":"local-only-archive-filter","schema":"psp.trace/v1","skill":"verification","timestamp":"2026-06-22T12:10:08Z"}
+{"event":"skill_activated","event_id":"e009","run_id":"local-only-archive-filter","schema":"psp.trace/v1","skill":"review","timestamp":"2026-06-22T12:10:09Z"}
+{"event":"skill_activated","event_id":"e010","run_id":"local-only-archive-filter","schema":"psp.trace/v1","skill":"handoff","timestamp":"2026-06-22T12:10:10Z"}
+{"change":"modified","event":"file_changed","event_id":"e011","path":"src/query.py","run_id":"local-only-archive-filter","schema":"psp.trace/v1","timestamp":"2026-06-22T12:10:11Z"}
+{"change":"modified","event":"file_changed","event_id":"e012","path":"tests/test_query.py","run_id":"local-only-archive-filter","schema":"psp.trace/v1","timestamp":"2026-06-22T12:10:12Z"}
+{"command":"project archive-filter regression tests","event":"command_finished","event_id":"e013","exit_code":0,"purpose":"test","run_id":"local-only-archive-filter","schema":"psp.trace/v1","timestamp":"2026-06-22T12:10:13Z"}
+{"event":"verification_finished","event_id":"e014","evidence":["e013"],"run_id":"local-only-archive-filter","schema":"psp.trace/v1","scope":"tests","status":"passed","timestamp":"2026-06-22T12:10:14Z"}
+{"event":"review_finished","event_id":"e015","run_id":"local-only-archive-filter","schema":"psp.trace/v1","scope":"final diff","status":"passed","timestamp":"2026-06-22T12:10:15Z"}
+{"claim_type":"verification_passed","event":"claim","event_id":"e016","evidence":["e014"],"run_id":"local-only-archive-filter","schema":"psp.trace/v1","statement":"The focused local query change passed its regression test.","timestamp":"2026-06-22T12:10:16Z"}
+{"event":"run_finished","event_id":"e017","run_id":"local-only-archive-filter","schema":"psp.trace/v1","status":"completed","timestamp":"2026-06-22T12:10:17Z"}

@@ -5,7 +5,7 @@ license: Mixed-origin; see repository LICENSE
 compatibility: Claude Code projects that discover .claude/skills.
 metadata:
   psp-adapter: claude-entry
-  psp-version: 2.0.1
+  psp-version: 2.0.2
 ---
 
 # Pragmatic Skills Pack entry

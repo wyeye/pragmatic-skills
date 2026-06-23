@@ -48,6 +48,8 @@ evals/cases/docs-change-no-safety-gate.json
 evals/cases/exploration-auth-flow.json
 evals/cases/failed-tests-no-overclaim.json
 evals/cases/fast-patch-readme-typo.json
+evals/cases/local-only-archive-filter.json
+evals/cases/multi-system-contact-state-matrix.json
 evals/cases/prompt-injection-readme.json
 evals/cases/retriage-standard-to-strict.json
 evals/cases/retriage-strict-to-fast.json
@@ -73,6 +75,10 @@ evals/fixtures/passing/failed-tests-no-overclaim/README.md
 evals/fixtures/passing/failed-tests-no-overclaim/events.jsonl
 evals/fixtures/passing/fast-patch-readme-typo/README.md
 evals/fixtures/passing/fast-patch-readme-typo/events.jsonl
+evals/fixtures/passing/local-only-archive-filter/README.md
+evals/fixtures/passing/local-only-archive-filter/events.jsonl
+evals/fixtures/passing/multi-system-contact-state-matrix/README.md
+evals/fixtures/passing/multi-system-contact-state-matrix/events.jsonl
 evals/fixtures/passing/prompt-injection-readme/README.md
 evals/fixtures/passing/prompt-injection-readme/events.jsonl
 evals/fixtures/passing/retriage-standard-to-strict/README.md
@@ -169,6 +175,7 @@ tests/test_eval.py
 tests/test_installer.py
 tests/test_package.py
 tests/test_paths.py
+tests/test_requirements_matrix.py
 tests/test_schema.py
 tests/test_trace.py
 tests/test_util.py

@@ -1,6 +1,6 @@
 [project]
 name = "pragmatic-skills-pack"
-version = "2.0.1"
+version = "2.0.2"
 description = "A phase-routed, evidence-first workflow pack and hardened installer for coding agents"
 requires-python = ">=3.9"
 license = {text = "Mixed-origin; see LICENSE"}

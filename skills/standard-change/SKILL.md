@@ -6,7 +6,7 @@ compatibility: Agent Skills-compatible hosts or a PSP host adapter.
 metadata:
   psp-schema: psp.skill/v2
   psp-kind: mode
-  psp-version: 2.0.1
+  psp-version: 2.0.2
 ---
 
 # Standard Change
@@ -14,7 +14,7 @@ metadata:
 Use a complete but proportionate implementation loop.
 
 1. Discover repository facts and commands.
-2. Activate requirements and design only when intended behavior, scope, or acceptance criteria are not already settled.
+2. Activate requirements and design when intended behavior, scope, or acceptance criteria are unsettled, and also for multi-entry or multi-authority delete, sync, reconciliation, status, lifecycle, or visibility changes even when the prompt names only one path.
 3. Produce a file-oriented plan for non-trivial work.
 4. Implement in small coherent increments; use test-first development where it improves confidence.
 5. Run risk-appropriate verification and map results to every acceptance criterion.

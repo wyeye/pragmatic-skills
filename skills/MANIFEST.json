@@ -1,7 +1,7 @@
 {
   "entry_skill": "skills/using-pragmatic-skills/SKILL.md",
   "generated_at": "deterministic",
-  "name": "Pragmatic Skills Pack — Enhanced 2.0.1",
+  "name": "Pragmatic Skills Pack — Enhanced 2.0.2",
   "package_id": "pragmatic-skills-pack",
   "payload_roots": [
     "skills",
@@ -23,10 +23,10 @@
       "loads": [],
       "name": "command-discovery",
       "path": "skills/command-discovery/SKILL.md",
-      "sha256": "c5f813ef3004d488ee5df018418f13ed4d11556792bf417fe716b9785e3cf9ff",
+      "sha256": "d30ba5ea62354ab3df1e6b8dc45388928fb61363ff79b48c289e4d7cbc135899",
       "sidecar": "skills/command-discovery/psp.skill.json",
-      "sidecar_sha256": "1a8c26f772198591f61690550978eefb430de786d05bd88dab9664e768e4a1b5",
-      "version": "2.0.1"
+      "sidecar_sha256": "3c4c2b52197b581c96a0bfe1245dcf512deb6ffc58e30ebda9ffd9b4946fdcda",
+      "version": "2.0.2"
     },
     {
       "entry": false,
@@ -36,10 +36,10 @@
       ],
       "name": "delegation",
       "path": "skills/delegation/SKILL.md",
-      "sha256": "d231af47a42b3ad5038d9bd0b15e7b1a9c38d83ad067a4f515d009c401abb032",
+      "sha256": "eb86b462b5e426fa8fb230ef5641be66c5289f9fee367ec5f3d211e67c9e0a4c",
       "sidecar": "skills/delegation/psp.skill.json",
-      "sidecar_sha256": "a37f8990c38876819d25d13ea983606b9dc235e93c072a2117a508b7dabe3709",
-      "version": "2.0.1"
+      "sidecar_sha256": "e7f9f4a8a6c9357af2af433358e6bed0a1d264f74bb51affb843b8d30043c122",
+      "version": "2.0.2"
     },
     {
       "entry": false,
@@ -47,10 +47,10 @@
       "loads": [],
       "name": "evidence-driven-execution",
       "path": "skills/evidence-driven-execution/SKILL.md",
-      "sha256": "7fc35dd0b9ff419478f41f65a3598a8d22cfd7860cb66200c987b960a679b2dc",
+      "sha256": "4fef8e881d3d1bbd5ba09c374fb8626c9a16464dfd3c5e57b74d1dafd635235d",
       "sidecar": "skills/evidence-driven-execution/psp.skill.json",
-      "sidecar_sha256": "004938f9dee5ac5f40a725b879f6f7087ee6532e57647563324718212a34ceed",
-      "version": "2.0.1"
+      "sidecar_sha256": "f8b88ddb1b5f601edcad1c70c3d52725fb38640efe494dfe966f0d30345471d1",
+      "version": "2.0.2"
     },
     {
       "entry": false,
@@ -62,10 +62,10 @@
       ],
       "name": "exploration",
       "path": "skills/exploration/SKILL.md",
-      "sha256": "93e1ee68d370d6c857b5693e6bf7b0f9f8d9ebc4953600c35a8476b82d9385d1",
+      "sha256": "688eb562a56ed9604d53b0447378e29ad4eb9958cbc0674f555d1cd5acb3d87f",
       "sidecar": "skills/exploration/psp.skill.json",
-      "sidecar_sha256": "6e2c8bd26e97015a4aaa410baae0a67afa664ac8165ddd2c878259896478d1cc",
-      "version": "2.0.1"
+      "sidecar_sha256": "a4d665bffd8f044d45b404b7f0fdb30ea338d830d5eb9bfb33f38f3cefb11041",
+      "version": "2.0.2"
     },
     {
       "entry": false,
@@ -78,10 +78,10 @@
       ],
       "name": "fast-patch",
       "path": "skills/fast-patch/SKILL.md",
-      "sha256": "930c1e74235e476731e6df8cb818b7553e62808687915541f66e831ab5965bf0",
+      "sha256": "016700b440d2ce9e1638fe005b86613f120a67b59395280e651f1904505b4d63",
       "sidecar": "skills/fast-patch/psp.skill.json",
-      "sidecar_sha256": "9984d76d0516ae6dd07e7ffc1b2e8982e9f30b6b11f19e80845bd1f310e7dc0f",
-      "version": "2.0.1"
+      "sidecar_sha256": "653834878ddd3e0e44a0ae63bff0d72bdd59674669d9e27e4c9904d11624b74c",
+      "version": "2.0.2"
     },
     {
       "entry": false,
@@ -89,10 +89,10 @@
       "loads": [],
       "name": "handoff",
       "path": "skills/handoff/SKILL.md",
-      "sha256": "e7a7b7993532785033d9ca7e123c03fdf1398eed89a714821361452513611871",
+      "sha256": "19975f0bcae085c2def074f000ecefadb6e4f09dd1eb8cedccb7ab8322414bb3",
       "sidecar": "skills/handoff/psp.skill.json",
-      "sidecar_sha256": "89fdd3f5eccbd95744299081b4eefaa7eb24b81ba293e18231dee502aa3a2baa",
-      "version": "2.0.1"
+      "sidecar_sha256": "5dc4a43402ecfddf9a9dc0585fe1e667fcb5d8960b46460fa2d6eea956bf9f07",
+      "version": "2.0.2"
     },
     {
       "entry": false,
@@ -105,10 +105,10 @@
       ],
       "name": "project-agents-md",
       "path": "skills/project-agents-md/SKILL.md",
-      "sha256": "bd1890bdf5f854af2c4ac19291e00de17936377b606df18ff9392476acc5963d",
+      "sha256": "b8c9bde710ddcbb1233ce6c68acfb64eb8d9d61dd41bdf245652115b9858d6bc",
       "sidecar": "skills/project-agents-md/psp.skill.json",
-      "sidecar_sha256": "884d4a412447400eade6f15d8b2989bf1a5ac1ac40babb71b82ce70269d3d420",
-      "version": "2.0.1"
+      "sidecar_sha256": "3097c9ae17ca200f334e88b655ab44ec6da71d7f399b5e8ed17136d366617474",
+      "version": "2.0.2"
     },
     {
       "entry": false,
@@ -116,10 +116,10 @@
       "loads": [],
       "name": "requirements-and-design",
       "path": "skills/requirements-and-design/SKILL.md",
-      "sha256": "35e7807c8bf5763d65cdf709f2eb6579b45b8cb148ecd6934f92e0ef87d84d4f",
+      "sha256": "bd665e64a2ac7b15d85d5abaf6653653f358f5ad5c44e4a7341a2d6f5561b173",
       "sidecar": "skills/requirements-and-design/psp.skill.json",
-      "sidecar_sha256": "1e98ed72e929988efa5577c585f6cd1ad64873319905d7a5866b53a5572a0979",
-      "version": "2.0.1"
+      "sidecar_sha256": "e1697aea27d4b003a396a6769ac8864c2f6e17c2628663961cb40e5377db42cf",
+      "version": "2.0.2"
     },
     {
       "entry": false,
@@ -129,10 +129,10 @@
       ],
       "name": "review",
       "path": "skills/review/SKILL.md",
-      "sha256": "0707a8bc30e7d37920adfa65cff8aa3d21465386590e730fd4771d3b11f482d4",
+      "sha256": "5bda38890487fcd8fecc3e06bea13264efd159727bc807b79e995e7be6a5027b",
       "sidecar": "skills/review/psp.skill.json",
-      "sidecar_sha256": "9b791e7027ecb2d349f1a2076b1c59e55c16b2a6ff8997916a24cd1de7bee4ac",
-      "version": "2.0.1"
+      "sidecar_sha256": "af1cd63edc272a39ce008aecae62b5f86d7efb90a5ef6afffb266ddad99cc392",
+      "version": "2.0.2"
     },
     {
       "entry": false,
@@ -142,10 +142,10 @@
       ],
       "name": "safety-gates",
       "path": "skills/safety-gates/SKILL.md",
-      "sha256": "06ff7e80d204dec8e995843c8a8f7395a4d7ef7a1a76b5ceb7d820b2049a8e67",
+      "sha256": "42a18539093db506b5c044f9a06f6f506155fb785da8afe9bd507519d85642e6",
       "sidecar": "skills/safety-gates/psp.skill.json",
-      "sidecar_sha256": "01047ce11d54797490b5476f7ad8d8621bafed1d2ec8199bc6dec5405fe0b494",
-      "version": "2.0.1"
+      "sidecar_sha256": "ee5ffb1e9e48146e014eafc34c84f76e55f8e5461d4ba856309fc813de1fb7ac",
+      "version": "2.0.2"
     },
     {
       "entry": false,
@@ -164,10 +164,10 @@
       ],
       "name": "standard-change",
       "path": "skills/standard-change/SKILL.md",
-      "sha256": "6b4384fb6dd39c54e2f78c68693fdfe7cb9a6e8e4b5d3196378d00a789e368e1",
+      "sha256": "a3baee994e9673b0112834c6159c79ca7a2512f1db832590022b2c0e3f16e1fe",
       "sidecar": "skills/standard-change/psp.skill.json",
-      "sidecar_sha256": "0ee9366f52482b13266fadd846eb531b3989ae1057128038b2bd874a2600c8e3",
-      "version": "2.0.1"
+      "sidecar_sha256": "27a4c4fef262b0b2b24f0f5c42190178ddd2aa00946e2b342ff2d53a12323674",
+      "version": "2.0.2"
     },
     {
       "entry": false,
@@ -187,10 +187,10 @@
       ],
       "name": "strict-change",
       "path": "skills/strict-change/SKILL.md",
-      "sha256": "d964b256fb9b74327b393840821cb58055ef7a6fd76ad754b41d0eca24ae15e1",
+      "sha256": "0ee36d68589862bf2a8b80ceff5ba87eafca1d5e5d2a82556261195f50582d6b",
       "sidecar": "skills/strict-change/psp.skill.json",
-      "sidecar_sha256": "612a36279a508d19225225eda2f5aacd2e6cf1b38be593467fccc2d5731baf88",
-      "version": "2.0.1"
+      "sidecar_sha256": "cfdd42013a43c492c2e97b4d8495e05a4977da688e64649373b1b25094999910",
+      "version": "2.0.2"
     },
     {
       "entry": false,
@@ -201,10 +201,10 @@
       ],
       "name": "tdd",
       "path": "skills/tdd/SKILL.md",
-      "sha256": "3906ad6aa94e96a4594c9dc483d0fe488b6b1ed9efc27b13825373a2bcb5d934",
+      "sha256": "cd52ebc8ae201d72d8cc860b0ad812803f51893e7662a644f7e5ab4a5955ddf0",
       "sidecar": "skills/tdd/psp.skill.json",
-      "sidecar_sha256": "bc07cba995d9cb790512deb18d950babe2dd4f85b26fe7624be38d328c8a1aed",
-      "version": "2.0.1"
+      "sidecar_sha256": "1ab3bfdf2c14e570e4f4c91700fd00de2a22ecc3cd8d636b37b4dcb433091957",
+      "version": "2.0.2"
     },
     {
       "entry": false,
@@ -217,10 +217,10 @@
       ],
       "name": "triage",
       "path": "skills/triage/SKILL.md",
-      "sha256": "43baf50395afcaa9b38f118acdb6bdd0b358c52efa49bdbc90257fcd06bbb7f1",
+      "sha256": "e9a4e67fe62a9d8f0eb329b430b57c74dbbef79b94eb2347fe838c0e70b7477b",
       "sidecar": "skills/triage/psp.skill.json",
-      "sidecar_sha256": "1f716fc41b9b710710bd41f21cf8bf271cf1124c871c1789c6396f046093c603",
-      "version": "2.0.1"
+      "sidecar_sha256": "eab785b2f7f44ebc6409dc90d6b3bcb1302b36d3c35a2b37ca5f2a1fb6039a18",
+      "version": "2.0.2"
     },
     {
       "entry": true,
@@ -232,10 +232,10 @@
       ],
       "name": "using-pragmatic-skills",
       "path": "skills/using-pragmatic-skills/SKILL.md",
-      "sha256": "5489a211923e1989c427108e3891245b036eab0d3656d00daf29ecdc1ee85e1a",
+      "sha256": "6ed3416cbcee5d9c12e90d15467f572ccc3954790f3972c4981db98c482432ef",
       "sidecar": "skills/using-pragmatic-skills/psp.skill.json",
-      "sidecar_sha256": "8f38256d3a0a205d3bec5bf0963968583db57f78ebb78c37a2251798ee4160f4",
-      "version": "2.0.1"
+      "sidecar_sha256": "128b94fe5f3a63ef28a7fa3fcc648da5f2d0cc7b920881505ac1758e60349a62",
+      "version": "2.0.2"
     },
     {
       "entry": false,
@@ -246,10 +246,10 @@
       ],
       "name": "verification",
       "path": "skills/verification/SKILL.md",
-      "sha256": "9f174478ce67af3531c8e4d74cd5065159077bb85ffd4348008eec9d6873b394",
+      "sha256": "4b58ba08233084a50627cb499d8c5851b5bfe8a4214195cb7cc13bebabe94aff",
       "sidecar": "skills/verification/psp.skill.json",
-      "sidecar_sha256": "70369deb5cba42ca713b4bf330e5f7b62984d71794c2f63c9933793ce790b2dc",
-      "version": "2.0.1"
+      "sidecar_sha256": "87100260e873856275c901d8b237b8ab857fa0aa05ad43e2ca683c0d717e80d0",
+      "version": "2.0.2"
     },
     {
       "entry": false,
@@ -260,10 +260,10 @@
       ],
       "name": "workflow-retrospective",
       "path": "skills/workflow-retrospective/SKILL.md",
-      "sha256": "94364423b9b957683c8b0d0bf7a85f252d6f2b5ef633b6aa8d8999763af497a8",
+      "sha256": "4c4f912af55db92f65ff0232834e8a5da916fbdd7cbd9b69986bcbc33b30d1de",
       "sidecar": "skills/workflow-retrospective/psp.skill.json",
-      "sidecar_sha256": "b470dc4085fe5bba5cf50a86170d3e2da6d6e4e09fe412757d4043cfd8b7515c",
-      "version": "2.0.1"
+      "sidecar_sha256": "d15963540177195d1b28c3210796d7278d19e52c5ce1a02a8c66eae45bce72bf",
+      "version": "2.0.2"
     },
     {
       "entry": false,
@@ -273,10 +273,10 @@
       ],
       "name": "worktree",
       "path": "skills/worktree/SKILL.md",
-      "sha256": "2c7b255fcc9afc07747b6abbfff91b0edc3eb0c63cd08e2cc37fefdabccadc4a",
+      "sha256": "362f88843fd3ac7d6f50a433e66dfb5f3098ebbd9d6e76023d63fa79c911987f",
       "sidecar": "skills/worktree/psp.skill.json",
-      "sidecar_sha256": "e94a62d40cf941e6e29f943fce2e8c010a9e76fd12b6cd317ddecfd73492f886",
-      "version": "2.0.1"
+      "sidecar_sha256": "f5fbc3b107261ad795851f2cf1916bbeb2a4f08e9e6ad1d387d4aebfd6d11fb1",
+      "version": "2.0.2"
     },
     {
       "entry": false,
@@ -286,11 +286,11 @@
       ],
       "name": "writing-plans",
       "path": "skills/writing-plans/SKILL.md",
-      "sha256": "90b4f36d4ca68162aa3ed92c09a2d469301769f17f8ab9939ee35f999d7caa10",
+      "sha256": "cafa04878f434b30597508fe50d9805946c6e0465527f7c34a4149023420db9b",
       "sidecar": "skills/writing-plans/psp.skill.json",
-      "sidecar_sha256": "93dd01dd2aec982fd4646e4f277029f9311168c047569b4e292879b593c59286",
-      "version": "2.0.1"
+      "sidecar_sha256": "0e0544701590974a4671b58649d0d5e6b066e31232269678884acefbb51ad02e",
+      "version": "2.0.2"
     }
   ],
-  "version": "2.0.1"
+  "version": "2.0.2"
 }

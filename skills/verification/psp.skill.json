@@ -16,10 +16,11 @@
   "name": "verification",
   "outputs": [
     "verification matrix",
+    "behavior matrix row status",
     "command evidence",
     "acceptance coverage",
     "unverified risks"
   ],
   "schema": "psp.skill/v2",
-  "version": "2.0.1"
+  "version": "2.0.2"
 }

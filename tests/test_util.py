@@ -82,10 +82,10 @@ class MetadataTests(unittest.TestCase):
             path = Path(raw) / "SKILL.md"
             path.write_text(
                 "---\n"
-                "name: demo\n"
-                "description: workflow: clarify requirements\n"
-                "---\n"
-                "# Demo\n",
+                + "name: demo\n"
+                + "description: workflow: clarify requirements\n"
+                + "---\n"
+                + "# Demo\n",
                 encoding="utf-8",
             )
             with self.assertRaisesRegex(ValidationError, "YAML-ambiguous"):

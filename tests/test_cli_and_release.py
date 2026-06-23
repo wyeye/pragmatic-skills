@@ -24,7 +24,7 @@ class CliAndReleaseTests(unittest.TestCase):
     def test_cli_version_and_package_check(self) -> None:
         version = self.run_cli("--version")
         self.assertEqual(version.returncode, 0)
-        self.assertEqual(version.stdout.strip(), "2.0.1")
+        self.assertEqual(version.stdout.strip(), "2.0.2")
         checked = self.run_cli("verify-package", "--target", str(ROOT), "--json")
         self.assertEqual(checked.returncode, 0, checked.stderr + checked.stdout)
         self.assertIn('"ok": true', checked.stdout)

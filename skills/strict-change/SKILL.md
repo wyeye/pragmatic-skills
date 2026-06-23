@@ -6,7 +6,7 @@ compatibility: Agent Skills-compatible hosts or a PSP host adapter.
 metadata:
   psp-schema: psp.skill/v2
   psp-kind: mode
-  psp-version: 2.0.1
+  psp-version: 2.0.2
 ---
 
 # Strict Change
@@ -14,7 +14,7 @@ metadata:
 High impact changes require stronger control, not just more prose.
 
 1. Identify assets, affected environments, blast radius, reversibility, and failure modes.
-2. Settle requirements and acceptance criteria before implementation.
+2. Settle requirements and acceptance criteria before implementation; for multi-entry or multi-authority state changes, confirm a behavior/state matrix before any write path is changed.
 3. Prepare a rollback or containment plan and validate prerequisites without executing the risky action.
 4. Request explicit, scoped user approval immediately before each high-risk execution boundary.
 5. Record approval and action ordering in the trace.

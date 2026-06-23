@@ -1,6 +1,6 @@
 {
   "schema": "psp.host-adapters/v2",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "default": "auto",
   "hosts": {
     "agents": {

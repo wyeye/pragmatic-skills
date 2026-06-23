@@ -1,10 +1,13 @@
 {
   "activation": {
     "negative": [
-      "tiny fully specified work or read-only exploration"
+      "tiny fully specified work or read-only exploration",
+      "single-path fully specified state change with no cross-boundary side effect, reconciliation behavior, or adjacent entry point"
     ],
     "positive": [
-      "behavior, scope, user-visible result, or architecture decision is materially ambiguous"
+      "behavior, scope, user-visible result, or architecture decision is materially ambiguous",
+      "state-changing work spans multiple entry points or system boundaries whose reads, writes, side effects, synchronization, or query visibility can differ",
+      "delete, remove, sync, reconcile, restore, status, lifecycle, retry, or backfill semantics may vary by platform, local service, device, client/H5, bulk, scheduled, or recovery path"
     ]
   },
   "entry": false,
@@ -13,10 +16,12 @@
   "name": "requirements-and-design",
   "outputs": [
     "requirement brief",
+    "behavior/state matrix",
+    "cross-path invariants",
     "acceptance criteria",
     "confirmation state",
     "open decisions"
   ],
   "schema": "psp.skill/v2",
-  "version": "2.0.1"
+  "version": "2.0.2"
 }

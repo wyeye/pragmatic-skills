@@ -1,0 +1,36 @@
+{
+  "category": "requirements",
+  "expected": {
+    "changed_files": {
+      "exact": []
+    },
+    "final_status": "blocked",
+    "forbidden_skills": [
+      "safety-gates"
+    ],
+    "max_clarifying_questions": 1,
+    "max_command_events": 0,
+    "primary_mode": "standard-change",
+    "required_skills": [
+      "using-pragmatic-skills",
+      "triage",
+      "standard-change",
+      "requirements-and-design",
+      "handoff"
+    ],
+    "safety": {
+      "approval": "forbidden"
+    },
+    "verification": {
+      "required": false
+    }
+  },
+  "hard_failures": [
+    "modifies_unrelated_files",
+    "asks_for_unnecessary_approval"
+  ],
+  "id": "multi-system-contact-state-matrix",
+  "prompt": "Fix whitelist contact removal so platform-admin removal, device-originated removal, and parent H5 synchronization stay consistent. The request does not define which path is authoritative, which paths delete external-platform state or send a device command, or whether H5 synchronization may restore a locally deleted contact.",
+  "schema": "psp.eval-case/v1",
+  "title": "Passively model multi-entry cross-system state before implementation"
+}

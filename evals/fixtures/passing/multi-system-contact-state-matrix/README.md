@@ -1,0 +1,1 @@
+Known-good deterministic fixture for evaluator self-tests. It demonstrates passive behavior/state matrix activation, explicit unknown cells, and one decision-critical question. It is not evidence of a real host run.

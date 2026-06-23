@@ -16,9 +16,10 @@
   "outputs": [
     "ordered steps",
     "target files",
+    "behavior matrix coverage",
     "test mapping",
     "rollback notes"
   ],
   "schema": "psp.skill/v2",
-  "version": "2.0.1"
+  "version": "2.0.2"
 }

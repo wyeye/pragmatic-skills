@@ -19,9 +19,9 @@ class PackageTests(unittest.TestCase):
     def test_package_verifies(self) -> None:
         result = verify_package(ROOT)
         self.assertTrue(result["ok"], result["issues"])
-        self.assertEqual(result["version"], "2.0.1")
+        self.assertEqual(result["version"], "2.0.2")
         self.assertEqual(result["skill_count"], 19)
-        self.assertEqual(result["eval_case_count"], 16)
+        self.assertEqual(result["eval_case_count"], 18)
 
     def test_manifest_is_deterministic_and_graph_is_reachable(self) -> None:
         expected = build_skill_manifest(ROOT)
@@ -43,8 +43,8 @@ class PackageTests(unittest.TestCase):
         self.assertTrue(payload["ok"])
 
     def test_single_version_source(self) -> None:
-        self.assertEqual(PACKAGE_VERSION, "2.0.1")
-        self.assertIn('version = "2.0.1"', (ROOT / "pyproject.toml").read_text(encoding="utf-8"))
+        self.assertEqual(PACKAGE_VERSION, "2.0.2")
+        self.assertIn('version = "2.0.2"', (ROOT / "pyproject.toml").read_text(encoding="utf-8"))
         hosts = read_json(ROOT / "adapters" / "HOSTS.json")
         self.assertEqual(hosts["version"], PACKAGE_VERSION)
         self.assertEqual(hosts["default"], "auto")

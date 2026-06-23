@@ -28,9 +28,9 @@ class InstallerTests(unittest.TestCase):
     def test_package_verification(self) -> None:
         result = verify_package(ROOT)
         self.assertTrue(result["ok"], result["issues"])
-        self.assertEqual(result["version"], "2.0.1")
+        self.assertEqual(result["version"], "2.0.2")
         self.assertEqual(result["skill_count"], 19)
-        self.assertGreaterEqual(result["eval_case_count"], 16)
+        self.assertGreaterEqual(result["eval_case_count"], 18)
 
     def test_fresh_install_is_idempotent_and_uninstall_preserves_user_content(self) -> None:
         original = "# Project instructions\n\nKeep this user-owned line.\n"
@@ -256,7 +256,7 @@ class InstallerTests(unittest.TestCase):
             json.dumps(
                 {
                     "schema": "psp.install/v2",
-                    "version": "2.0.1",
+                    "version": "2.0.2",
                     "managed_files": {"../escape": {"sha256": "x"}},
                     "managed_blocks": {},
                 }

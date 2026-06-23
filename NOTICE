@@ -1,15 +1,15 @@
-Pragmatic Skills Pack — Enhanced 2.0.1
-Prepared 2026-06-18 for private engineering evaluation.
+Pragmatic Skills Pack — Enhanced 2.0.2
+Prepared 2026-06-22 for private engineering evaluation.
 
-Upstream baseline:
+Immediate source baseline:
   Repository: https://github.com/wyeye/pragmatic-skills
+  Commit: a36b4bfec88679c3762e3202926457e1ed92912a
+  Package version: 2.0.1
+
+Original 2.0 enhanced-line provenance:
   Commit: a07ef5a11380dc1f7416507ee2e5053a3c33046f
   Upstream package version: 1.8.0
 
-This enhanced derivative is not an official upstream release and is not
-endorsed by or affiliated with the upstream author. Upstream-derived material
-retains its original ownership. The reviewed snapshot contained no repository-
-level license; see LICENSE and SOURCE-BASELINE.md before redistribution.
+This enhanced derivative is not an official upstream release and is not endorsed by or affiliated with the upstream author. Upstream-derived material retains its original ownership. The reviewed original snapshot contained no repository-level license; see LICENSE and SOURCE-BASELINE.md before redistribution.
 
-Newly authored enhancements are offered under Apache-2.0 only to the extent the
-contributor has rights to license them. See LICENSE-APACHE-2.0.
+Newly authored enhancements are offered under Apache-2.0 only to the extent the contributor has rights to license them. See LICENSE-APACHE-2.0.

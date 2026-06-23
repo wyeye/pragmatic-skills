@@ -6,7 +6,7 @@ compatibility: Agent Skills-compatible hosts or a PSP host adapter.
 metadata:
   psp-schema: psp.skill/v2
   psp-kind: support
-  psp-version: 2.0.1
+  psp-version: 2.0.2
 ---
 
 # Writing Plans
@@ -14,6 +14,8 @@ metadata:
 A useful plan names concrete artifacts and decision points.
 
 For each step include the intended behavior, likely files or symbols, prerequisite evidence, implementation action, validation method, and stop condition. Map every acceptance criterion to one or more tests or inspections. Mark independent work that can be delegated and risky work that must remain serialized.
+
+When a behavior/state matrix exists, map every `BM-*` row and cross-path invariant to an implementation step and a test or inspection. Record an explicit no-change rationale for rows that require no code change. Do not plan only the initially named UI, endpoint, or happy path while leaving adjacent platform, local, device, client/H5, bulk, retry, or synchronization paths unaccounted for.
 
 Plans are hypotheses: update them when repository evidence differs. Do not create ceremonial steps that provide no control or verification value.
 

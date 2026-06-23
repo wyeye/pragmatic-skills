@@ -1,4 +1,4 @@
-# Pragmatic Skills Pack — 增强版 2.0.1
+# Pragmatic Skills Pack — 增强版 2.0.2
 
 一个面向 Coding Agent 的阶段路由、证据优先工作流包，并配套安全安装器、
 可审计本地 Trace、确定性工作流 Eval 和发布检查。
@@ -22,15 +22,17 @@ using-pragmatic-skills
 目标是让小改动保持轻量，同时在范围、歧义或风险增加时，逐步增强计划、审批、
 证据和验证要求。
 
-## 增强版 2.0.1 的主要补强
+## 增强版 2.0.2 的主要补强
 
+- **跨系统行为建模：**针对平台、本地、设备、客户端/H5、同步及查询可见性等多入口状态变更，被动生成基于证据的行为/状态矩阵；对规格完整的本地单路径任务保持负向边界，不误触发。
+- **跨系统行为建模：**当删除、同步、对账、生命周期或可见性语义跨越多个入口或状态权威时，需求阶段自动生成行为/状态矩阵，并把每个变更行贯通到计划、测试、验证和审查。
 - **事务化安装器：**路径边界校验、符号链接拒绝、操作锁、staging、原子替换、
   备份、冲突报告、回滚、卸载、doctor、diff、dry-run 和 JSON 输出。
 - **可移植 Skill 元数据：**标准 `SKILL.md` frontmatter，外加机器可读
   `psp.skill.json` sidecar 和自动生成的依赖 Manifest。
 - **证据 Trace：**可选 JSONL 追加日志、扩展凭据脱敏、声明类型与证据语义
   匹配、带范围/有效期的审批校验，以及“修改后验证失效”检测。
-- **可执行 Eval：**16 个确定性案例，覆盖路由、安全、证据、修改范围、重新分流
+- **可执行 Eval：**18 个确定性案例，覆盖路由、安全、证据、修改范围、重新分流
   和负向控制。
 - **发布工程：**单元、集成、对抗、Trace、Eval、打包及 CI 检查；Python 工具
   仅使用标准库，GitHub Actions 均固定到不可变的完整提交 SHA。
@@ -190,7 +192,7 @@ compatibility: Agent Skills-compatible host or a PSP adapter.
 metadata:
   psp-schema: psp.skill/v2
   psp-kind: mode
-  psp-version: 2.0.1
+  psp-version: 2.0.2
 ---
 ```
 

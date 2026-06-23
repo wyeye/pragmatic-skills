@@ -1,4 +1,4 @@
-# Pragmatic Skills Pack — Enhanced 2.0.1
+# Pragmatic Skills Pack — Enhanced 2.0.2
 
 A phase-routed, evidence-first workflow pack for coding agents, with a hardened
 installer, auditable local traces, deterministic workflow evals, and release
@@ -23,8 +23,10 @@ using-pragmatic-skills
 The workflow aims to keep small changes small while requiring stronger planning,
 approval, evidence, and verification as scope or risk increases.
 
-## Enhanced 2.0.1 highlights
+## Enhanced 2.0.2 highlights
 
+- **Cross-system behavior modeling:** passively creates an evidence-backed behavior/state matrix for multi-entry platform, local, device, client/H5, synchronization, and query-visibility flows, while preserving a negative boundary for fully specified local-only changes.
+- **Cross-system behavior modeling:** requirements automatically produce a behavior/state matrix for multi-entry delete, sync, reconciliation, lifecycle, and visibility changes, and carry each changed row through planning, tests, verification, and review.
 - **Transactional installer:** bounded paths, symlink rejection, operation
   locking, staging, atomic replacement, backups, conflict reports, rollback,
   uninstall, doctor, diff, dry-run, and JSON output.
@@ -33,7 +35,7 @@ approval, evidence, and verification as scope or risk increases.
 - **Evidence traces:** optional append-only JSONL events, expanded credential
   redaction, claim-specific evidence checks, scoped/expiring approval ordering,
   and stale-verification detection.
-- **Executable eval framework:** 16 deterministic cases covering routing,
+- **Executable eval framework:** 18 deterministic cases covering routing,
   safety, evidence, scope, re-triage, and negative controls.
 - **Release engineering:** unit, integration, adversarial, trace, eval, package,
   and CI checks using only the Python standard library; GitHub Actions are
@@ -208,7 +210,7 @@ compatibility: Agent Skills-compatible host or a PSP adapter.
 metadata:
   psp-schema: psp.skill/v2
   psp-kind: mode
-  psp-version: 2.0.1
+  psp-version: 2.0.2
 ---
 ```
 

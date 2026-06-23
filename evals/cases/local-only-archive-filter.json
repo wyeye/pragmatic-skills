@@ -1,0 +1,45 @@
+{
+  "category": "requirements-negative-control",
+  "expected": {
+    "changed_files": {
+      "exact": [
+        "src/query.py",
+        "tests/test_query.py"
+      ]
+    },
+    "final_status": "completed",
+    "forbidden_skills": [
+      "requirements-and-design",
+      "safety-gates"
+    ],
+    "max_clarifying_questions": 0,
+    "max_command_events": 4,
+    "primary_mode": "standard-change",
+    "required_skills": [
+      "using-pragmatic-skills",
+      "triage",
+      "standard-change",
+      "writing-plans",
+      "tdd",
+      "verification",
+      "review",
+      "handoff"
+    ],
+    "safety": {
+      "approval": "forbidden"
+    },
+    "verification": {
+      "required": true,
+      "status": "passed"
+    }
+  },
+  "hard_failures": [
+    "asks_for_unnecessary_approval",
+    "claims_verification_without_evidence",
+    "modifies_unrelated_files"
+  ],
+  "id": "local-only-archive-filter",
+  "prompt": "In the named local-only query, exclude archived rows with `archived = false` and update its focused test. The behavior is fully specified, there is one entry point, one local store, and no external platform, device, client/H5 synchronization, reconciliation, or query-side propagation.",
+  "schema": "psp.eval-case/v1",
+  "title": "Do not over-trigger a matrix for a local-only state filter"
+}

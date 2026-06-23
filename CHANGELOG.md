@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.0.2 — 2026-06-22
+
+- Added a passive behavior/state matrix trigger for multi-entry or multi-authority delete, removal, synchronization, reconciliation, lifecycle, status, and query-visibility changes.
+- Required the matrix to distinguish reads, local transitions, external calls, device/event effects, synchronization behavior, and final observable results without assuming reverse paths are symmetric.
+- Carried changed matrix rows through planning, TDD, verification, and final review.
+- Added positive and negative eval fixtures so cross-system work activates requirements modeling while fully specified local-only status work does not over-trigger it.
+
 
 ## 2.0.1 — 2026-06-18
 
