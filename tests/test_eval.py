@@ -19,13 +19,13 @@ class EvalTests(unittest.TestCase):
     def test_case_set_is_valid_and_unique(self) -> None:
         cases, errors = load_cases(ROOT)
         self.assertEqual(errors, [])
-        self.assertEqual(len(cases), 18)
-        self.assertEqual(len({case["id"] for case in cases}), 18)
+        self.assertEqual(len(cases), 20)
+        self.assertEqual(len({case["id"] for case in cases}), 20)
 
     def test_framework_self_test(self) -> None:
         result = framework_self_test(ROOT)
         self.assertTrue(result["ok"], result["errors"])
-        self.assertEqual(result["cases"], 18)
+        self.assertEqual(result["cases"], 20)
         self.assertEqual(result["minimum_synthetic_score"], 100.0)
 
     def test_known_good_fixture_traces_pass(self) -> None:
@@ -38,7 +38,7 @@ class EvalTests(unittest.TestCase):
         )
         self.assertEqual(completed.returncode, 0, completed.stderr or completed.stdout)
         report = json.loads(completed.stdout)
-        self.assertEqual(report["case_count"], 18)
+        self.assertEqual(report["case_count"], 20)
         self.assertEqual(report["failed"], 0)
         self.assertEqual(report["average_score"], 100.0)
 
@@ -52,7 +52,7 @@ class EvalTests(unittest.TestCase):
         )
         self.assertEqual(completed.returncode, 0, completed.stderr or completed.stdout)
         report = json.loads(completed.stdout)
-        self.assertEqual(report["case_count"], 18)
+        self.assertEqual(report["case_count"], 20)
         self.assertEqual(report["failed"], 0)
         self.assertNotIn("results", report)
 

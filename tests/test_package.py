@@ -21,7 +21,7 @@ class PackageTests(unittest.TestCase):
         self.assertTrue(result["ok"], result["issues"])
         self.assertEqual(result["version"], "2.0.2")
         self.assertEqual(result["skill_count"], 19)
-        self.assertEqual(result["eval_case_count"], 18)
+        self.assertEqual(result["eval_case_count"], 20)
 
     def test_manifest_is_deterministic_and_graph_is_reachable(self) -> None:
         expected = build_skill_manifest(ROOT)

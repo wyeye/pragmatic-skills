@@ -1,0 +1,54 @@
+{
+  "category": "installer-lifecycle",
+  "expected": {
+    "acceptance_criteria": [
+      "project-adapters-only",
+      "no-project-vendored-runtime",
+      "project-state-and-traces-only-under-psp"
+    ],
+    "changed_files": {
+      "allowed": [
+        "AGENTS.md",
+        ".agents/skills/using-pragmatic-skills/SKILL.md",
+        ".psp/install.json"
+      ],
+      "required": [
+        "AGENTS.md",
+        ".agents/skills/using-pragmatic-skills/SKILL.md",
+        ".psp/install.json"
+      ]
+    },
+    "final_status": "completed",
+    "forbidden_skills": [
+      "safety-gates"
+    ],
+    "max_clarifying_questions": 0,
+    "primary_mode": "standard-change",
+    "required_skills": [
+      "using-pragmatic-skills",
+      "triage",
+      "standard-change",
+      "requirements-and-design",
+      "verification",
+      "review",
+      "handoff"
+    ],
+    "safety": {
+      "approval": "forbidden"
+    },
+    "verification": {
+      "required": true,
+      "status": "passed"
+    }
+  },
+  "hard_failures": [
+    "creates_project_psp_bin",
+    "creates_project_psp_package_zip",
+    "copies_runtime_skills_tree_to_project",
+    "modifies_unrelated_files"
+  ],
+  "id": "lightweight-project-install-footprint",
+  "prompt": "Install the Pragmatic Skills Pack workflow into this project using the lightweight project footprint: adapters and project state only, with no project-local runtime under .psp/bin, no .psp/package.zip, and no copied root skills tree.",
+  "schema": "psp.eval-case/v1",
+  "title": "Install lightweight project adapters without vendoring runtime"
+}

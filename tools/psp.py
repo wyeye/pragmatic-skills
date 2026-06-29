@@ -4,13 +4,13 @@
 from __future__ import annotations
 
 import argparse
+import datetime as dt
 import json
 import os
+import shutil
 import sys
-import tempfile
-import zipfile
 from pathlib import Path
-from typing import Any, Dict, List, Mapping, Optional
+from typing import Any, Dict, Iterable, List, Mapping, Optional
 
 HERE = Path(__file__).resolve().parent
 if str(HERE) not in sys.path:
@@ -30,11 +30,24 @@ from psp_installer import (  # noqa: E402
     write_manifest,
 )
 from psp_trace import emit_event, finish_run, list_runs, start_run, verify_run  # noqa: E402
-from psp_util import ConflictError, LockError, PACKAGE_VERSION, PSPError, ValidationError, read_json, sha256_file  # noqa: E402
+from psp_util import ConflictError, LockError, PACKAGE_VERSION, PSPError, ValidationError  # noqa: E402
 
-
-_RUNTIME_TEMP: Optional[tempfile.TemporaryDirectory[str]] = None
-_RUNTIME_ZIP: Optional[Path] = None
+RUNTIME_STATE = "runtime.json"
+RUNTIME_EXCLUDED_DIRS = {
+    ".git",
+    ".hg",
+    ".svn",
+    ".psp",
+    ".venv",
+    "venv",
+    "__pycache__",
+    ".pytest_cache",
+    ".mypy_cache",
+    ".ruff_cache",
+    "build",
+    "dist",
+}
+RUNTIME_EXCLUDED_SUFFIXES = {".pyc", ".pyo", ".zip"}
 
 
 def _is_package_root(candidate: Path) -> bool:
@@ -45,86 +58,143 @@ def _is_package_root(candidate: Path) -> bool:
     )
 
 
-def _extract_embedded_package(archive_path: Path) -> Optional[Path]:
-    global _RUNTIME_TEMP, _RUNTIME_ZIP
-    archive_path = archive_path.resolve()
-    if not archive_path.is_file():
-        return None
-    state_path = archive_path.parent / "install.json"
-    if state_path.is_file():
-        state = read_json(state_path)
-        entry = state.get("managed_files", {}).get(".psp/package.zip", {}) if isinstance(state, dict) else {}
-        expected = entry.get("sha256") if isinstance(entry, dict) else None
-        if not expected or sha256_file(archive_path) != expected:
-            raise ValidationError("Embedded PSP package failed installed-state integrity verification")
-    if _RUNTIME_TEMP is not None and _RUNTIME_ZIP == archive_path:
-        cached = Path(_RUNTIME_TEMP.name)
-        if _is_package_root(cached):
-            return cached
-    holder = tempfile.TemporaryDirectory(prefix="psp-runtime-")
-    destination = Path(holder.name)
-    try:
-        with zipfile.ZipFile(archive_path) as bundle:
-            members = bundle.infolist()
-            if len(members) > 5000:
-                raise ValidationError("Embedded PSP package contains too many entries")
-            if sum(member.file_size for member in members) > 50 * 1024 * 1024:
-                raise ValidationError("Embedded PSP package exceeds the 50 MiB extraction limit")
-            seen: set[str] = set()
-            for member in members:
-                if member.filename in seen:
-                    raise ValidationError(f"Duplicate path in embedded PSP package: {member.filename}")
-                seen.add(member.filename)
-                relative = Path(member.filename)
-                if relative.is_absolute() or ".." in relative.parts or not member.filename:
-                    raise ValidationError(f"Unsafe path in embedded PSP package: {member.filename}")
-                file_type = (member.external_attr >> 16) & 0o170000
-                if file_type == 0o120000:
-                    raise ValidationError(f"Symlink is not allowed in embedded PSP package: {member.filename}")
-                output = destination.joinpath(*relative.parts)
-                if member.is_dir():
-                    output.mkdir(parents=True, exist_ok=True)
-                    continue
-                output.parent.mkdir(parents=True, exist_ok=True)
-                output.write_bytes(bundle.read(member))
-                mode = (member.external_attr >> 16) & 0o777
-                if mode:
-                    os.chmod(output, mode)
-    except (OSError, zipfile.BadZipFile, zipfile.LargeZipFile, ValidationError):
-        holder.cleanup()
-        raise
-    if not _is_package_root(destination):
-        holder.cleanup()
-        raise ValidationError(f"Embedded PSP package is incomplete: {archive_path}")
-    _RUNTIME_TEMP = holder
-    _RUNTIME_ZIP = archive_path
-    return destination
-
-
 def package_root(explicit: Optional[str] = None) -> Path:
-    """Locate a source bundle without depending on the current directory."""
+    """Locate the PSP source/runtime bundle without using project-local vendoring."""
 
     candidates: List[Path] = []
     if explicit:
         candidates.append(Path(explicit).expanduser())
+    if os.environ.get("PSP_HOME"):
+        candidates.append(Path(os.environ["PSP_HOME"]).expanduser())
     if os.environ.get("PSP_PACKAGE_ROOT"):
         candidates.append(Path(os.environ["PSP_PACKAGE_ROOT"]).expanduser())
     candidates.append(HERE.parent)
-    cwd = Path.cwd()
-    candidates.extend((cwd, cwd / ".psp/package"))
     for candidate in candidates:
         resolved = candidate.resolve()
         if _is_package_root(resolved):
             return resolved
 
-    embedded_candidates = [HERE.parent / "package.zip", cwd / ".psp/package.zip"]
-    for archive in embedded_candidates:
-        extracted = _extract_embedded_package(archive)
-        if extracted is not None:
-            return extracted
     if explicit:
         raise ValidationError(f"Not a valid unpacked PSP bundle: {Path(explicit).expanduser()}")
     return HERE.parent
+
+
+def default_runtime_home() -> Path:
+    if os.environ.get("PSP_HOME"):
+        return Path(os.environ["PSP_HOME"]).expanduser()
+    return Path.home() / ".local/share/pragmatic-skills-pack/current"
+
+
+def iter_runtime_files(root: Path) -> Iterable[Path]:
+    for current, dirs, files in os.walk(root):
+        dirs[:] = sorted(name for name in dirs if name not in RUNTIME_EXCLUDED_DIRS)
+        for name in sorted(files):
+            path = Path(current) / name
+            rel = path.relative_to(root)
+            if path.is_symlink():
+                raise ValidationError(f"Runtime package may not contain symlinks: {rel.as_posix()}")
+            if path.suffix.lower() in RUNTIME_EXCLUDED_SUFFIXES:
+                continue
+            yield path
+
+
+def _remove_path(path: Path) -> None:
+    if path.is_dir() and not path.is_symlink():
+        shutil.rmtree(path, ignore_errors=True)
+        return
+    try:
+        path.unlink()
+    except FileNotFoundError:
+        pass
+
+
+def _move_path(source: Path, destination: Path) -> None:
+    _remove_path(destination)
+    source.rename(destination)
+
+
+def runtime_status(home: Path) -> Dict[str, Any]:
+    home = home.expanduser().resolve()
+    if home.exists() and not home.is_dir():
+        return {
+            "ok": False,
+            "installed": False,
+            "home": str(home),
+            "version": None,
+            "source": None,
+            "updated_at": None,
+            "issues": [{"severity": "error", "code": "runtime-incomplete", "message": "Runtime home exists but is not a directory"}],
+        }
+    state_path = home / RUNTIME_STATE
+    installed = _is_package_root(home) and state_path.is_file()
+    state: Dict[str, Any] = {}
+    if state_path.is_file():
+        try:
+            loaded = json.loads(state_path.read_text(encoding="utf-8"))
+            if isinstance(loaded, dict):
+                state = loaded
+        except (OSError, json.JSONDecodeError) as exc:
+            return {"ok": False, "installed": False, "home": str(home), "issues": [{"severity": "error", "code": "runtime-state-invalid", "message": str(exc)}]}
+    issues: List[Dict[str, str]] = []
+    if home.exists() and not _is_package_root(home):
+        issues.append({"severity": "error", "code": "runtime-incomplete", "message": "Runtime home is not a valid PSP bundle"})
+    return {
+        "ok": not any(item["severity"] == "error" for item in issues),
+        "installed": installed,
+        "home": str(home),
+        "version": state.get("version") if state else None,
+        "source": state.get("source") if state else None,
+        "updated_at": state.get("updated_at") if state else None,
+        "issues": issues,
+    }
+
+
+def install_runtime(source_root: Path, home: Path, *, dry_run: bool = False, force: bool = False) -> Dict[str, Any]:
+    source_root = source_root.resolve()
+    home = home.expanduser().resolve()
+    package_check = verify_package(source_root)
+    if not package_check["ok"]:
+        messages = "; ".join(item["message"] for item in package_check["issues"] if item.get("severity") == "error")
+        raise ValidationError(f"Package verification failed: {messages}")
+    if home == source_root or source_root in home.parents:
+        raise ValidationError("Runtime home must not be inside the source package")
+    if home.exists() and not force and not _is_package_root(home):
+        raise ValidationError(f"Runtime home exists but is not a PSP runtime; pass --force to replace it: {home}")
+
+    files = list(iter_runtime_files(source_root))
+    state = {
+        "schema": "psp.runtime/v1",
+        "version": PACKAGE_VERSION,
+        "source": str(source_root),
+        "file_count": len(files),
+    }
+    if dry_run:
+        return {"ok": True, "dry_run": True, "home": str(home), "version": PACKAGE_VERSION, "file_count": len(files), "changed": True}
+
+    parent = home.parent
+    parent.mkdir(parents=True, exist_ok=True)
+    staging = parent / f".{home.name}.staging-{os.getpid()}"
+    backup = parent / f".{home.name}.previous-{os.getpid()}"
+    _remove_path(staging)
+    _remove_path(backup)
+    try:
+        for source in files:
+            rel = source.relative_to(source_root)
+            destination = staging / rel
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(source, destination)
+        state["updated_at"] = dt.datetime.now(dt.timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+        (staging / RUNTIME_STATE).write_text(json.dumps(state, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        if home.exists():
+            _move_path(home, backup)
+        _move_path(staging, home)
+        _remove_path(backup)
+    except Exception:
+        _remove_path(staging)
+        if backup.exists() and not home.exists():
+            _move_path(backup, home)
+        raise
+    return {"ok": True, "dry_run": False, "home": str(home), "version": PACKAGE_VERSION, "file_count": len(files), "changed": True}
 
 
 def add_target(parser: argparse.ArgumentParser, default: str = ".") -> None:
@@ -132,7 +202,7 @@ def add_target(parser: argparse.ArgumentParser, default: str = ".") -> None:
 
 
 def add_package_target(parser: argparse.ArgumentParser) -> None:
-    parser.add_argument("--target", "-t", default=None, help="Unpacked PSP package root; defaults to the embedded/current bundle")
+    parser.add_argument("--target", "-t", default=None, help="Unpacked PSP package root; defaults to the current runtime bundle")
 
 
 def add_json(parser: argparse.ArgumentParser) -> None:
@@ -148,7 +218,7 @@ def add_install_flags(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--force", action="store_true", help="Overwrite modified managed files after backup")
     parser.add_argument("--dry-run", action="store_true", help="Plan without writing")
     parser.add_argument("--allow-downgrade", action="store_true")
-    parser.add_argument("--package-root", help="Unpacked PSP bundle to install from; defaults to the embedded/current bundle")
+    parser.add_argument("--package-root", help="Unpacked PSP bundle to install from; defaults to the current runtime bundle")
     add_json(parser)
 
 
@@ -185,7 +255,7 @@ def build_parser() -> argparse.ArgumentParser:
     doctor_parser = sub.add_parser("doctor", help="Diagnose state, markers, paths, and package integrity")
     add_target(doctor_parser)
     doctor_parser.add_argument("--repair", action="store_true", help="Apply only explicitly safe repairs")
-    doctor_parser.add_argument("--package-root", help="Unpacked PSP bundle to validate; defaults to the embedded/current bundle")
+    doctor_parser.add_argument("--package-root", help="Unpacked PSP bundle to validate; defaults to the current runtime bundle")
     add_json(doctor_parser)
 
     uninstall_parser = sub.add_parser("uninstall", help="Remove PSP-managed content and preserve user content")
@@ -206,6 +276,21 @@ def build_parser() -> argparse.ArgumentParser:
     add_package_target(manifest_parser)
     manifest_parser.add_argument("--write", action="store_true", help="Write generated files")
     add_json(manifest_parser)
+
+    runtime_parser = sub.add_parser("runtime", help="Manage the user-level PSP runtime")
+    runtime_sub = runtime_parser.add_subparsers(dest="runtime_command", required=True)
+    runtime_install = runtime_sub.add_parser("install", help="Install this PSP bundle as a user-level runtime")
+    runtime_install.add_argument("--home", type=Path, default=None, help="Runtime home; defaults to PSP_HOME or ~/.local/share/pragmatic-skills-pack/current")
+    runtime_install.add_argument("--package-root", help="Unpacked PSP bundle to install; defaults to the current runtime bundle")
+    runtime_install.add_argument("--force", action="store_true", help="Replace an existing non-PSP runtime home")
+    runtime_install.add_argument("--dry-run", action="store_true")
+    add_json(runtime_install)
+    runtime_status_parser = runtime_sub.add_parser("status", help="Show user-level runtime status")
+    runtime_status_parser.add_argument("--home", type=Path, default=None)
+    add_json(runtime_status_parser)
+    runtime_path = runtime_sub.add_parser("path", help="Print the default or selected runtime home")
+    runtime_path.add_argument("--home", type=Path, default=None)
+    add_json(runtime_path)
 
     trace_parser = sub.add_parser("trace", help="Manage optional local execution traces")
     trace_sub = trace_parser.add_subparsers(dest="trace_command", required=True)
@@ -291,6 +376,18 @@ def human_print(command: str, result: Mapping[str, Any]) -> None:
         for repair in result.get("repairs", []):
             print(f"- REPAIRED: {repair}")
         return
+    if command == "runtime":
+        print(f"PSP runtime: {'OK' if result.get('ok') else 'FAILED'}")
+        print(f"Home: {result.get('home')}")
+        if result.get("version"):
+            print(f"Version: {result['version']}")
+        if result.get("installed") is not None:
+            print(f"Installed: {bool(result.get('installed'))}")
+        if result.get("file_count") is not None:
+            print(f"Files: {result.get('file_count')}")
+        for issue in result.get("issues", []):
+            print(f"- {issue.get('severity', 'info').upper()} [{issue.get('code', 'issue')}]: {issue.get('message')}")
+        return
     print(json.dumps(result, ensure_ascii=False, indent=2, sort_keys=True))
 
 
@@ -332,6 +429,14 @@ def execute(args: argparse.Namespace) -> Dict[str, Any]:
         result = verify_package(root)
         manifest_issues = [item for item in result["issues"] if item["code"].startswith("manifest") or item["code"].startswith("sidecar")]
         return {"ok": not manifest_issues, "written": False, "issues": manifest_issues}
+    if command == "runtime":
+        home = args.home if args.home is not None else default_runtime_home()
+        if args.runtime_command == "install":
+            return install_runtime(package_root(args.package_root), home, dry_run=args.dry_run, force=args.force)
+        if args.runtime_command == "status":
+            return runtime_status(home)
+        if args.runtime_command == "path":
+            return {"ok": True, "home": str(home.expanduser().resolve())}
     if command == "trace":
         target = Path(args.target).resolve()
         if args.trace_command == "start":

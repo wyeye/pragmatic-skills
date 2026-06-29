@@ -10,4 +10,4 @@ metadata:
 
 # Pragmatic Skills Pack entry
 
-Read and follow `skills/using-pragmatic-skills/SKILL.md`. Users describe tasks normally; route internally, choose exactly one primary mode, and load support skills by phase trigger. Do not ask users to choose internal skills.
+Use the Pragmatic Skills Pack entry workflow. Prefer a project-local `skills/using-pragmatic-skills/SKILL.md` only when it exists; otherwise load the PSP skills from the host-installed bundle or global PSP runtime. Users describe tasks normally; route internally, choose exactly one primary mode, and load support skills by phase trigger. Do not ask users to choose internal skills. If the PSP runtime is unavailable, follow the same workflow text as far as the host can support and report that structured tracing is not enabled.

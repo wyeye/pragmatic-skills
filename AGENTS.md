@@ -10,7 +10,7 @@ This repository contains a mixed-origin enhanced derivative of Pragmatic Skills 
 <!-- PSP:BEGIN -->
 # Pragmatic Skills Pack
 
-For coding, debugging, planning, review, verification, or other repository work, start with `skills/using-pragmatic-skills/SKILL.md`.
+For coding, debugging, planning, review, verification, or other repository work, start with the Pragmatic Skills Pack entry workflow. Prefer project-local `skills/using-pragmatic-skills/SKILL.md` when present; otherwise use the PSP skills from the host-installed bundle or global PSP runtime.
 
 Select exactly one primary workflow mode through `skills/triage/SKILL.md`, load support Skills only when their phase trigger applies, preserve user-owned work, and never claim commands, tests, reviews, approvals, or outcomes without observable evidence.
 

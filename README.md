@@ -44,7 +44,7 @@ approval, evidence, and verification as scope or risk increases.
 ## Requirements
 
 - Python 3.9 or newer
-- A project directory in which you can create `.psp/`, Skill files, and any
+- A project directory in which you can create `.psp/`, adapter files, and any
   selected host adapter files
 
 No third-party Python dependency is required.
@@ -85,48 +85,69 @@ sh install.sh --target /path/to/repository --profile
 sh install.sh --target /path/to/repository --force
 ```
 
-The installer writes its state to `.psp/install.json`. It preserves user-owned
-content outside PSP managed blocks and does not overwrite modified managed files
-unless `--force` is explicit. For inserted managed blocks it retains the original
-UTF-8 BOM, newline convention, and file mode, and restores the exact original
-bytes on uninstall. Licensing and provenance notices are installed under
-`.psp/legal/` so managed Skill copies retain their source context.
+The project install is intentionally lightweight. It writes adapter files such as
+`AGENTS.md`, `.agents/skills/using-pragmatic-skills/SKILL.md`, and selected host
+adapters, plus small lifecycle state in `.psp/install.json`. It does not copy the
+PSP runtime, `skills/`, `reference/`, `.psp/bin/`, `.psp/package.zip`,
+`.psp/legal/`, or `.psp/schemas/` into the target project. It preserves
+user-owned content outside PSP managed blocks and does not overwrite modified
+managed files unless `--force` is explicit. For inserted managed blocks it
+retains the original UTF-8 BOM, newline convention, and file mode, and restores
+the exact original bytes on uninstall.
+
+## Install a global runtime
+
+To avoid keeping an unpacked release directory around, install the PSP runtime to
+user-level storage:
+
+```sh
+python3 tools/psp.py runtime install
+python3 ~/.local/share/pragmatic-skills-pack/current/tools/psp.py runtime status
+```
+
+The default runtime home is `$PSP_HOME` when set, otherwise
+`~/.local/share/pragmatic-skills-pack/current`. You can choose another location:
+
+```sh
+python3 tools/psp.py runtime install --home ~/.codex/psp
+PSP_HOME=~/.codex/psp python3 ~/.codex/psp/tools/psp.py verify-package
+```
+
+`runtime install --dry-run` reports the plan without writing, and `--force`
+replaces an existing non-PSP runtime path. Runtime installation never
+modifies a project or shell startup files.
 
 ## Operate an installed project
 
-The project-local CLI is installed under `.psp/bin/psp.py`. A deterministic
-self-contained lifecycle bundle is cached at `.psp/package.zip`, so `doctor`,
-`diff`, `verify-package`, reinstall, and same-version `upgrade` do not depend on
-the caller's current directory or the original unpacked archive:
+Run lifecycle commands from an unpacked PSP bundle, a global runtime, or a host
+tooling install. The project keeps only adapter files and `.psp` state/traces:
 
 ```sh
-python3 .psp/bin/psp.py verify --target .
-python3 .psp/bin/psp.py status --target .
-python3 .psp/bin/psp.py doctor --target .
+python3 /path/to/pragmatic-skills-pack/tools/psp.py verify --target .
+python3 /path/to/pragmatic-skills-pack/tools/psp.py status --target .
+python3 /path/to/pragmatic-skills-pack/tools/psp.py doctor --target .
 ```
 
-Compare or reapply the embedded installed package without writing first:
+Compare or reapply the current runtime package without writing first:
 
 ```sh
-python3 .psp/bin/psp.py diff --target .
-python3 .psp/bin/psp.py upgrade --target . --dry-run
-python3 .psp/bin/psp.py upgrade --target .
+python3 /path/to/pragmatic-skills-pack/tools/psp.py diff --target .
+python3 /path/to/pragmatic-skills-pack/tools/psp.py upgrade --target . --dry-run
+python3 /path/to/pragmatic-skills-pack/tools/psp.py upgrade --target .
 ```
 
 To upgrade from a newer unpacked bundle, run that bundle's CLI or pass its path
-with `--package-root`. The embedded archive is hash-checked against install
-state and extracted with bounded entry, size, path, duplicate, and symlink
-validation.
+with `--package-root`.
 
 Safely remove managed content or restore a transaction snapshot:
 
 ```sh
-python3 .psp/bin/psp.py uninstall --target . --dry-run
-python3 .psp/bin/psp.py uninstall --target .
+python3 /path/to/pragmatic-skills-pack/tools/psp.py uninstall --target . --dry-run
+python3 /path/to/pragmatic-skills-pack/tools/psp.py uninstall --target .
 
-python3 .psp/bin/psp.py rollback --target . --list
-python3 .psp/bin/psp.py rollback --target .
-python3 .psp/bin/psp.py rollback --target . --to <exact-backup-id>
+python3 /path/to/pragmatic-skills-pack/tools/psp.py rollback --target . --list
+python3 /path/to/pragmatic-skills-pack/tools/psp.py rollback --target .
+python3 /path/to/pragmatic-skills-pack/tools/psp.py rollback --target . --to <exact-backup-id>
 ```
 
 A rollback restores the exact pre-operation snapshot and first creates a safety
@@ -139,30 +160,30 @@ They are not required for normal Skill use, but make claims and approvals easier
 to audit.
 
 ```sh
-python3 .psp/bin/psp.py trace start \
+python3 /path/to/pragmatic-skills-pack/tools/psp.py trace start \
   --target . \
   --metadata '{"task":"Fix parser validation"}'
 
-python3 .psp/bin/psp.py trace emit mode_selected \
+python3 /path/to/pragmatic-skills-pack/tools/psp.py trace emit mode_selected \
   --target . \
   --data '{"mode":"standard-change"}'
 
-python3 .psp/bin/psp.py trace emit command_finished \
+python3 /path/to/pragmatic-skills-pack/tools/psp.py trace emit command_finished \
   --target . \
   --event-id cmd-tests \
   --data '{"command":"pytest -q","exit_code":0,"purpose":"tests","evidence_id":"tests-ok"}'
 
-python3 .psp/bin/psp.py trace emit verification_finished \
+python3 /path/to/pragmatic-skills-pack/tools/psp.py trace emit verification_finished \
   --target . \
   --event-id verify-tests \
   --data '{"status":"passed","scope":"tests","evidence":["tests-ok"],"evidence_id":"verified-tests"}'
 
-python3 .psp/bin/psp.py trace emit claim \
+python3 /path/to/pragmatic-skills-pack/tools/psp.py trace emit claim \
   --target . \
   --data '{"claim":"tests_passed","evidence":["verified-tests"]}'
 
-python3 .psp/bin/psp.py trace finish --target . --status completed
-python3 .psp/bin/psp.py trace verify --target .
+python3 /path/to/pragmatic-skills-pack/tools/psp.py trace finish --target . --status completed
+python3 /path/to/pragmatic-skills-pack/tools/psp.py trace verify --target .
 ```
 
 `trace verify` rejects duplicate event IDs, claims that reference missing or

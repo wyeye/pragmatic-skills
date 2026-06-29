@@ -4,15 +4,12 @@
 from __future__ import annotations
 
 import contextlib
-import io
 import json
 import os
 import shutil
-import stat
-import zipfile
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Mapping, MutableMapping, Optional, Sequence, Set, Tuple, Union
+from typing import Any, Dict, Iterable, List, Mapping, Optional, Sequence, Set, Tuple, Union
 
 from psp_eval import load_cases
 from psp_schema import validate_instance, validation_errors
@@ -20,20 +17,14 @@ from psp_util import (
     INSTALL_SCHEMA,
     MANIFEST_SCHEMA,
     PACKAGE_VERSION,
-    ConflictError,
     FileLock,
-    LockError,
-    PSPError,
     ValidationError,
     atomic_write_bytes,
     build_skill_manifest,
-    canonical_json,
     canonical_newlines,
     copy_file_atomic,
     detect_newline,
     encode_utf8_text,
-    iter_files,
-    normalize_relpath,
     package_fingerprint,
     parse_version,
     read_json,
@@ -75,39 +66,6 @@ ADAPTER_FILE_SOURCES = {
     ".cursor/rules/pragmatic-skills-pack.mdc": "adapters/cursor/rules/pragmatic-skills-pack.mdc",
 }
 GENERATED_ADAPTER_FILES = {"AGENTS.md", "CLAUDE.md", "GEMINI.md", ".github/copilot-instructions.md"}
-
-RUNTIME_PACKAGE_DIRS = (
-    "skills",
-    "reference",
-    "schemas",
-    "compat",
-    "adapters",
-    "evals",
-    "tools",
-    "docs",
-    ".github/workflows",
-)
-RUNTIME_PACKAGE_FILES = (
-    "AGENTS.md",
-    "AGENT-INSTALL.md",
-    "README.md",
-    "README.zh.md",
-    "LICENSE",
-    "LICENSE-APACHE-2.0",
-    "NOTICE",
-    "SOURCE-BASELINE.md",
-    "CHANGELOG.md",
-    "BUILD-REPORT.md",
-    "SECURITY.md",
-    "CONTRIBUTING.md",
-    "CODE_OF_CONDUCT.md",
-    "RELEASE-CHECKLIST.md",
-    "Makefile",
-    "pyproject.toml",
-    "install.sh",
-    "verify.sh",
-)
-
 
 @dataclass(frozen=True)
 class DesiredFile:
@@ -166,11 +124,11 @@ def load_state(target: Path, *, required: bool = False) -> Optional[Dict[str, An
     schema = value.get("schema")
     if schema not in {INSTALL_SCHEMA, "psp.install/v1"}:
         raise ValidationError(f"Unsupported install state schema: {schema}")
-    state_schema_path = safe_join(target, ".psp/schemas/install-state.schema.json", reject_final_symlink=True)
-    if schema == INSTALL_SCHEMA and state_schema_path.is_file():
-        state_schema = read_json(state_schema_path)
+    source_state_schema_path = package_root_from(__file__) / "schemas/install-state.schema.json"
+    if schema == INSTALL_SCHEMA and source_state_schema_path.is_file():
+        state_schema = read_json(source_state_schema_path)
         if not isinstance(state_schema, dict):
-            raise ValidationError(f"Invalid installed state schema: {state_schema_path}")
+            raise ValidationError(f"Invalid install state schema: {source_state_schema_path}")
         validate_instance(value, state_schema, STATE_REL)
     for section in ("managed_files", "managed_blocks"):
         raw = value.get(section, {})
@@ -376,90 +334,23 @@ def parse_hosts(target: Path, spec: Optional[str]) -> Tuple[str, Set[str]]:
 def _generated_adapter_block(host: str) -> DesiredBlock:
     if host == "claude":
         begin, end, rel = CLAUDE_BEGIN, CLAUDE_END, "CLAUDE.md"
-        body = """# Pragmatic Skills Pack — Claude entry\n\nFor repository coding, debugging, planning, review, or verification, read `skills/using-pragmatic-skills/SKILL.md` and follow its progressive routing. Do not ask the user to choose individual Skills. Treat `.claude/skills/psp-claude-entry/SKILL.md` as a thin entry adapter only.\n"""
+        body = """# Pragmatic Skills Pack — Claude entry\n\nFor repository coding, debugging, planning, review, or verification, use the installed PSP entry adapter and route through the Pragmatic Skills Pack workflow. Prefer a project-local `skills/using-pragmatic-skills/SKILL.md` only when it exists; otherwise use the PSP runtime or host-installed skill bundle. Do not ask the user to choose individual Skills. Treat `.claude/skills/psp-claude-entry/SKILL.md` as a thin entry adapter only.\n"""
     elif host == "gemini":
         begin, end, rel = GEMINI_BEGIN, GEMINI_END, "GEMINI.md"
-        body = """# Pragmatic Skills Pack — Gemini entry\n\nFor repository work, follow the PSP managed block in `AGENTS.md`, then read `skills/using-pragmatic-skills/SKILL.md`. Route internally and load support Skills only at their phase triggers.\n"""
+        body = """# Pragmatic Skills Pack — Gemini entry\n\nFor repository work, follow the PSP managed block in `AGENTS.md`, then use the Pragmatic Skills Pack entry workflow from a project-local `skills/` directory when present, or from the PSP runtime / host-installed skill bundle otherwise. Route internally and load support Skills only at their phase triggers.\n"""
     elif host == "copilot":
         begin, end, rel = COPILOT_BEGIN, COPILOT_END, ".github/copilot-instructions.md"
-        body = """# Pragmatic Skills Pack — Copilot entry\n\nUse `AGENTS.md` and `skills/using-pragmatic-skills/SKILL.md` for coding, debugging, planning, review, and verification. Select the smallest safe mode internally; do not ask the user to invoke individual Skills. Never claim tests, builds, reviews, approvals, or command output without evidence.\n"""
+        body = """# Pragmatic Skills Pack — Copilot entry\n\nUse `AGENTS.md` and the Pragmatic Skills Pack entry workflow for coding, debugging, planning, review, and verification. Prefer project-local PSP skills only when present; otherwise use the host-installed or runtime PSP skills. Select the smallest safe mode internally; do not ask the user to invoke individual Skills. Never claim tests, builds, reviews, approvals, or command output without evidence.\n"""
     else:
         raise ValidationError(f"No shared adapter block for {host}")
     text = f"{begin}\n{body.rstrip()}\n{end}"
     return DesiredBlock(rel=rel, text=text, begin=begin, end=end, source=f"generated:{host}")
 
 
-def _runtime_package_bytes(package_root: Path) -> bytes:
-    """Build a deterministic, compact source bundle for installed lifecycle commands."""
-
-    selected: Dict[str, Path] = {}
-    for source_dir in RUNTIME_PACKAGE_DIRS:
-        base = package_root / source_dir
-        if not base.is_dir():
-            raise ValidationError(f"Package is missing runtime directory: {source_dir}")
-        for source in iter_files(base, excluded_dirs=("__pycache__",)):
-            selected[source.relative_to(package_root).as_posix()] = source
-    for source_name in RUNTIME_PACKAGE_FILES:
-        source = package_root / source_name
-        if not source.is_file():
-            raise ValidationError(f"Package is missing runtime file: {source_name}")
-        selected[source_name] = source
-
-    buffer = io.BytesIO()
-    with zipfile.ZipFile(buffer, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=9) as archive:
-        for rel, source in sorted(selected.items()):
-            if source.is_symlink():
-                raise ValidationError(f"Runtime package may not contain symlinks: {rel}")
-            info = zipfile.ZipInfo(rel, date_time=(2026, 6, 18, 0, 0, 0))
-            info.compress_type = zipfile.ZIP_DEFLATED
-            info.create_system = 3
-            info.external_attr = ((source.stat().st_mode & 0o777) or 0o644) << 16
-            info.flag_bits |= 0x800
-            archive.writestr(info, source.read_bytes(), compress_type=zipfile.ZIP_DEFLATED, compresslevel=9)
-    return buffer.getvalue()
-
-
 def build_desired(package_root: Path, target: Path, hosts_spec: Optional[str], profile: bool = False) -> Tuple[str, Set[str], Dict[str, DesiredFile], Dict[str, DesiredBlock]]:
     mode, hosts = parse_hosts(target, hosts_spec)
     files: Dict[str, DesiredFile] = {}
     blocks: Dict[str, DesiredBlock] = {}
-
-    def add_tree(source_dir: str, dest_dir: str) -> None:
-        base = package_root / source_dir
-        if not base.is_dir():
-            raise ValidationError(f"Package is missing directory: {source_dir}")
-        for source in iter_files(base, excluded_dirs=("__pycache__",)):
-            rel_under = source.relative_to(base).as_posix()
-            rel = normalize_relpath(f"{dest_dir}/{rel_under}")
-            files[rel] = DesiredFile(rel, source.read_bytes(), source.relative_to(package_root).as_posix(), source.stat().st_mode & 0o777)
-
-    add_tree("skills", "skills")
-    add_tree("reference", "reference")
-    add_tree("schemas", ".psp/schemas")
-
-    # Keep a deterministic self-contained source archive beside the installed CLI.
-    # Tracking one archive keeps install, backup, and idempotency operations fast.
-    runtime_rel = ".psp/package.zip"
-    files[runtime_rel] = DesiredFile(
-        runtime_rel,
-        _runtime_package_bytes(package_root),
-        "generated:runtime-package",
-        0o644,
-    )
-
-    for tool_name in ("psp.py", "psp_util.py", "psp_installer.py", "psp_trace.py", "psp_eval.py", "psp_schema.py"):
-        source = package_root / "tools" / tool_name
-        if not source.is_file():
-            raise ValidationError(f"Package is missing tool: tools/{tool_name}")
-        rel = f".psp/bin/{tool_name}"
-        files[rel] = DesiredFile(rel, source.read_bytes(), f"tools/{tool_name}", 0o755)
-
-    for legal_name in ("LICENSE", "LICENSE-APACHE-2.0", "NOTICE", "SOURCE-BASELINE.md"):
-        source = package_root / legal_name
-        if not source.is_file():
-            raise ValidationError(f"Package is missing legal/provenance file: {legal_name}")
-        rel = f".psp/legal/{legal_name}"
-        files[rel] = DesiredFile(rel, source.read_bytes(), legal_name, 0o644)
 
     if "agents" in hosts:
         agents_source = package_root / "AGENTS.md"
@@ -843,8 +734,32 @@ def install(
         messages = "; ".join(item["message"] for item in package_check["issues"] if item.get("severity") == "error")
         raise ValidationError(f"Package verification failed: {messages}")
 
-    target.mkdir(parents=True, exist_ok=True)
+    if not dry_run:
+        target.mkdir(parents=True, exist_ok=True)
     target = target.resolve()
+    if dry_run:
+        plan = plan_install(
+            package_root,
+            target,
+            hosts_spec=hosts_spec,
+            profile=profile,
+            force=force,
+            require_existing=require_existing,
+            allow_downgrade=allow_downgrade,
+        )
+        return {
+            "ok": not plan["conflicts"],
+            "dry_run": True,
+            "version": PACKAGE_VERSION,
+            "host_mode": plan["host_mode"],
+            "hosts": plan["hosts"],
+            "change_count": len(plan["changes"]) if not plan["conflicts"] else 0,
+            "planned_change_count": len(plan["changes"]),
+            "conflict_count": len(plan["conflicts"]),
+            "backup": None,
+            "conflict_path": None,
+            "statuses": plan["statuses"],
+        }
     lock_path = safe_join(target, LOCK_REL)
     with FileLock(lock_path, force_stale=force):
         plan = plan_install(

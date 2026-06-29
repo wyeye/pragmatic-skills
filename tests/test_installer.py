@@ -1,10 +1,9 @@
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import shutil
-import subprocess
-import sys
 import tempfile
 import unittest
 from pathlib import Path
@@ -41,116 +40,50 @@ class InstallerTests(unittest.TestCase):
         self.assertGreater(first["change_count"], 0)
         self.assertIn("Keep this user-owned line.", (self.target / "AGENTS.md").read_text(encoding="utf-8"))
         self.assertTrue(verify_install(self.target)["ok"])
-        self.assertTrue((self.target / ".psp/legal/LICENSE").is_file())
-        self.assertIn("mixed-origin", (self.target / ".psp/legal/LICENSE").read_text(encoding="utf-8"))
-        self.assertTrue((self.target / ".psp/legal/SOURCE-BASELINE.md").is_file())
+        managed_files = load_state(self.target, required=True)["managed_files"]
+        self.assertEqual(set(managed_files), {".agents/skills/using-pragmatic-skills/SKILL.md"})
+        self.assertTrue((self.target / ".agents/skills/using-pragmatic-skills/SKILL.md").is_file())
+        self.assertFalse((self.target / "skills").exists())
+        self.assertFalse((self.target / "reference").exists())
+        self.assertFalse((self.target / ".psp/bin").exists())
+        self.assertFalse((self.target / ".psp/package.zip").exists())
+        self.assertFalse((self.target / ".psp/legal").exists())
+        self.assertFalse((self.target / ".psp/schemas").exists())
 
         second = self.install_minimal()
         self.assertTrue(second["ok"])
         self.assertEqual(second["change_count"], 0)
         self.assertIsNone(second["backup"])
 
-        installed_cli = self.target / ".psp/bin/psp.py"
-        completed = subprocess.run(
-            [sys.executable, str(installed_cli), "verify", "--target", str(self.target), "--json"],
-            text=True,
-            capture_output=True,
-            check=False,
-        )
-        self.assertEqual(completed.returncode, 0, completed.stderr + completed.stdout)
-        self.assertTrue(json.loads(completed.stdout)["ok"])
-
-        diagnosed = subprocess.run(
-            [sys.executable, str(installed_cli), "doctor", "--target", str(self.target), "--json"],
-            cwd=self.target,
-            text=True,
-            capture_output=True,
-            check=False,
-        )
-        self.assertEqual(diagnosed.returncode, 0, diagnosed.stderr + diagnosed.stdout)
-        diagnosis = json.loads(diagnosed.stdout)
+        diagnosis = verify_install(self.target)
         self.assertTrue(diagnosis["ok"], diagnosis.get("issues"))
-        self.assertFalse(any(item.get("code") == "source-package-unavailable" for item in diagnosis["issues"]))
-        embedded = self.target / ".psp/package.zip"
-        self.assertTrue(embedded.is_file())
-
-        compared = subprocess.run(
-            [sys.executable, str(installed_cli), "diff", "--target", str(self.target), "--json"],
-            cwd=self.target.parent,
-            text=True,
-            capture_output=True,
-            check=False,
-        )
-        self.assertEqual(compared.returncode, 0, compared.stderr + compared.stdout)
-        self.assertEqual(json.loads(compared.stdout)["change_count"], 0)
-
-        upgraded = subprocess.run(
-            [sys.executable, str(installed_cli), "upgrade", "--target", str(self.target), "--json"],
-            cwd=self.target.parent,
-            text=True,
-            capture_output=True,
-            check=False,
-        )
-        self.assertEqual(upgraded.returncode, 0, upgraded.stderr + upgraded.stdout)
-        self.assertEqual(json.loads(upgraded.stdout)["change_count"], 0)
-
-        embedded_check = subprocess.run(
-            [sys.executable, str(installed_cli), "verify-package", "--json"],
-            cwd=self.target.parent,
-            text=True,
-            capture_output=True,
-            check=False,
-        )
-        self.assertEqual(embedded_check.returncode, 0, embedded_check.stderr + embedded_check.stdout)
-        self.assertTrue(json.loads(embedded_check.stdout)["ok"])
 
         removed = uninstall(self.target)
         self.assertTrue(removed["ok"])
         self.assertFalse((self.target / ".psp/install.json").exists())
         self.assertEqual((self.target / "AGENTS.md").read_text(encoding="utf-8"), original)
-        self.assertFalse((self.target / "skills/triage/SKILL.md").exists())
-        self.assertFalse((self.target / ".psp/legal/LICENSE").exists())
-
-    def test_tampered_embedded_package_is_detected_without_breaking_basic_verify(self) -> None:
-        installed = self.install_minimal()
-        self.assertTrue(installed["ok"])
-        installed_cli = self.target / ".psp/bin/psp.py"
-        embedded = self.target / ".psp/package.zip"
-        embedded.write_bytes(embedded.read_bytes() + b"\nTAMPERED")
-
-        basic = subprocess.run(
-            [sys.executable, str(installed_cli), "verify", "--target", str(self.target), "--json"],
-            cwd=self.target.parent,
-            text=True,
-            capture_output=True,
-            check=False,
-        )
-        self.assertEqual(basic.returncode, 1, basic.stderr + basic.stdout)
-        self.assertFalse(json.loads(basic.stdout)["ok"])
-
-        package_check = subprocess.run(
-            [sys.executable, str(installed_cli), "verify-package", "--json"],
-            cwd=self.target.parent,
-            text=True,
-            capture_output=True,
-            check=False,
-        )
-        self.assertEqual(package_check.returncode, 2, package_check.stderr + package_check.stdout)
-        payload = json.loads(package_check.stdout)
-        self.assertFalse(payload["ok"])
-        self.assertIn("integrity verification", payload["error"])
+        self.assertFalse((self.target / ".agents/skills/using-pragmatic-skills/SKILL.md").exists())
 
     def test_dry_run_has_no_managed_writes(self) -> None:
         result = self.install_minimal(dry_run=True)
         self.assertTrue(result["ok"])
         self.assertGreater(result["change_count"], 0)
+        self.assertFalse((self.target / ".psp").exists())
         self.assertFalse((self.target / ".psp/install.json").exists())
+        self.assertFalse((self.target / ".agents").exists())
         self.assertFalse((self.target / "skills").exists())
         self.assertFalse((self.target / "AGENTS.md").exists())
 
+    def test_dry_run_does_not_create_missing_target_directory(self) -> None:
+        missing = self.target / "missing"
+        result = install(ROOT, missing, hosts_spec="minimal", dry_run=True)
+        self.assertTrue(result["ok"])
+        self.assertGreater(result["change_count"], 0)
+        self.assertFalse(missing.exists())
+
     def test_user_modified_managed_file_creates_conflict_then_force_recovers(self) -> None:
         self.install_minimal()
-        managed = self.target / "skills/triage/SKILL.md"
+        managed = self.target / ".agents/skills/using-pragmatic-skills/SKILL.md"
         managed.write_text(managed.read_text(encoding="utf-8") + "\nUSER CHANGE\n", encoding="utf-8")
 
         conflicted = self.install_minimal()
@@ -168,7 +101,7 @@ class InstallerTests(unittest.TestCase):
 
     def test_rollback_restores_exact_pre_transaction_content(self) -> None:
         self.install_minimal()
-        managed = self.target / "skills/triage/SKILL.md"
+        managed = self.target / ".agents/skills/using-pragmatic-skills/SKILL.md"
         modified = managed.read_text(encoding="utf-8") + "\nLOCAL PATCH BEFORE FORCE\n"
         managed.write_text(modified, encoding="utf-8")
 
@@ -206,7 +139,8 @@ class InstallerTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as outside_raw:
             outside = Path(outside_raw)
             try:
-                os.symlink(outside, self.target / "skills", target_is_directory=True)
+                (self.target / ".agents").mkdir()
+                os.symlink(outside, self.target / ".agents/skills", target_is_directory=True)
             except (OSError, NotImplementedError) as exc:
                 self.skipTest(f"symlink creation unavailable: {exc}")
             with self.assertRaises(ValidationError):
@@ -248,6 +182,38 @@ class InstallerTests(unittest.TestCase):
         self.assertTrue(second["ok"])
         self.assertEqual(set(second["hosts"]), {"claude", "cursor"})
         self.assertTrue((self.target / ".cursor/rules/pragmatic-skills-pack.mdc").is_file())
+
+    def test_upgrade_removes_legacy_project_vendored_runtime_files(self) -> None:
+        installed = self.install_minimal()
+        self.assertTrue(installed["ok"])
+        state = load_state(self.target, required=True)
+        assert state is not None
+        legacy_paths = {
+            ".psp/bin/psp.py": b"legacy cli\n",
+            ".psp/package.zip": b"legacy package\n",
+            ".psp/legal/LICENSE": b"legacy license\n",
+            ".psp/schemas/install-state.schema.json": b"{}\n",
+            "skills/triage/SKILL.md": b"legacy skill\n",
+            "reference/PROJECT-PROFILE.template.md": b"legacy reference\n",
+        }
+        for rel, data in legacy_paths.items():
+            path = self.target / rel
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes(data)
+            state["managed_files"][rel] = {
+                "sha256": hashlib.sha256(data).hexdigest(),
+                "source": "legacy",
+                "mode": "0o644",
+            }
+        (self.target / ".psp/install.json").write_text(json.dumps(state), encoding="utf-8")
+
+        upgraded = self.install_minimal()
+        self.assertTrue(upgraded["ok"])
+        for rel in legacy_paths:
+            self.assertFalse((self.target / rel).exists(), rel)
+        current_state = load_state(self.target, required=True)
+        assert current_state is not None
+        self.assertFalse(any(rel in current_state["managed_files"] for rel in legacy_paths))
 
     def test_malicious_state_path_is_rejected(self) -> None:
         state_dir = self.target / ".psp"

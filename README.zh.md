@@ -80,42 +80,63 @@ sh install.sh --target /path/to/repository --profile
 sh install.sh --target /path/to/repository --force
 ```
 
-安装状态保存在 `.psp/install.json`。安装器会保留 PSP 托管区块以外的用户内容；
+项目安装保持轻量：只写入 `AGENTS.md`、`.agents/skills/using-pragmatic-skills/SKILL.md`
+和所选宿主适配器，以及 `.psp/install.json` 中的小型生命周期状态。它不会把 PSP
+runtime、`skills/`、`reference/`、`.psp/bin/`、`.psp/package.zip`、`.psp/legal/`
+或 `.psp/schemas/` 复制进目标项目。安装器会保留 PSP 托管区块以外的用户内容；
 除非显式使用 `--force`，否则不会覆盖被用户修改的托管文件。对新插入的托管区块，
 安装器会保留原文件的 UTF-8 BOM、换行风格和权限模式，并在卸载时恢复精确原始字节。
-许可与来源说明会安装到 `.psp/legal/`，确保被托管的 Skill 副本仍携带来源上下文。
+
+## 安装全局 runtime
+
+如果不想长期保留解压目录，可以把 PSP runtime 安装到用户级目录：
+
+```sh
+python3 tools/psp.py runtime install
+python3 ~/.local/share/pragmatic-skills-pack/current/tools/psp.py runtime status
+```
+
+默认 runtime 目录优先使用 `$PSP_HOME`，否则是
+`~/.local/share/pragmatic-skills-pack/current`。也可以显式指定位置：
+
+```sh
+python3 tools/psp.py runtime install --home ~/.codex/psp
+PSP_HOME=~/.codex/psp python3 ~/.codex/psp/tools/psp.py verify-package
+```
+
+`runtime install --dry-run` 只展示计划不写入；`--force` 可替换已存在但不是 PSP
+runtime 的路径。安装 runtime 不会修改项目，也不会改 shell 启动文件。
 
 ## 管理已安装项目
 
-项目本地 CLI 位于 `.psp/bin/psp.py`。安装时还会生成确定性的自包含生命周期包
-`.psp/package.zip`，因此 `doctor`、`diff`、`verify-package`、重装和同版本
-`upgrade` 不依赖调用时所在目录，也不依赖最初解压的压缩包：
+生命周期命令从解压后的 PSP 包、全局 runtime 或宿主工具安装位置运行。目标项目只保留
+适配器文件和 `.psp` 状态/Trace：
 
 ```sh
-python3 .psp/bin/psp.py verify --target .
-python3 .psp/bin/psp.py status --target .
-python3 .psp/bin/psp.py doctor --target .
+python3 /path/to/pragmatic-skills-pack/tools/psp.py verify --target .
+python3 /path/to/pragmatic-skills-pack/tools/psp.py status --target .
+python3 /path/to/pragmatic-skills-pack/tools/psp.py doctor --target .
 ```
 
-使用项目内嵌包比较或重新应用当前版本：
+比较或重新应用当前 runtime 包，先 dry-run 再写入：
 
 ```sh
-python3 .psp/bin/psp.py diff --target .
-python3 .psp/bin/psp.py upgrade --target . --dry-run
-python3 .psp/bin/psp.py upgrade --target .
+python3 /path/to/pragmatic-skills-pack/tools/psp.py diff --target .
+python3 /path/to/pragmatic-skills-pack/tools/psp.py upgrade --target . --dry-run
+python3 /path/to/pragmatic-skills-pack/tools/psp.py upgrade --target .
 ```
 
-升级到更新的解压包时，可运行新包中的 CLI，或通过 `--package-root` 指定新包目录。 嵌入归档会按安装状态校验哈希，并限制条目数、展开大小、路径、重复项和符号链接。
+升级到更新的解压包时，可运行新包中的 CLI，或通过 `--package-root` 指定新包目录。
 
 安全卸载或恢复事务快照：
 
 ```sh
-python3 .psp/bin/psp.py uninstall --target . --dry-run
-python3 .psp/bin/psp.py uninstall --target .
+python3 /path/to/pragmatic-skills-pack/tools/psp.py uninstall --target . --dry-run
+python3 /path/to/pragmatic-skills-pack/tools/psp.py uninstall --target .
 
-python3 .psp/bin/psp.py rollback --target . --list
-python3 .psp/bin/psp.py rollback --target .
-python3 .psp/bin/psp.py rollback --target . --to <完整备份ID>
+python3 /path/to/pragmatic-skills-pack/tools/psp.py rollback --target . --list
+python3 /path/to/pragmatic-skills-pack/tools/psp.py rollback --target .
+python3 /path/to/pragmatic-skills-pack/tools/psp.py rollback --target . --to <完整备份ID>
 ```
 
 回滚会恢复某次操作前的精确快照，并在恢复前先为当前状态创建安全快照。
@@ -126,30 +147,30 @@ Trace 是保存在 `.psp/runs/<run-id>/events.jsonl` 的本地追加记录。正
 并不依赖它，但它能让完成声明、审批和验证更容易审计。
 
 ```sh
-python3 .psp/bin/psp.py trace start \
+python3 /path/to/pragmatic-skills-pack/tools/psp.py trace start \
   --target . \
   --metadata '{"task":"修复解析器校验"}'
 
-python3 .psp/bin/psp.py trace emit mode_selected \
+python3 /path/to/pragmatic-skills-pack/tools/psp.py trace emit mode_selected \
   --target . \
   --data '{"mode":"standard-change"}'
 
-python3 .psp/bin/psp.py trace emit command_finished \
+python3 /path/to/pragmatic-skills-pack/tools/psp.py trace emit command_finished \
   --target . \
   --event-id cmd-tests \
   --data '{"command":"pytest -q","exit_code":0,"purpose":"tests","evidence_id":"tests-ok"}'
 
-python3 .psp/bin/psp.py trace emit verification_finished \
+python3 /path/to/pragmatic-skills-pack/tools/psp.py trace emit verification_finished \
   --target . \
   --event-id verify-tests \
   --data '{"status":"passed","scope":"tests","evidence":["tests-ok"],"evidence_id":"verified-tests"}'
 
-python3 .psp/bin/psp.py trace emit claim \
+python3 /path/to/pragmatic-skills-pack/tools/psp.py trace emit claim \
   --target . \
   --data '{"claim":"tests_passed","evidence":["verified-tests"]}'
 
-python3 .psp/bin/psp.py trace finish --target . --status completed
-python3 .psp/bin/psp.py trace verify --target .
+python3 /path/to/pragmatic-skills-pack/tools/psp.py trace finish --target . --status completed
+python3 /path/to/pragmatic-skills-pack/tools/psp.py trace verify --target .
 ```
 
 `trace verify` 会拒绝重复事件 ID、引用不存在或未来证据的声明、没有成功上游证据
